@@ -39,9 +39,15 @@ export const SidePanel: React.FC = () => {
     if (selectedNode) {
       setEditTitle(selectedNode.title || '');
       setEditContent(selectedNode.content || '');
+      if (selectedNode.type === 'message' && selectedNode.role === 'user') {
+        setQuestionInput(selectedNode.content || '');
+      } else {
+        setQuestionInput('');
+      }
     } else {
       setEditTitle('');
       setEditContent('');
+      setQuestionInput('');
     }
     setIsEditing(false);
   }, [selectedNode]);
@@ -51,26 +57,19 @@ export const SidePanel: React.FC = () => {
    */
   const handleSendQuestion = useCallback(async () => {
     if (!questionInput.trim() || !selectedNode || !board) return;
+    if (selectedNode.type !== 'message' || selectedNode.role !== 'user') return;
 
     setIsLoading(true);
     try {
-      // 質問ノードを作成
-      const questionNode = addNode({
-        boardId: board.id,
-        type: 'message',
-        role: 'user',
-        title: '',
-        content: questionInput.trim(),
-        parentIds: [selectedNode.id],
-        createdBy: 'user',
-        position: {
-          x: selectedNode.position.x + 50,
-          y: selectedNode.position.y + 150
-        }
+      // 質問ノードの内容を更新
+      updateNode(selectedNode.id, {
+        content: questionInput.trim()
       });
 
-      // コンテキストを収集
-      const contextMessages = collectContext(nodes, selectedNode);
+      // コンテキストを収集（メイン親チェーンのみ）
+      const mainParentId = selectedNode.parentIds[0];
+      const parentNode = mainParentId ? getNodeById(mainParentId) : null;
+      const contextMessages = parentNode ? collectContext(nodes, parentNode) : [];
       
       // LLMにリクエスト
       const response = await window.electronAPI.sendLLMRequest({
@@ -98,20 +97,20 @@ export const SidePanel: React.FC = () => {
         role: 'assistant',
         title: '',
         content: response.content,
-        parentIds: [questionNode.id],
+        parentIds: [selectedNode.id],
         provider: board.settings.defaultProvider,
         model: board.settings.defaultModel,
         usage: response.usage,
         createdBy: 'ai',
         position: {
-          x: questionNode.position.x,
-          y: questionNode.position.y + 150
+          x: selectedNode.position.x,
+          y: selectedNode.position.y + 150
         },
         qaPairId
       });
 
       // 質問ノードにもqaPairIdを設定
-      updateNode(questionNode.id, { qaPairId });
+      updateNode(selectedNode.id, { qaPairId });
 
       setQuestionInput('');
     } catch (error) {
@@ -120,7 +119,7 @@ export const SidePanel: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [questionInput, selectedNode, board, nodes, addNode, updateNode]);
+  }, [questionInput, selectedNode, board, nodes, getNodeById, addNode, updateNode]);
 
   /**
    * ノートを作成
@@ -184,6 +183,31 @@ export const SidePanel: React.FC = () => {
       setIsLoading(false);
     }
   }, [selectedNode, board, nodes, addNode]);
+
+  /**
+   * トピックから質問ノードを作成
+   */
+  const handleCreateQuestionFromTopic = useCallback(() => {
+    if (!selectedNode || selectedNode.type !== 'topic' || !board) return;
+
+    const questionNode = addNode({
+      boardId: board.id,
+      type: 'message',
+      role: 'user',
+      title: '',
+      content: '',
+      parentIds: [selectedNode.id],
+      createdBy: 'user',
+      position: {
+        x: selectedNode.position.x + 100,
+        y: selectedNode.position.y + 120
+      }
+    });
+
+    selectNode(questionNode.id);
+    setQuestionInput('');
+    setIsEditing(false);
+  }, [selectedNode, board, addNode, selectNode]);
 
   /**
    * トピックを生成
@@ -747,6 +771,11 @@ export const SidePanel: React.FC = () => {
                 </button>
               ) : (
                 <>
+                  {selectedNode.type === 'topic' && (
+                    <button onClick={handleCreateQuestionFromTopic} style={actionButtonStyle}>
+                      ❓ 質問ノードを作成
+                    </button>
+                  )}
                   <button onClick={handleCreateNote} style={actionButtonStyle}>
                     📝 メモを追加
                   </button>
@@ -786,44 +815,52 @@ export const SidePanel: React.FC = () => {
 
           <hr style={{ border: 'none', borderTop: '1px solid #334155', margin: '16px 0' }} />
 
-          {/* 質問入力 */}
-          <div>
-            <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#94a3b8' }}>
-              💬 質問する
-            </h3>
-            <textarea
-              value={questionInput}
-              onChange={(e) => setQuestionInput(e.target.value)}
-              placeholder="このノードについて質問..."
-              rows={4}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                borderRadius: '8px',
-                border: '1px solid #475569',
-                background: '#0f172a',
-                color: 'white',
-                fontSize: '14px',
-                resize: 'vertical',
-                boxSizing: 'border-box',
-                marginBottom: '8px'
-              }}
-              disabled={isLoading}
-            />
-            <button
-              onClick={handleSendQuestion}
-              disabled={!questionInput.trim() || isLoading}
-              style={{
-                ...actionButtonStyle,
-                width: '100%',
-                justifyContent: 'center',
-                background: '#6366f1',
-                opacity: questionInput.trim() && !isLoading ? 1 : 0.5
-              }}
-            >
-              {isLoading ? '⏳ 送信中...' : '🚀 送信'}
-            </button>
-          </div>
+          {/* 質問入力（質問ノード選択時のみ） */}
+          {selectedNode.type === 'message' && selectedNode.role === 'user' ? (
+            <div>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#94a3b8' }}>
+                💬 質問する
+              </h3>
+              <textarea
+                value={questionInput}
+                onChange={(e) => setQuestionInput(e.target.value)}
+                placeholder="この質問を入力..."
+                rows={4}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid #475569',
+                  background: '#0f172a',
+                  color: 'white',
+                  fontSize: '14px',
+                  resize: 'vertical',
+                  boxSizing: 'border-box',
+                  marginBottom: '8px'
+                }}
+                disabled={isLoading}
+              />
+              <button
+                onClick={handleSendQuestion}
+                disabled={!questionInput.trim() || isLoading}
+                style={{
+                  ...actionButtonStyle,
+                  width: '100%',
+                  justifyContent: 'center',
+                  background: '#6366f1',
+                  opacity: questionInput.trim() && !isLoading ? 1 : 0.5
+                }}
+              >
+                {isLoading ? '⏳ 送信中...' : '🚀 送信'}
+              </button>
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', color: '#64748b', padding: '12px', background: '#0f172a', borderRadius: '8px' }}>
+              <div style={{ fontSize: '13px' }}>
+                トピックを選択して「質問ノードを作成」した後、その質問ノードを選択して入力してください。
+              </div>
+            </div>
+          )}
         </>
       ) : (
         <div style={{ textAlign: 'center', color: '#64748b', padding: '20px' }}>

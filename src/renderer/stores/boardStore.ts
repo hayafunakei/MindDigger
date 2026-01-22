@@ -82,6 +82,7 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
     const now = new Date().toISOString();
     const boardId = uuidv4();
     const rootNodeId = uuidv4();
+    const initialQuestionId = uuidv4();
 
     const rootNode: MindNode = {
       id: rootNodeId,
@@ -102,6 +103,26 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
       }
     };
 
+    const initialQuestionContent = description || title;
+
+    const initialQuestionNode: MindNode = {
+      id: initialQuestionId,
+      boardId,
+      type: 'message',
+      role: 'user',
+      title: '',
+      content: initialQuestionContent,
+      parentIds: [rootNodeId],
+      childrenIds: [],
+      createdBy: 'user',
+      createdAt: now,
+      updatedAt: now,
+      position: { x: 0, y: 150 },
+      metadata: {
+        importance: 4
+      }
+    };
+
     const board: Board = {
       id: boardId,
       title,
@@ -118,9 +139,15 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
 
     set({
       board,
-      nodes: [rootNode],
+      nodes: [
+        {
+          ...rootNode,
+          childrenIds: [initialQuestionId]
+        },
+        initialQuestionNode
+      ],
       summaries: [],
-      selectedNodeId: null,
+      selectedNodeId: initialQuestionId,
       filePath: null,
       isDirty: true
     });

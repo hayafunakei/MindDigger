@@ -42,11 +42,11 @@ export async function getSettings(): Promise<AppSettings> {
   try {
     const data = await readFile(getSettingsPath(), 'utf-8');
     cachedSettings = { ...defaultSettings, ...JSON.parse(data) };
-    return cachedSettings;
+    return cachedSettings as AppSettings;
   } catch {
     // 設定ファイルがなければデフォルトを返す
     cachedSettings = defaultSettings;
-    return cachedSettings;
+    return cachedSettings as AppSettings;
   }
 }
 
