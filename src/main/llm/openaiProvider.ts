@@ -139,7 +139,8 @@ export class OpenAIProvider {
 3. **未解決の課題**: topicノードから抽出
 4. **次のアクション**: 今後検討すべき事項
 
-簡潔で分かりやすいMarkdown形式で出力してください。`;
+簡潔で分かりやすいMarkdown形式で出力してください。
+重要: \`\`\`markdown などのコードブロックで囲まないでください。直接Markdownを出力してください。`;
 
     const nodesInfo = topNodes.map(node => {
       const metadata = [];
@@ -171,6 +172,11 @@ ${nodesInfo}`;
       max_tokens: 2000
     });
 
-    return response.choices[0]?.message?.content || '';
+    let content = response.choices[0]?.message?.content || '';
+    
+    // コードブロックで囲まれている場合は除去
+    content = content.replace(/^```(?:markdown)?\n?/i, '').replace(/\n?```$/i, '');
+    
+    return content;
   }
 }

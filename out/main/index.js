@@ -124,7 +124,8 @@ ${request.content}`;
 3. **未解決の課題**: topicノードから抽出
 4. **次のアクション**: 今後検討すべき事項
 
-簡潔で分かりやすいMarkdown形式で出力してください。`;
+簡潔で分かりやすいMarkdown形式で出力してください。
+重要: \`\`\`markdown などのコードブロックで囲まないでください。直接Markdownを出力してください。`;
     const nodesInfo = topNodes.map((node) => {
       const metadata = [];
       if (node.pin) metadata.push("📌ピン留め");
@@ -149,7 +150,9 @@ ${nodesInfo}`;
       temperature: 0.7,
       max_tokens: 2e3
     });
-    return response.choices[0]?.message?.content || "";
+    let content = response.choices[0]?.message?.content || "";
+    content = content.replace(/^```(?:markdown)?\n?/i, "").replace(/\n?```$/i, "");
+    return content;
   }
 }
 let openaiProvider = null;
