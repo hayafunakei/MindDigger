@@ -1,0 +1,105 @@
+/**
+ * グローバルスタイル
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* スクロールバー */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* React Flow カスタマイズ */
+.react-flow__node {
+  cursor: pointer;
+}
+
+.react-flow__node:focus {
+  outline: none;
+}
+
+.react-flow__attribution {
+  background: rgba(15, 23, 42, 0.8) !important;
+}
+
+.react-flow__attribution a {
+  color: #64748b !important;
+}
+
+.react-flow__minimap {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+  border-radius: 8px !important;
+}
+
+.react-flow__controls {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+  border-radius: 8px !important;
+}
+
+.react-flow__controls button {
+  background: #1e293b !important;
+  border-bottom: 1px solid #334155 !important;
+  fill: #e2e8f0 !important;
+}
+
+.react-flow__controls button:hover {
+  background: #334155 !important;
+}
+
+/* ボタンホバー */
+button:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+button:active:not(:disabled) {
+  filter: brightness(0.95);
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* テキストエリア */
+textarea:focus, input:focus {
+  outline: none;
+  border-color: #6366f1 !important;
+}
+
+/* 選択時のハイライト */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+}
