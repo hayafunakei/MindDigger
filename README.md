@@ -271,6 +271,7 @@ interface Summary {
 
 ***
 
+
 ## 6. タイムライン表示と親ノードの扱い
 
 ### 6.1 parentIds の意味
