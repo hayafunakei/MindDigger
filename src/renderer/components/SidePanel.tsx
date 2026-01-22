@@ -4,6 +4,7 @@
  */
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useBoardStore } from '../stores/boardStore';
 import type { MindNode, NodeType, Role } from '@shared/types';
 
@@ -570,12 +571,28 @@ export const SidePanel: React.FC = () => {
             background: '#1e293b',
             borderRadius: '8px',
             fontSize: '13px',
-            maxHeight: '300px',
+            maxHeight: '400px',
             overflow: 'auto',
-            whiteSpace: 'pre-wrap',
             lineHeight: '1.6'
           }}>
-            {summary}
+            <div className="markdown-content" style={{ color: '#e2e8f0' }}>
+              <ReactMarkdown 
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  p: ({children}) => <p style={{ marginBottom: '0.75em' }}>{children}</p>,
+                  ul: ({children}) => <ul style={{ marginLeft: '1.5em', marginBottom: '0.75em' }}>{children}</ul>,
+                  ol: ({children}) => <ol style={{ marginLeft: '1.5em', marginBottom: '0.75em' }}>{children}</ol>,
+                  li: ({children}) => <li style={{ marginBottom: '0.25em' }}>{children}</li>,
+                  h1: ({children}) => <h1 style={{ fontSize: '1.5em', fontWeight: 600, marginTop: '1em', marginBottom: '0.5em', color: '#f1f5f9' }}>{children}</h1>,
+                  h2: ({children}) => <h2 style={{ fontSize: '1.3em', fontWeight: 600, marginTop: '1em', marginBottom: '0.5em', color: '#f1f5f9' }}>{children}</h2>,
+                  h3: ({children}) => <h3 style={{ fontSize: '1.15em', fontWeight: 600, marginTop: '1em', marginBottom: '0.5em', color: '#f1f5f9' }}>{children}</h3>,
+                  strong: ({children}) => <strong style={{ fontWeight: 600, color: '#f1f5f9' }}>{children}</strong>,
+                  code: ({children}) => <code style={{ background: '#334155', padding: '0.15em 0.4em', borderRadius: '4px', fontFamily: 'monospace', fontSize: '0.9em' }}>{children}</code>,
+                }}
+              >
+                {summary}
+              </ReactMarkdown>
+            </div>
           </div>
         </div>
       )}
@@ -799,7 +816,9 @@ export const SidePanel: React.FC = () => {
                 }}>
                   {selectedNode.role === 'assistant' ? (
                     <div className="markdown-content">
-                      <ReactMarkdown>{selectedNode.content}</ReactMarkdown>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {selectedNode.content}
+                      </ReactMarkdown>
                     </div>
                   ) : (
                     <div style={{ whiteSpace: 'pre-wrap' }}>
