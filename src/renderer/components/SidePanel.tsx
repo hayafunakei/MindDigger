@@ -2,7 +2,8 @@
  * サイドパネルコンポーネント
  * ノード詳細、質問入力、サマリー表示などを提供
  */
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { useBoardStore } from '../stores/boardStore';
 import type { MindNode, NodeType, Role } from '@shared/types';
 
@@ -32,8 +33,43 @@ export const SidePanel: React.FC = () => {
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
   const [showTimeline, setShowTimeline] = useState(false);
+  const [panelWidth, setPanelWidth] = useState(320);
+  const [isResizing, setIsResizing] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
+
+  /**
+   * リサイズハンドルのマウスダウン
+   */
+  const handleResizeStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  }, []);
+
+  /**
+   * リサイズ中のマウス移動
+   */
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const newWidth = window.innerWidth - e.clientX;
+      setPanelWidth(Math.max(280, Math.min(600, newWidth)));
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
 
   useEffect(() => {
     if (selectedNode) {
@@ -475,7 +511,13 @@ export const SidePanel: React.FC = () => {
 
   if (!board) {
     return (
-      <div style={panelStyle}>
+      <div ref={panelRef} style={{ ...basePanelStyle, width: `${panelWidth}px` }}>
+        <div
+          onMouseDown={handleResizeStart}
+          style={resizeHandleStyle}
+          onMouseEnter={(e) => (e.currentTarget.style.background = '#6366f1')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+        />
         <div style={{ textAlign: 'center', color: '#64748b', padding: '40px 20px' }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>🧠</div>
           <h2 style={{ margin: '0 0 8px 0', color: '#e2e8f0' }}>Mind Digger</h2>
@@ -488,7 +530,15 @@ export const SidePanel: React.FC = () => {
   }
 
   return (
-    <div style={panelStyle}>
+    <div ref={panelRef} style={{ ...basePanelStyle, width: `${panelWidth}px` }}>
+      {/* リサイズハンドル */}
+      <div
+        onMouseDown={handleResizeStart}
+        style={resizeHandleStyle}
+        onMouseEnter={(e) => (e.currentTarget.style.background = '#6366f1')}
+        onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+      />
+
       {/* サマリー表示 */}
       {showSummary && (
         <div style={{ marginBottom: '16px' }}>
@@ -744,10 +794,18 @@ export const SidePanel: React.FC = () => {
                 <div style={{ 
                   color: '#94a3b8', 
                   fontSize: '13px',
-                  maxHeight: '200px',
+                  maxHeight: '400px',
                   overflow: 'auto'
                 }}>
-                  {selectedNode.content || '(内容なし)'}
+                  {selectedNode.role === 'assistant' ? (
+                    <div className="markdown-content">
+                      <ReactMarkdown>{selectedNode.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <div style={{ whiteSpace: 'pre-wrap' }}>
+                      {selectedNode.content || '(内容なし)'}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -923,15 +981,31 @@ function getNodeTypeLabel(type: NodeType): string {
   }
 }
 
-const panelStyle: React.CSSProperties = {
-  width: '320px',
+const basePanelStyle: React.CSSProperties = {
   height: '100%',
   background: '#0f172a',
   borderLeft: '1px solid #334155',
   padding: '16px',
   boxSizing: 'border-box',
   overflow: 'auto',
-  color: 'white'
+  color: 'white',
+  position: 'relative'
+};
+
+const resizeHandleStyle: React.CSSProperties = {
+  position: 'absolute',
+  left: 0,
+  top: 0,
+  bottom: 0,
+  width: '4px',
+  cursor: 'ew-resize',
+  background: 'transparent',
+  zIndex: 10
+};
+
+const resizeHandleHoverStyle: React.CSSProperties = {
+  ...resizeHandleStyle,
+  background: '#6366f1'
 };
 
 const actionButtonStyle: React.CSSProperties = {
