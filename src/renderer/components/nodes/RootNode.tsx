@@ -14,7 +14,7 @@ interface RootNodeData extends MindNode {
  * ルートノード - ボードのテーマを表示
  */
 export const RootNode: React.FC<NodeProps> = memo(({ data, selected }) => {
-  const nodeData = data as RootNodeData;
+  const nodeData = data as unknown as RootNodeData;
 
   return (
     <div

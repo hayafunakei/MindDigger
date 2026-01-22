@@ -2,8 +2,9 @@
  * メッセージノードコンポーネント
  * ユーザーの質問とAIの回答を表示
  */
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
+import { useBoardStore } from '../../stores/boardStore';
 import type { MindNode } from '@shared/types';
 
 interface MessageNodeData extends MindNode {
@@ -14,12 +15,22 @@ interface MessageNodeData extends MindNode {
  * メッセージノード - 質問と回答を表示
  */
 export const MessageNode: React.FC<NodeProps> = memo(({ data, selected }) => {
-  const nodeData = data as MessageNodeData;
+  const nodeData = data as unknown as MessageNodeData;
   const isUser = nodeData.role === 'user';
+  const [isHovered, setIsHovered] = useState(false);
+  const { selectNode } = useBoardStore();
+
+  const handleNodeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    selectNode(nodeData.id);
+  };
 
   return (
     <div
       className={`message-node ${selected ? 'selected' : ''}`}
+      onClick={handleNodeClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
         padding: '12px 16px',
         borderRadius: '12px',
@@ -80,6 +91,26 @@ export const MessageNode: React.FC<NodeProps> = memo(({ data, selected }) => {
           ? nodeData.content.slice(0, 150) + '...' 
           : nodeData.content}
       </div>
+
+      {/* アクションボタン - ホバー時に表示 */}
+      {isHovered && !isUser && (
+        <div style={{
+          position: 'absolute',
+          bottom: '-32px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          gap: '4px',
+          background: 'rgba(0, 0, 0, 0.8)',
+          padding: '4px 6px',
+          borderRadius: '6px',
+          fontSize: '11px',
+          whiteSpace: 'nowrap',
+          zIndex: 1000
+        }}>
+          <span style={{ color: '#94a3b8' }}>サイドパネルで操作</span>
+        </div>
+      )}
 
       <Handle
         type="source"

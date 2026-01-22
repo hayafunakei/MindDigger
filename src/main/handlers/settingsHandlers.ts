@@ -36,7 +36,7 @@ export function registerSettingsHandlers(): void {
  */
 export async function getSettings(): Promise<AppSettings> {
   if (cachedSettings) {
-    return cachedSettings;
+    return cachedSettings as AppSettings;
   }
 
   try {

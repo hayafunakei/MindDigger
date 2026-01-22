@@ -81,7 +81,15 @@ function createEdges(nodes: MindNode[]): Edge[] {
  * マインドマップキャンバス
  */
 export const MindMapCanvas: React.FC = () => {
-  const { nodes: mindNodes, selectedNodeId, selectNode, updateNodePosition } = useBoardStore();
+  const { 
+    nodes: mindNodes, 
+    selectedNodeId, 
+    selectNode, 
+    updateNodePosition,
+    isConnectingParent,
+    connectingFromNodeId,
+    connectToParent
+  } = useBoardStore();
 
   // React Flow用のノードとエッジを生成
   const flowNodes = useMemo(() => {
@@ -118,9 +126,14 @@ export const MindMapCanvas: React.FC = () => {
    */
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
-      selectNode(node.id);
+      // 親ノード接続モードの場合は接続処理
+      if (isConnectingParent && connectingFromNodeId) {
+        connectToParent(connectingFromNodeId, node.id);
+      } else {
+        selectNode(node.id);
+      }
     },
-    [selectNode]
+    [isConnectingParent, connectingFromNodeId, connectToParent, selectNode]
   );
 
   /**
@@ -131,7 +144,28 @@ export const MindMapCanvas: React.FC = () => {
   }, [selectNode]);
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      {/* 接続モード中のオーバーレイメッセージ */}
+      {isConnectingParent && (
+        <div style={{
+          position: 'absolute',
+          top: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 1000,
+          background: 'rgba(99, 102, 241, 0.95)',
+          color: 'white',
+          padding: '12px 24px',
+          borderRadius: '8px',
+          fontSize: '14px',
+          fontWeight: 'bold',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+          pointerEvents: 'none'
+        }}>
+          🔗 親ノードをクリックして接続してください
+        </div>
+      )}
+      
       <ReactFlow
         nodes={flowNodes}
         edges={flowEdges}

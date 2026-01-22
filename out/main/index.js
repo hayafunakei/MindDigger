@@ -406,6 +406,9 @@ function createWindow() {
   });
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
+    if (utils.is.dev) {
+      mainWindow.webContents.openDevTools();
+    }
   });
   if (utils.is.dev && process.env["ELECTRON_RENDERER_URL"]) {
     mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);

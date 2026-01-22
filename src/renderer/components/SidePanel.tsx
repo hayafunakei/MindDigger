@@ -10,7 +10,20 @@ import type { MindNode, NodeType, Role } from '@shared/types';
  * サイドパネル
  */
 export const SidePanel: React.FC = () => {
-  const { board, nodes, selectedNodeId, getNodeById, addNode, updateNode, addSummary, deleteNode } = useBoardStore();
+  const { 
+    board, 
+    nodes, 
+    selectedNodeId, 
+    getNodeById, 
+    addNode, 
+    updateNode, 
+    addSummary, 
+    deleteNode,
+    selectNode,
+    isConnectingParent,
+    startConnectingParent,
+    cancelConnectingParent
+  } = useBoardStore();
   const [questionInput, setQuestionInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [summary, setSummary] = useState<string>('');
@@ -18,6 +31,7 @@ export const SidePanel: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
+  const [showTimeline, setShowTimeline] = useState(false);
 
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
 
@@ -291,10 +305,61 @@ export const SidePanel: React.FC = () => {
    */
   const handleStartEdit = useCallback(() => {
     if (!selectedNode) return;
+    
+    // 質問ノードかつ回答が存在する場合はフォークを提案
+    if (selectedNode.type === 'message' && selectedNode.role === 'user') {
+      const hasAnswers = selectedNode.childrenIds.some(childId => {
+        const child = getNodeById(childId);
+        return child && child.type === 'message' && child.role === 'assistant';
+      });
+      
+      if (hasAnswers) {
+        const shouldFork = window.confirm(
+          'この質問には既に回答があります。\n\n'
+          + '「新しい質問としてフォーク」すると、同じ親ノードから別の質問ノードを作成します。\n\n'
+          + 'フォークしますか？'
+        );
+        
+        if (shouldFork) {
+          handleForkQuestion();
+        }
+        return;
+      }
+    }
+    
     setIsEditing(true);
     setEditTitle(selectedNode.title || '');
     setEditContent(selectedNode.content || '');
-  }, [selectedNode]);
+  }, [selectedNode, getNodeById]);
+
+  /**
+   * 質問ノードをフォーク（新しい質問として作成）
+   */
+  const handleForkQuestion = useCallback(() => {
+    if (!selectedNode || !board) return;
+    
+    const forkedNode = addNode({
+      boardId: board.id,
+      type: 'message',
+      role: 'user',
+      title: selectedNode.title || '',
+      content: selectedNode.content,
+      parentIds: selectedNode.parentIds, // 同じ親ノード
+      createdBy: 'user',
+      position: {
+        x: selectedNode.position.x + 100,
+        y: selectedNode.position.y + 80
+      }
+    });
+    
+    // フォークしたノードを選択し、編集モードに
+    selectNode(forkedNode.id);
+    setTimeout(() => {
+      setIsEditing(true);
+      setEditTitle(forkedNode.title || '');
+      setEditContent(forkedNode.content);
+    }, 100);
+  }, [selectedNode, board, addNode, selectNode]);
 
   /**
    * 編集をキャンセル
@@ -334,6 +399,55 @@ export const SidePanel: React.FC = () => {
     setEditTitle('');
     setEditContent('');
   }, [selectedNode, deleteNode]);
+
+  /**
+   * 親ノード接続モードを開始
+   */
+  const handleStartConnectParent = useCallback(() => {
+    if (!selectedNode) return;
+    startConnectingParent(selectedNode.id);
+    alert('接続したい親ノードをキャンバス上でクリックしてください');
+  }, [selectedNode, startConnectingParent]);
+
+  /**
+   * 親ノード接続モードをキャンセル
+   */
+  const handleCancelConnectParent = useCallback(() => {
+    cancelConnectingParent();
+  }, [cancelConnectingParent]);
+
+  /**
+   * タイムライン表示を切り替え
+   */
+  const handleToggleTimeline = useCallback(() => {
+    setShowTimeline(!showTimeline);
+  }, [showTimeline]);
+
+  /**
+   * タイムラインノードを収集（メイン親チェーンをrootまで辿る）
+   */
+  const getTimelineNodes = useCallback((): MindNode[] => {
+    if (!selectedNode) return [];
+    
+    const timeline: MindNode[] = [];
+    const visited = new Set<string>();
+    let current: MindNode | undefined = selectedNode;
+    
+    while (current && !visited.has(current.id)) {
+      visited.add(current.id);
+      timeline.unshift(current);
+      
+      // メイン親（parentIds[0]）を辿る
+      const mainParentId = current.parentIds[0];
+      if (mainParentId) {
+        current = getNodeById(mainParentId);
+      } else {
+        break;
+      }
+    }
+    
+    return timeline;
+  }, [selectedNode, getNodeById]);
 
   if (!board) {
     return (
@@ -422,6 +536,96 @@ export const SidePanel: React.FC = () => {
               </button>
             )}
           </div>
+        </div>
+      )}
+
+      <hr style={{ border: 'none', borderTop: '1px solid #334155', margin: '16px 0' }} />
+
+      {/* タイムライン表示 */}
+      {selectedNode && (
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <h3 style={{ margin: 0, fontSize: '14px', color: '#94a3b8' }}>
+              🕒 タイムライン
+            </h3>
+            <button
+              onClick={handleToggleTimeline}
+              style={{
+                ...actionButtonStyle,
+                padding: '4px 8px',
+                fontSize: '12px'
+              }}
+            >
+              {showTimeline ? '▼ 閉じる' : '▶ 表示'}
+            </button>
+          </div>
+          {showTimeline && (
+            <div style={{
+              maxHeight: '300px',
+              overflow: 'auto',
+              background: '#1e293b',
+              borderRadius: '8px',
+              padding: '8px'
+            }}>
+              {getTimelineNodes().map((node, index) => (
+                <div
+                  key={node.id}
+                  style={{
+                    marginBottom: '8px',
+                    padding: '8px',
+                    background: node.id === selectedNodeId ? '#334155' : '#0f172a',
+                    borderRadius: '6px',
+                    borderLeft: index === 0 ? 'none' : '2px solid #475569',
+                    marginLeft: index === 0 ? '0' : '12px'
+                  }}
+                >
+                  <div style={{
+                    fontSize: '11px',
+                    color: '#64748b',
+                    marginBottom: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}>
+                    {getNodeTypeIcon(node.type)}
+                    <span>{getNodeTypeLabel(node.type)}</span>
+                    {node.role && (
+                      <span style={{
+                        padding: '2px 6px',
+                        background: node.role === 'user' ? '#1e40af' : '#065f46',
+                        borderRadius: '4px',
+                        fontSize: '10px'
+                      }}>
+                        {node.role}
+                      </span>
+                    )}
+                  </div>
+                  {node.title && (
+                    <div style={{
+                      fontSize: '13px',
+                      fontWeight: 'bold',
+                      marginBottom: '4px',
+                      color: '#e2e8f0'
+                    }}>
+                      {node.title}
+                    </div>
+                  )}
+                  <div style={{
+                    fontSize: '12px',
+                    color: '#94a3b8',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    maxHeight: '100px',
+                    overflow: 'auto'
+                  }}>
+                    {node.content.length > 200 
+                      ? node.content.slice(0, 200) + '...' 
+                      : node.content}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -531,9 +735,28 @@ export const SidePanel: React.FC = () => {
               ⚡ アクション
             </h3>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              <button onClick={handleCreateNote} style={actionButtonStyle}>
-                📝 メモを追加
-              </button>
+              {isConnectingParent ? (
+                <button 
+                  onClick={handleCancelConnectParent} 
+                  style={{
+                    ...actionButtonStyle,
+                    background: '#dc2626'
+                  }}
+                >
+                  ❌ 親接続をキャンセル
+                </button>
+              ) : (
+                <>
+                  <button onClick={handleCreateNote} style={actionButtonStyle}>
+                    📝 メモを追加
+                  </button>
+                  {selectedNode.type !== 'root' && (
+                    <button onClick={handleStartConnectParent} style={actionButtonStyle}>
+                      🔗 親ノード追加
+                    </button>
+                  )}
+                </>
+              )}
               {selectedNode.type === 'message' && selectedNode.role === 'assistant' && (
                 <>
                   <button 
@@ -632,7 +855,7 @@ function collectContext(nodes: MindNode[], startNode: MindNode): Array<{ role: '
     }
     
     // メイン親を辿る
-    const mainParentId = current.parentIds[0];
+    const mainParentId: string | undefined = current.parentIds[0];
     if (mainParentId) {
       current = nodes.find((n) => n.id === mainParentId);
     } else {

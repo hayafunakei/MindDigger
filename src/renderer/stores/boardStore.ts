@@ -20,6 +20,10 @@ interface BoardState {
   isDirty: boolean;
   /** ローディング状態 */
   isLoading: boolean;
+  /** 親ノード接続モード */
+  isConnectingParent: boolean;
+  /** 接続元ノードID */
+  connectingFromNodeId: NodeId | null;
 }
 
 interface BoardActions {
@@ -53,6 +57,12 @@ interface BoardActions {
   getBoardData: () => BoardData | null;
   /** ノードをIDで取得 */
   getNodeById: (nodeId: NodeId) => MindNode | undefined;
+  /** 親ノード接続モードを開始 */
+  startConnectingParent: (nodeId: NodeId) => void;
+  /** 親ノード接続モードをキャンセル */
+  cancelConnectingParent: () => void;
+  /** 親ノードを接続 */
+  connectToParent: (childId: NodeId, parentId: NodeId) => void;
 }
 
 export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
@@ -64,6 +74,8 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
   filePath: null,
   isDirty: false,
   isLoading: false,
+  isConnectingParent: false,
+  connectingFromNodeId: null,
 
   // アクション
   createBoard: (title, description) => {
@@ -279,5 +291,59 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
 
   getNodeById: (nodeId) => {
     return get().nodes.find((n) => n.id === nodeId);
+  },
+
+  startConnectingParent: (nodeId) => {
+    set({
+      isConnectingParent: true,
+      connectingFromNodeId: nodeId,
+      selectedNodeId: nodeId
+    });
+  },
+
+  cancelConnectingParent: () => {
+    set({
+      isConnectingParent: false,
+      connectingFromNodeId: null
+    });
+  },
+
+  connectToParent: (childId, parentId) => {
+    const state = get();
+    const childNode = state.nodes.find((n) => n.id === childId);
+    const parentNode = state.nodes.find((n) => n.id === parentId);
+    
+    if (!childNode || !parentNode) return;
+    
+    // 既に親として登録されている場合はスキップ
+    if (childNode.parentIds.includes(parentId)) return;
+    
+    // 自分自身を親にしようとしている場合はスキップ
+    if (childId === parentId) return;
+    
+    const now = new Date().toISOString();
+    
+    set((state) => ({
+      nodes: state.nodes.map((n) => {
+        if (n.id === childId) {
+          return {
+            ...n,
+            parentIds: [...n.parentIds, parentId],
+            updatedAt: now
+          };
+        }
+        if (n.id === parentId) {
+          return {
+            ...n,
+            childrenIds: [...n.childrenIds, childId],
+            updatedAt: now
+          };
+        }
+        return n;
+      }),
+      isDirty: true,
+      isConnectingParent: false,
+      connectingFromNodeId: null
+    }));
   }
 }));

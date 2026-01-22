@@ -30,6 +30,10 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
+    // 開発時はDevToolsを自動で開く
+    if (is.dev) {
+      mainWindow.webContents.openDevTools();
+    }
   });
 
   // 開発環境ではlocalhostを、本番ではビルドされたHTMLを読み込む

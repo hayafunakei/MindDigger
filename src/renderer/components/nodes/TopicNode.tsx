@@ -2,8 +2,9 @@
  * トピックノードコンポーネント
  * まだ質問にしていない論点や検討すべき観点を表示
  */
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
+import { useBoardStore } from '../../stores/boardStore';
 import type { MindNode } from '@shared/types';
 
 interface TopicNodeData extends MindNode {
@@ -14,12 +15,22 @@ interface TopicNodeData extends MindNode {
  * トピックノード - 検討すべき論点を表示
  */
 export const TopicNode: React.FC<NodeProps> = memo(({ data, selected }) => {
-  const nodeData = data as TopicNodeData;
+  const nodeData = data as unknown as TopicNodeData;
   const importance = nodeData.metadata?.importance || 3;
+  const [isHovered, setIsHovered] = useState(false);
+  const { selectNode } = useBoardStore();
+
+  const handleNodeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    selectNode(nodeData.id);
+  };
 
   return (
     <div
       className={`topic-node ${selected ? 'selected' : ''}`}
+      onClick={handleNodeClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
         padding: '10px 14px',
         borderRadius: '20px',
@@ -89,6 +100,25 @@ export const TopicNode: React.FC<NodeProps> = memo(({ data, selected }) => {
               {tag}
             </span>
           ))}
+        </div>
+      )}
+
+      {/* アクションヒント */}
+      {isHovered && (
+        <div style={{
+          position: 'absolute',
+          bottom: '-28px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'rgba(0, 0, 0, 0.8)',
+          color: '#94a3b8',
+          padding: '3px 8px',
+          borderRadius: '6px',
+          fontSize: '10px',
+          whiteSpace: 'nowrap',
+          zIndex: 1000
+        }}>
+          サイドパネルで質問
         </div>
       )}
 

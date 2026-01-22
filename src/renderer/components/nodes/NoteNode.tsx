@@ -2,8 +2,9 @@
  * ノートノードコンポーネント
  * 決定事項やメモを表示
  */
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
+import { useBoardStore } from '../../stores/boardStore';
 import type { MindNode } from '@shared/types';
 
 interface NoteNodeData extends MindNode {
@@ -14,12 +15,22 @@ interface NoteNodeData extends MindNode {
  * ノートノード - 決定事項やメモを表示
  */
 export const NoteNode: React.FC<NodeProps> = memo(({ data, selected }) => {
-  const nodeData = data as NoteNodeData;
+  const nodeData = data as unknown as NoteNodeData;
   const isPinned = nodeData.metadata?.pin;
+  const [isHovered, setIsHovered] = useState(false);
+  const { selectNode } = useBoardStore();
+
+  const handleNodeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    selectNode(nodeData.id);
+  };
 
   return (
     <div
       className={`note-node ${selected ? 'selected' : ''}`}
+      onClick={handleNodeClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
         padding: '12px 16px',
         borderRadius: '8px',
