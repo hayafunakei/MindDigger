@@ -15,19 +15,34 @@ interface SettingsDialogProps {
 export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
   const { settings, updateSettings } = useSettingsStore();
   const [openaiKey, setOpenaiKey] = useState('');
+  const [parentFolder, setParentFolder] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setOpenaiKey(settings.openaiApiKey || '');
+      setParentFolder(settings.parentFolderPath || '');
     }
-  }, [isOpen, settings.openaiApiKey]);
+  }, [isOpen, settings.openaiApiKey, settings.parentFolderPath]);
+
+  const handleSelectParentFolder = async () => {
+    try {
+      const folder = await window.electronAPI.selectParentFolder();
+      if (folder) {
+        setParentFolder(folder);
+      }
+    } catch (error) {
+      console.error('Failed to select parent folder:', error);
+      alert('フォルダの選択に失敗しました');
+    }
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
       await updateSettings({
-        openaiApiKey: openaiKey || undefined
+        openaiApiKey: openaiKey || undefined,
+        parentFolderPath: parentFolder || undefined
       });
       onClose();
     } catch (error) {
@@ -95,6 +110,46 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
             >
               APIキーの取得はこちら
             </a>
+          </p>
+        </div>
+
+        {/* 親フォルダ設定 */}
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px' }}>
+            ボード管理用の親フォルダ
+          </label>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <div style={{
+              flex: 1,
+              padding: '10px 12px',
+              borderRadius: '6px',
+              border: '1px solid #475569',
+              background: '#0f172a',
+              color: parentFolder ? 'white' : '#64748b',
+              fontSize: '14px',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}>
+              {parentFolder || '未設定'}
+            </div>
+            <button
+              onClick={handleSelectParentFolder}
+              style={{
+                padding: '10px 16px',
+                borderRadius: '6px',
+                border: 'none',
+                background: '#334155',
+                color: 'white',
+                fontSize: '14px',
+                cursor: 'pointer'
+              }}
+            >
+              📁 選択
+            </button>
+          </div>
+          <p style={{ fontSize: '12px', color: '#64748b', marginTop: '6px' }}>
+            新規ボードはこのフォルダ内に保存されます
           </p>
         </div>
 

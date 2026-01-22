@@ -53,7 +53,7 @@ export async function getSettings(): Promise<AppSettings> {
 /**
  * 設定を保存する
  */
-async function saveSettings(settings: AppSettings): Promise<void> {
+export async function saveSettings(settings: AppSettings): Promise<void> {
   const settingsPath = getSettingsPath();
   await mkdir(dirname(settingsPath), { recursive: true });
   await writeFile(settingsPath, JSON.stringify(settings, null, 2), 'utf-8');

@@ -4,7 +4,266 @@ const path = require("path");
 const utils = require("@electron-toolkit/utils");
 const promises = require("fs/promises");
 const OpenAI = require("openai");
+class OpenAIProvider {
+  client;
+  /**
+   * OpenAIProviderを初期化する
+   * @param apiKey - OpenAI APIキー
+   */
+  constructor(apiKey) {
+    this.client = new OpenAI({ apiKey });
+  }
+  /**
+   * チャットリクエストを送信する
+   * @param request - LLMリクエスト
+   * @returns LLMレスポンス
+   */
+  async chat(request) {
+    const response = await this.client.chat.completions.create({
+      model: request.model || "gpt-4o-mini",
+      messages: request.messages.map((msg) => ({
+        role: msg.role,
+        content: msg.content
+      })),
+      temperature: request.temperature ?? 0.7,
+      max_tokens: request.maxTokens
+    });
+    const choice = response.choices[0];
+    const content = choice?.message?.content || "";
+    return {
+      content,
+      usage: response.usage ? {
+        promptTokens: response.usage.prompt_tokens,
+        completionTokens: response.usage.completion_tokens,
+        totalTokens: response.usage.total_tokens
+      } : void 0
+    };
+  }
+  /**
+   * トピックを生成する
+   * @param request - トピック生成リクエスト
+   * @returns 生成されたトピック配列
+   */
+  async generateTopics(request) {
+    const maxTopics = request.maxTopics || 5;
+    const systemPrompt = `あなたは思考整理の専門家です。与えられた内容から、さらに深掘りすべき論点や検討事項を抽出してください。
+各トピックは以下のJSON形式で出力してください：
+{
+  "title": "論点のタイトル（簡潔に）",
+  "description": "論点の説明（省略可）",
+  "importance": 1-5の重要度,
+  "tags": ["タグ1", "タグ2"]
+}
+
+最大${maxTopics}個のトピックを配列形式で返してください。`;
+    const userPrompt = request.context ? `以下の文脈を踏まえて：
+${request.context}
+
+次の内容から論点を抽出：
+${request.content}` : `次の内容から論点を抽出：
+${request.content}`;
+    const response = await this.client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.8,
+      response_format: { type: "json_object" }
+    });
+    const content = response.choices[0]?.message?.content || '{"topics": []}';
+    try {
+      const parsed = JSON.parse(content);
+      return parsed.topics || [];
+    } catch {
+      return [];
+    }
+  }
+  /**
+   * ノートの下書きを生成する
+   * @param request - ノート生成リクエスト
+   * @returns 生成されたノートの内容
+   */
+  async generateNote(request) {
+    const systemPrompt = `あなたは思考整理の専門家です。与えられた内容から、決定事項や重要なポイントをまとめたメモを作成してください。
+簡潔で分かりやすい箇条書き形式を推奨します。`;
+    const userPrompt = request.context ? `以下の文脈を踏まえて：
+${request.context}
+
+次の内容をまとめてください：
+${request.content}` : `次の内容をまとめてください：
+${request.content}`;
+    const response = await this.client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.7
+    });
+    return response.choices[0]?.message?.content || "";
+  }
+  /**
+   * サマリーを生成する
+   * @param request - サマリー生成リクエスト
+   * @returns 生成されたサマリー
+   */
+  async generateSummary(request) {
+    const scoredNodes = request.nodes.map((node) => {
+      let score = (node.importance || 3) * 10;
+      if (node.pin) score += 100;
+      if (node.type === "note") score += 10;
+      if (node.type === "topic") score += 5;
+      return { node, score };
+    }).sort((a, b) => b.score - a.score);
+    const topNodes = scoredNodes.slice(0, 20).map((s) => s.node);
+    const systemPrompt = `あなたは思考整理の専門家です。与えられたノード情報から、以下の観点で要約を作成してください：
+
+1. **重要な論点**: 検討されている主要なテーマ
+2. **決定事項**: pin付きノードやnoteノードから抽出
+3. **未解決の課題**: topicノードから抽出
+4. **次のアクション**: 今後検討すべき事項
+
+簡潔で分かりやすいMarkdown形式で出力してください。`;
+    const nodesInfo = topNodes.map((node) => {
+      const metadata = [];
+      if (node.pin) metadata.push("📌ピン留め");
+      if (node.importance && node.importance >= 4) metadata.push(`重要度:${node.importance}`);
+      if (node.tags && node.tags.length > 0) metadata.push(`タグ:${node.tags.join(",")}`);
+      return `## [${node.type}] ${node.title || "無題"}
+${metadata.length > 0 ? `**メタ情報**: ${metadata.join(" / ")}
+` : ""}
+**内容**: ${node.content.substring(0, 300)}${node.content.length > 300 ? "..." : ""}
+`;
+    }).join("\n---\n\n");
+    const scopeDescription = request.scope === "board" ? "ボード全体" : "選択されたノード配下";
+    const userPrompt = `${scopeDescription}の情報から要約を作成してください：
+
+${nodesInfo}`;
+    const response = await this.client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 2e3
+    });
+    return response.choices[0]?.message?.content || "";
+  }
+}
+let openaiProvider = null;
+function registerLLMHandlers() {
+  electron.ipcMain.handle("send-llm-request", async (_, request) => {
+    const settings = await getSettings();
+    switch (request.provider) {
+      case "openai": {
+        if (!settings.openaiApiKey) {
+          throw new Error("OpenAI APIキーが設定されていません");
+        }
+        if (!openaiProvider) {
+          openaiProvider = new OpenAIProvider(settings.openaiApiKey);
+        }
+        return openaiProvider.chat(request);
+      }
+      case "anthropic":
+        throw new Error("Anthropicプロバイダーは未実装です");
+      case "google":
+        throw new Error("Googleプロバイダーは未実装です");
+      case "local":
+        throw new Error("Localプロバイダーは未実装です");
+      default:
+        throw new Error(`未知のプロバイダー: ${request.provider}`);
+    }
+  });
+  electron.ipcMain.handle("generate-topics", async (_, request) => {
+    const settings = await getSettings();
+    if (!settings.openaiApiKey) {
+      throw new Error("OpenAI APIキーが設定されていません");
+    }
+    if (!openaiProvider) {
+      openaiProvider = new OpenAIProvider(settings.openaiApiKey);
+    }
+    return openaiProvider.generateTopics(request);
+  });
+  electron.ipcMain.handle("generate-note", async (_, request) => {
+    const settings = await getSettings();
+    if (!settings.openaiApiKey) {
+      throw new Error("OpenAI APIキーが設定されていません");
+    }
+    if (!openaiProvider) {
+      openaiProvider = new OpenAIProvider(settings.openaiApiKey);
+    }
+    return openaiProvider.generateNote(request);
+  });
+  electron.ipcMain.handle("generate-summary", async (_, request) => {
+    const settings = await getSettings();
+    if (!settings.openaiApiKey) {
+      throw new Error("OpenAI APIキーが設定されていません");
+    }
+    if (!openaiProvider) {
+      openaiProvider = new OpenAIProvider(settings.openaiApiKey);
+    }
+    return openaiProvider.generateSummary(request);
+  });
+}
+function resetProviders() {
+  openaiProvider = null;
+}
+const getSettingsPath = () => path.join(electron.app.getPath("userData"), "settings.json");
+const defaultSettings = {
+  theme: "system"
+};
+let cachedSettings = null;
+function registerSettingsHandlers() {
+  electron.ipcMain.handle("get-settings", async () => {
+    return getSettings();
+  });
+  electron.ipcMain.handle("save-settings", async (_, settings) => {
+    await saveSettings(settings);
+  });
+}
+async function getSettings() {
+  if (cachedSettings) {
+    return cachedSettings;
+  }
+  try {
+    const data = await promises.readFile(getSettingsPath(), "utf-8");
+    cachedSettings = { ...defaultSettings, ...JSON.parse(data) };
+    return cachedSettings;
+  } catch {
+    cachedSettings = defaultSettings;
+    return cachedSettings;
+  }
+}
+async function saveSettings(settings) {
+  const settingsPath = getSettingsPath();
+  await promises.mkdir(path.dirname(settingsPath), { recursive: true });
+  await promises.writeFile(settingsPath, JSON.stringify(settings, null, 2), "utf-8");
+  cachedSettings = settings;
+  resetProviders();
+}
 function registerFileHandlers() {
+  electron.ipcMain.handle("get-board-list", async () => {
+    const settings = await getSettings();
+    if (!settings.parentFolderPath) {
+      return [];
+    }
+    return getBoardListFromFolder(settings.parentFolderPath);
+  });
+  electron.ipcMain.handle("select-parent-folder", async () => {
+    const result = await electron.dialog.showOpenDialog({
+      properties: ["openDirectory", "createDirectory"],
+      title: "ボード管理用の親フォルダを選択"
+    });
+    if (result.canceled || result.filePaths.length === 0) {
+      return null;
+    }
+    const folderPath = result.filePaths[0];
+    const settings = await getSettings();
+    await saveSettings({ ...settings, parentFolderPath: folderPath });
+    return folderPath;
+  });
   electron.ipcMain.handle("open-board", async () => {
     const result = await electron.dialog.showOpenDialog({
       properties: ["openDirectory"],
@@ -19,14 +278,20 @@ function registerFileHandlers() {
   electron.ipcMain.handle("save-board", async (_, data, filePath) => {
     let dirPath = filePath;
     if (!dirPath) {
-      const result = await electron.dialog.showOpenDialog({
-        properties: ["openDirectory", "createDirectory"],
-        title: "保存先フォルダを選択"
-      });
-      if (result.canceled || result.filePaths.length === 0) {
-        return null;
+      const settings = await getSettings();
+      if (settings.parentFolderPath) {
+        const sanitizedTitle = data.board.title.replace(/[/\\?%*:|"<>]/g, "-").replace(/\s+/g, "_").substring(0, 50);
+        dirPath = path.join(settings.parentFolderPath, `${sanitizedTitle}_${Date.now()}`);
+      } else {
+        const result = await electron.dialog.showOpenDialog({
+          properties: ["openDirectory", "createDirectory"],
+          title: "保存先フォルダを選択"
+        });
+        if (result.canceled || result.filePaths.length === 0) {
+          return null;
+        }
+        dirPath = result.filePaths[0];
       }
-      dirPath = result.filePaths[0];
     }
     await saveBoardToDirectory(data, dirPath);
     return dirPath;
@@ -93,102 +358,35 @@ async function saveBoardToDirectory(data, dirPath) {
     "utf-8"
   );
 }
-class OpenAIProvider {
-  client;
-  /**
-   * OpenAIProviderを初期化する
-   * @param apiKey - OpenAI APIキー
-   */
-  constructor(apiKey) {
-    this.client = new OpenAI({ apiKey });
-  }
-  /**
-   * チャットリクエストを送信する
-   * @param request - LLMリクエスト
-   * @returns LLMレスポンス
-   */
-  async chat(request) {
-    const response = await this.client.chat.completions.create({
-      model: request.model || "gpt-4o-mini",
-      messages: request.messages.map((msg) => ({
-        role: msg.role,
-        content: msg.content
-      })),
-      temperature: request.temperature ?? 0.7,
-      max_tokens: request.maxTokens
-    });
-    const choice = response.choices[0];
-    const content = choice?.message?.content || "";
-    return {
-      content,
-      usage: response.usage ? {
-        promptTokens: response.usage.prompt_tokens,
-        completionTokens: response.usage.completion_tokens,
-        totalTokens: response.usage.total_tokens
-      } : void 0
-    };
-  }
-}
-const getSettingsPath = () => path.join(electron.app.getPath("userData"), "settings.json");
-const defaultSettings = {
-  theme: "system"
-};
-let cachedSettings = null;
-function registerSettingsHandlers() {
-  electron.ipcMain.handle("get-settings", async () => {
-    return getSettings();
-  });
-  electron.ipcMain.handle("save-settings", async (_, settings) => {
-    await saveSettings(settings);
-  });
-}
-async function getSettings() {
-  if (cachedSettings) {
-    return cachedSettings;
-  }
+async function getBoardListFromFolder(parentPath) {
+  const boardList = [];
   try {
-    const data = await promises.readFile(getSettingsPath(), "utf-8");
-    cachedSettings = { ...defaultSettings, ...JSON.parse(data) };
-    return cachedSettings;
-  } catch {
-    cachedSettings = defaultSettings;
-    return cachedSettings;
-  }
-}
-async function saveSettings(settings) {
-  const settingsPath = getSettingsPath();
-  await promises.mkdir(path.dirname(settingsPath), { recursive: true });
-  await promises.writeFile(settingsPath, JSON.stringify(settings, null, 2), "utf-8");
-  cachedSettings = settings;
-  resetProviders();
-}
-let openaiProvider = null;
-function registerLLMHandlers() {
-  electron.ipcMain.handle("send-llm-request", async (_, request) => {
-    const settings = await getSettings();
-    switch (request.provider) {
-      case "openai": {
-        if (!settings.openaiApiKey) {
-          throw new Error("OpenAI APIキーが設定されていません");
-        }
-        if (!openaiProvider) {
-          openaiProvider = new OpenAIProvider(settings.openaiApiKey);
-        }
-        return openaiProvider.chat(request);
+    const entries = await promises.readdir(parentPath, { withFileTypes: true });
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const folderPath = path.join(parentPath, entry.name);
+      const boardJsonPath = path.join(folderPath, "board.json");
+      try {
+        const boardJson = await promises.readFile(boardJsonPath, "utf-8");
+        const board = JSON.parse(boardJson);
+        boardList.push({
+          id: board.id,
+          title: board.title,
+          description: board.description,
+          folderPath,
+          createdAt: board.createdAt,
+          updatedAt: board.updatedAt
+        });
+      } catch {
+        continue;
       }
-      case "anthropic":
-        throw new Error("Anthropicプロバイダーは未実装です");
-      case "google":
-        throw new Error("Googleプロバイダーは未実装です");
-      case "local":
-        throw new Error("Localプロバイダーは未実装です");
-      default:
-        throw new Error(`未知のプロバイダー: ${request.provider}`);
     }
-  });
-}
-function resetProviders() {
-  openaiProvider = null;
+  } catch (error) {
+    console.error("Failed to get board list:", error);
+  }
+  return boardList.sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  );
 }
 function createWindow() {
   const mainWindow = new electron.BrowserWindow({

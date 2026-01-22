@@ -5,6 +5,7 @@
 import React, { useState } from 'react';
 import { useBoardStore } from '../stores/boardStore';
 import { SettingsDialog } from './SettingsDialog';
+import { BoardSelectorDialog } from './BoardSelectorDialog';
 
 /**
  * ツールバー
@@ -13,37 +14,45 @@ export const Toolbar: React.FC = () => {
   const { board, isDirty, isLoading, setBoard, createBoard, clearBoard, getBoardData, setFilePath, markClean, setLoading } = useBoardStore();
   const [showNewBoardDialog, setShowNewBoardDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [showBoardSelector, setShowBoardSelector] = useState(false);
   const [newBoardTitle, setNewBoardTitle] = useState('');
   const [newBoardDescription, setNewBoardDescription] = useState('');
 
   /**
    * 新規ボードを作成
    */
-  const handleCreateBoard = () => {
+  const handleCreateBoard = async () => {
     if (!newBoardTitle.trim()) return;
-    createBoard(newBoardTitle.trim(), newBoardDescription.trim() || undefined);
-    setShowNewBoardDialog(false);
-    setNewBoardTitle('');
-    setNewBoardDescription('');
+
+    try {
+      // 親フォルダを確認
+      const settings = await window.electronAPI.getSettings();
+      if (!settings.parentFolderPath) {
+        alert('先に親フォルダを選択してください（設定から変更可能）');
+        return;
+      }
+
+      // ボードを作成
+      createBoard(newBoardTitle.trim(), newBoardDescription.trim() || undefined);
+      setShowNewBoardDialog(false);
+      setNewBoardTitle('');
+      setNewBoardDescription('');
+
+      // 作成後すぐに保存
+      setTimeout(async () => {
+        await handleSaveBoard();
+      }, 100);
+    } catch (error) {
+      console.error('Failed to create board:', error);
+      alert('ボードの作成に失敗しました');
+    }
   };
 
   /**
    * ボードを開く
    */
-  const handleOpenBoard = async () => {
-    setLoading(true);
-    try {
-      const result = await window.electronAPI.openBoard();
-      if (result) {
-        // ファイルパスは openBoard から取得できないので、後で設定が必要
-        setBoard(result);
-      }
-    } catch (error) {
-      console.error('Failed to open board:', error);
-      alert('ボードを開けませんでした');
-    } finally {
-      setLoading(false);
-    }
+  const handleOpenBoard = () => {
+    setShowBoardSelector(true);
   };
 
   /**
@@ -149,6 +158,12 @@ export const Toolbar: React.FC = () => {
       <SettingsDialog
         isOpen={showSettingsDialog}
         onClose={() => setShowSettingsDialog(false)}
+      />
+
+      {/* ボード選択ダイアログ */}
+      <BoardSelectorDialog
+        isOpen={showBoardSelector}
+        onClose={() => setShowBoardSelector(false)}
       />
 
       {/* 新規ボードダイアログ */}

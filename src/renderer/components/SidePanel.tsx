@@ -2,7 +2,7 @@
  * サイドパネルコンポーネント
  * ノード詳細、質問入力、サマリー表示などを提供
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useBoardStore } from '../stores/boardStore';
 import type { MindNode, NodeType, Role } from '@shared/types';
 
@@ -10,11 +10,27 @@ import type { MindNode, NodeType, Role } from '@shared/types';
  * サイドパネル
  */
 export const SidePanel: React.FC = () => {
-  const { board, nodes, selectedNodeId, getNodeById, addNode, updateNode } = useBoardStore();
+  const { board, nodes, selectedNodeId, getNodeById, addNode, updateNode, addSummary, deleteNode } = useBoardStore();
   const [questionInput, setQuestionInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [summary, setSummary] = useState<string>('');
+  const [showSummary, setShowSummary] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
 
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
+
+  useEffect(() => {
+    if (selectedNode) {
+      setEditTitle(selectedNode.title || '');
+      setEditContent(selectedNode.content || '');
+    } else {
+      setEditTitle('');
+      setEditContent('');
+    }
+    setIsEditing(false);
+  }, [selectedNode]);
 
   /**
    * 質問を送信
@@ -113,6 +129,212 @@ export const SidePanel: React.FC = () => {
     });
   }, [selectedNode, board, addNode]);
 
+  /**
+   * AIでノートを生成
+   */
+  const handleGenerateNote = useCallback(async () => {
+    if (!selectedNode || !board) return;
+
+    setIsLoading(true);
+    try {
+      // コンテキストを収集
+      const contextMessages = collectContext(nodes, selectedNode);
+      const context = contextMessages.map(m => `${m.role}: ${m.content}`).join('\n\n');
+
+      const noteContent = await window.electronAPI.generateNote({
+        content: selectedNode.content,
+        context
+      });
+
+      addNode({
+        boardId: board.id,
+        type: 'note',
+        role: 'user',
+        title: '決定事項',
+        content: noteContent,
+        parentIds: [selectedNode.id],
+        createdBy: 'ai',
+        position: {
+          x: selectedNode.position.x + 200,
+          y: selectedNode.position.y + 50
+        },
+        metadata: {
+          tags: ['decision'],
+          importance: 4
+        }
+      });
+    } catch (error) {
+      console.error('Failed to generate note:', error);
+      alert(`ノート生成に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedNode, board, nodes, addNode]);
+
+  /**
+   * トピックを生成
+   */
+  const handleGenerateTopics = useCallback(async () => {
+    if (!selectedNode || !board) return;
+
+    setIsLoading(true);
+    try {
+      // コンテキストを収集
+      const contextMessages = collectContext(nodes, selectedNode);
+      const context = contextMessages.map(m => `${m.role}: ${m.content}`).join('\n\n');
+
+      const topics = await window.electronAPI.generateTopics({
+        content: selectedNode.content,
+        context,
+        maxTopics: 5
+      });
+
+      // 生成されたトピックをノードとして追加
+      topics.forEach((topic, index) => {
+        addNode({
+          boardId: board.id,
+          type: 'topic',
+          role: 'system',
+          title: topic.title,
+          content: topic.description || topic.title,
+          parentIds: [selectedNode.id],
+          createdBy: 'ai',
+          position: {
+            x: selectedNode.position.x + (index - Math.floor(topics.length / 2)) * 150,
+            y: selectedNode.position.y + 200
+          },
+          metadata: {
+            importance: topic.importance,
+            tags: topic.tags
+          }
+        });
+      });
+    } catch (error) {
+      console.error('Failed to generate topics:', error);
+      alert(`トピック生成に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedNode, board, nodes, addNode]);
+
+  /**
+   * サマリーを生成
+   */
+  const handleGenerateSummary = useCallback(async (scope: 'board' | 'nodeSubtree') => {
+    if (!board) return;
+
+    setIsLoading(true);
+    try {
+      // ノード情報を収集
+      let targetNodes: MindNode[] = [];
+      
+      if (scope === 'board') {
+        targetNodes = nodes.filter(n => n.type !== 'root');
+      } else if (scope === 'nodeSubtree' && selectedNode) {
+        // 選択ノード配下を収集（DFS）
+        const collectSubtree = (nodeId: string, visited = new Set<string>()): MindNode[] => {
+          if (visited.has(nodeId)) return [];
+          visited.add(nodeId);
+          
+          const node = getNodeById(nodeId);
+          if (!node) return [];
+          
+          const result = [node];
+          node.childrenIds.forEach(childId => {
+            result.push(...collectSubtree(childId, visited));
+          });
+          
+          return result;
+        };
+        
+        targetNodes = collectSubtree(selectedNode.id);
+      }
+
+      const summaryContent = await window.electronAPI.generateSummary({
+        boardId: board.id,
+        scope,
+        targetNodeId: scope === 'nodeSubtree' ? selectedNode?.id : undefined,
+        nodes: targetNodes.map(n => ({
+          id: n.id,
+          type: n.type,
+          role: n.role,
+          title: n.title,
+          content: n.content,
+          importance: n.metadata?.importance,
+          pin: n.metadata?.pin,
+          tags: n.metadata?.tags
+        }))
+      });
+
+      setSummary(summaryContent);
+      setShowSummary(true);
+
+      // サマリーをストアに保存
+      addSummary({
+        boardId: board.id,
+        scope,
+        targetNodeId: scope === 'nodeSubtree' ? selectedNode?.id : undefined,
+        content: summaryContent,
+        provider: board.settings.defaultProvider,
+        model: board.settings.defaultModel
+      });
+    } catch (error) {
+      console.error('Failed to generate summary:', error);
+      alert(`サマリー生成に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [board, nodes, selectedNode, getNodeById, addSummary]);
+
+  /**
+   * 選択ノードを編集開始
+   */
+  const handleStartEdit = useCallback(() => {
+    if (!selectedNode) return;
+    setIsEditing(true);
+    setEditTitle(selectedNode.title || '');
+    setEditContent(selectedNode.content || '');
+  }, [selectedNode]);
+
+  /**
+   * 編集をキャンセル
+   */
+  const handleCancelEdit = useCallback(() => {
+    if (!selectedNode) return;
+    setIsEditing(false);
+    setEditTitle(selectedNode.title || '');
+    setEditContent(selectedNode.content || '');
+  }, [selectedNode]);
+
+  /**
+   * ノード内容を保存
+   */
+  const handleSaveEdit = useCallback(() => {
+    if (!selectedNode) return;
+    updateNode(selectedNode.id, {
+      title: editTitle.trim(),
+      content: editContent.trim()
+    });
+    setIsEditing(false);
+  }, [selectedNode, editTitle, editContent, updateNode]);
+
+  /**
+   * ノードを削除
+   */
+  const handleDeleteNode = useCallback(() => {
+    if (!selectedNode) return;
+    if (selectedNode.type === 'root') {
+      alert('ルートノードは削除できません');
+      return;
+    }
+    const confirmed = window.confirm('このノードと配下のノードを削除しますか？');
+    if (!confirmed) return;
+    deleteNode(selectedNode.id);
+    setIsEditing(false);
+    setEditTitle('');
+    setEditContent('');
+  }, [selectedNode, deleteNode]);
+
   if (!board) {
     return (
       <div style={panelStyle}>
@@ -129,18 +351,79 @@ export const SidePanel: React.FC = () => {
 
   return (
     <div style={panelStyle}>
-      {/* ボード情報 */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#94a3b8' }}>
-          📋 ボード情報
-        </h3>
-        <div style={{ fontSize: '16px', fontWeight: 'bold' }}>{board.title}</div>
-        {board.description && (
-          <div style={{ fontSize: '13px', color: '#94a3b8', marginTop: '4px' }}>
-            {board.description}
+      {/* サマリー表示 */}
+      {showSummary && (
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '8px'
+          }}>
+            <h3 style={{ margin: 0, fontSize: '14px', color: '#94a3b8' }}>
+              📊 サマリー
+            </h3>
+            <button
+              onClick={() => setShowSummary(false)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#64748b',
+                fontSize: '18px',
+                cursor: 'pointer',
+                padding: '0'
+              }}
+            >
+              ×
+            </button>
           </div>
-        )}
-      </div>
+          <div style={{
+            padding: '12px',
+            background: '#1e293b',
+            borderRadius: '8px',
+            fontSize: '13px',
+            maxHeight: '300px',
+            overflow: 'auto',
+            whiteSpace: 'pre-wrap',
+            lineHeight: '1.6'
+          }}>
+            {summary}
+          </div>
+        </div>
+      )}
+
+      {/* サマリー生成ボタン */}
+      {!showSummary && (
+        <div style={{ marginBottom: '16px' }}>
+          <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#94a3b8' }}>
+            📊 サマリー生成
+          </h3>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => handleGenerateSummary('board')}
+              disabled={isLoading}
+              style={{
+                ...actionButtonStyle,
+                opacity: isLoading ? 0.5 : 1
+              }}
+            >
+              📋 全体
+            </button>
+            {selectedNode && (
+              <button
+                onClick={() => handleGenerateSummary('nodeSubtree')}
+                disabled={isLoading}
+                style={{
+                  ...actionButtonStyle,
+                  opacity: isLoading ? 0.5 : 1
+                }}
+              >
+                🌳 配下
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       <hr style={{ border: 'none', borderTop: '1px solid #334155', margin: '16px 0' }} />
 
@@ -148,27 +431,98 @@ export const SidePanel: React.FC = () => {
       {selectedNode ? (
         <>
           <div style={{ marginBottom: '16px' }}>
-            <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#94a3b8' }}>
-              {getNodeTypeIcon(selectedNode.type)} 選択中のノード
-            </h3>
-            <div style={{
-              padding: '12px',
-              background: '#1e293b',
-              borderRadius: '8px',
-              fontSize: '14px'
-            }}>
-              <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-                {selectedNode.title || getNodeTypeLabel(selectedNode.type)}
-              </div>
-              <div style={{ 
-                color: '#94a3b8', 
-                fontSize: '13px',
-                maxHeight: '200px',
-                overflow: 'auto'
-              }}>
-                {selectedNode.content || '(内容なし)'}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <h3 style={{ margin: 0, fontSize: '14px', color: '#94a3b8' }}>
+                {getNodeTypeIcon(selectedNode.type)} 選択中のノード
+              </h3>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <button
+                  onClick={handleStartEdit}
+                  style={{ ...actionButtonStyle, padding: '6px 10px' }}
+                  disabled={isEditing}
+                >
+                  ✏️ 編集
+                </button>
+                <button
+                  onClick={handleDeleteNode}
+                  style={{ ...actionButtonStyle, padding: '6px 10px', background: '#7f1d1d' }}
+                  disabled={selectedNode.type === 'root'}
+                >
+                  🗑️ 削除
+                </button>
               </div>
             </div>
+
+            {isEditing ? (
+              <div style={{
+                padding: '12px',
+                background: '#1e293b',
+                borderRadius: '8px',
+                fontSize: '14px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                <input
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  placeholder="タイトル"
+                  style={{
+                    width: '100%',
+                    padding: '8px 10px',
+                    borderRadius: '6px',
+                    border: '1px solid #475569',
+                    background: '#0f172a',
+                    color: 'white',
+                    fontSize: '14px'
+                  }}
+                />
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  placeholder="内容"
+                  rows={5}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #475569',
+                    background: '#0f172a',
+                    color: 'white',
+                    fontSize: '14px',
+                    resize: 'vertical',
+                    boxSizing: 'border-box'
+                  }}
+                />
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                  <button onClick={handleCancelEdit} style={{ ...actionButtonStyle, padding: '6px 12px' }}>
+                    キャンセル
+                  </button>
+                  <button onClick={handleSaveEdit} style={{ ...actionButtonStyle, padding: '6px 12px', background: '#22c55e' }}>
+                    保存
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div style={{
+                padding: '12px',
+                background: '#1e293b',
+                borderRadius: '8px',
+                fontSize: '14px'
+              }}>
+                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                  {selectedNode.title || getNodeTypeLabel(selectedNode.type)}
+                </div>
+                <div style={{ 
+                  color: '#94a3b8', 
+                  fontSize: '13px',
+                  maxHeight: '200px',
+                  overflow: 'auto'
+                }}>
+                  {selectedNode.content || '(内容なし)'}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* アクション */}
@@ -180,6 +534,30 @@ export const SidePanel: React.FC = () => {
               <button onClick={handleCreateNote} style={actionButtonStyle}>
                 📝 メモを追加
               </button>
+              {selectedNode.type === 'message' && selectedNode.role === 'assistant' && (
+                <>
+                  <button 
+                    onClick={handleGenerateTopics} 
+                    disabled={isLoading}
+                    style={{
+                      ...actionButtonStyle,
+                      opacity: isLoading ? 0.5 : 1
+                    }}
+                  >
+                    💡 トピック生成
+                  </button>
+                  <button 
+                    onClick={handleGenerateNote} 
+                    disabled={isLoading}
+                    style={{
+                      ...actionButtonStyle,
+                      opacity: isLoading ? 0.5 : 1
+                    }}
+                  >
+                    ✨ AI下書き
+                  </button>
+                </>
+              )}
             </div>
           </div>
 

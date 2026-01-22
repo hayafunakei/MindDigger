@@ -4,7 +4,7 @@
 import { ipcMain } from 'electron';
 import { OpenAIProvider } from '../llm/openaiProvider';
 import { getSettings } from './settingsHandlers';
-import type { LLMRequest, LLMResponse } from '@shared/ipc';
+import type { LLMRequest, LLMResponse, GenerateTopicsRequest, GeneratedTopic, GenerateNoteRequest, GenerateSummaryRequest } from '@shared/ipc';
 
 /** LLMプロバイダーのインスタンスキャッシュ */
 let openaiProvider: OpenAIProvider | null = null;
@@ -35,6 +35,42 @@ export function registerLLMHandlers(): void {
       default:
         throw new Error(`未知のプロバイダー: ${request.provider}`);
     }
+  });
+
+  // トピック生成
+  ipcMain.handle('generate-topics', async (_, request: GenerateTopicsRequest): Promise<GeneratedTopic[]> => {
+    const settings = await getSettings();
+    if (!settings.openaiApiKey) {
+      throw new Error('OpenAI APIキーが設定されていません');
+    }
+    if (!openaiProvider) {
+      openaiProvider = new OpenAIProvider(settings.openaiApiKey);
+    }
+    return openaiProvider.generateTopics(request);
+  });
+
+  // ノート生成
+  ipcMain.handle('generate-note', async (_, request: GenerateNoteRequest): Promise<string> => {
+    const settings = await getSettings();
+    if (!settings.openaiApiKey) {
+      throw new Error('OpenAI APIキーが設定されていません');
+    }
+    if (!openaiProvider) {
+      openaiProvider = new OpenAIProvider(settings.openaiApiKey);
+    }
+    return openaiProvider.generateNote(request);
+  });
+
+  // サマリー生成
+  ipcMain.handle('generate-summary', async (_, request: GenerateSummaryRequest): Promise<string> => {
+    const settings = await getSettings();
+    if (!settings.openaiApiKey) {
+      throw new Error('OpenAI APIキーが設定されていません');
+    }
+    if (!openaiProvider) {
+      openaiProvider = new OpenAIProvider(settings.openaiApiKey);
+    }
+    return openaiProvider.generateSummary(request);
   });
 }
 
