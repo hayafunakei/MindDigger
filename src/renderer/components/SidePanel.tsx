@@ -777,7 +777,7 @@ export const SidePanel: React.FC = () => {
                   <button onClick={handleCreateNote} style={actionButtonStyle}>
                     📝 メモを追加
                   </button>
-                  {selectedNode.type !== 'root' && (
+                  {selectedNode.type === 'message' && selectedNode.role === 'user' && (
                     <button onClick={handleStartConnectParent} style={actionButtonStyle}>
                       🔗 親ノード追加
                     </button>
