@@ -22798,7 +22798,7 @@ const SidePanel = () => {
       alert("ルートノードは削除できません");
       return;
     }
-    const confirmed = window.confirm("このノードと配下のノードを削除しますか？");
+    const confirmed = window.confirm("このノードと配下を削除しますか？\nこのノードに繋がる下のノードもすべて削除されます。");
     if (!confirmed) return;
     deleteNode(selectedNode.id);
     setIsEditing(false);

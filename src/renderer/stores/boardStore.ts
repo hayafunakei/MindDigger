@@ -321,6 +321,7 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
   },
 
   startConnectingParent: (nodeId) => {
+    console.log('[startConnectingParent] Setting isConnectingParent=true, nodeId:', nodeId);
     set({
       isConnectingParent: true,
       connectingFromNodeId: nodeId,

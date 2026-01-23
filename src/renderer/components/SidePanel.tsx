@@ -6,6 +6,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useBoardStore } from '../stores/boardStore';
+import { TimelineModal } from './TimelineModal';
 import type { MindNode, NodeType, Role } from '@shared/types';
 
 /**
@@ -33,7 +34,7 @@ export const SidePanel: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
-  const [showTimeline, setShowTimeline] = useState(false);
+  const [showTimelineModal, setShowTimelineModal] = useState(false);
   const [panelWidth, setPanelWidth] = useState(320);
   const [isResizing, setIsResizing] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -478,37 +479,18 @@ export const SidePanel: React.FC = () => {
   }, [cancelConnectingParent]);
 
   /**
-   * タイムライン表示を切り替え
+   * タイムラインモーダルを開く
    */
-  const handleToggleTimeline = useCallback(() => {
-    setShowTimeline(!showTimeline);
-  }, [showTimeline]);
+  const handleOpenTimelineModal = useCallback(() => {
+    setShowTimelineModal(true);
+  }, []);
 
   /**
-   * タイムラインノードを収集（メイン親チェーンをrootまで辿る）
+   * タイムラインモーダルを閉じる
    */
-  const getTimelineNodes = useCallback((): MindNode[] => {
-    if (!selectedNode) return [];
-    
-    const timeline: MindNode[] = [];
-    const visited = new Set<string>();
-    let current: MindNode | undefined = selectedNode;
-    
-    while (current && !visited.has(current.id)) {
-      visited.add(current.id);
-      timeline.unshift(current);
-      
-      // メイン親（parentIds[0]）を辿る
-      const mainParentId = current.parentIds[0];
-      if (mainParentId) {
-        current = getNodeById(mainParentId);
-      } else {
-        break;
-      }
-    }
-    
-    return timeline;
-  }, [selectedNode, getNodeById]);
+  const handleCloseTimelineModal = useCallback(() => {
+    setShowTimelineModal(false);
+  }, []);
 
   if (!board) {
     return (
@@ -632,93 +614,32 @@ export const SidePanel: React.FC = () => {
 
       <hr style={{ border: 'none', borderTop: '1px solid #334155', margin: '16px 0' }} />
 
-      {/* タイムライン表示 */}
+      {/* タイムラインモーダルを開くボタン */}
       {selectedNode && (
         <div style={{ marginBottom: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <h3 style={{ margin: 0, fontSize: '14px', color: '#94a3b8' }}>
-              🕒 タイムライン
-            </h3>
-            <button
-              onClick={handleToggleTimeline}
-              style={{
-                ...actionButtonStyle,
-                padding: '4px 8px',
-                fontSize: '12px'
-              }}
-            >
-              {showTimeline ? '▼ 閉じる' : '▶ 表示'}
-            </button>
-          </div>
-          {showTimeline && (
-            <div style={{
-              maxHeight: '300px',
-              overflow: 'auto',
-              background: '#1e293b',
-              borderRadius: '8px',
-              padding: '8px'
-            }}>
-              {getTimelineNodes().map((node, index) => (
-                <div
-                  key={node.id}
-                  style={{
-                    marginBottom: '8px',
-                    padding: '8px',
-                    background: node.id === selectedNodeId ? '#334155' : '#0f172a',
-                    borderRadius: '6px',
-                    borderLeft: index === 0 ? 'none' : '2px solid #475569',
-                    marginLeft: index === 0 ? '0' : '12px'
-                  }}
-                >
-                  <div style={{
-                    fontSize: '11px',
-                    color: '#64748b',
-                    marginBottom: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                    {getNodeTypeIcon(node.type)}
-                    <span>{getNodeTypeLabel(node.type)}</span>
-                    {node.role && (
-                      <span style={{
-                        padding: '2px 6px',
-                        background: node.role === 'user' ? '#1e40af' : '#065f46',
-                        borderRadius: '4px',
-                        fontSize: '10px'
-                      }}>
-                        {node.role}
-                      </span>
-                    )}
-                  </div>
-                  {node.title && (
-                    <div style={{
-                      fontSize: '13px',
-                      fontWeight: 'bold',
-                      marginBottom: '4px',
-                      color: '#e2e8f0'
-                    }}>
-                      {node.title}
-                    </div>
-                  )}
-                  <div style={{
-                    fontSize: '12px',
-                    color: '#94a3b8',
-                    whiteSpace: 'pre-wrap',
-                    wordBreak: 'break-word',
-                    maxHeight: '100px',
-                    overflow: 'auto'
-                  }}>
-                    {node.content.length > 200 
-                      ? node.content.slice(0, 200) + '...' 
-                      : node.content}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <button
+            onClick={handleOpenTimelineModal}
+            style={{
+              ...actionButtonStyle,
+              width: '100%',
+              justifyContent: 'center',
+              padding: '10px 12px'
+            }}
+          >
+            🕒 タイムラインを表示
+          </button>
         </div>
       )}
+
+      {/* タイムラインモーダル */}
+      <TimelineModal
+        isOpen={showTimelineModal}
+        onClose={handleCloseTimelineModal}
+        selectedNode={selectedNode ?? null}
+        selectedNodeId={selectedNodeId}
+        getNodeById={getNodeById}
+        selectNode={selectNode}
+      />
 
       <hr style={{ border: 'none', borderTop: '1px solid #334155', margin: '16px 0' }} />
 

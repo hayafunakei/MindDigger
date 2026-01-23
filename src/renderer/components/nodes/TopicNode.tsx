@@ -4,7 +4,6 @@
  */
 import React, { memo, useState } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
-import { useBoardStore } from '../../stores/boardStore';
 import type { MindNode } from '@shared/types';
 
 interface TopicNodeData extends MindNode {
@@ -18,17 +17,10 @@ export const TopicNode: React.FC<NodeProps> = memo(({ data, selected }) => {
   const nodeData = data as unknown as TopicNodeData;
   const importance = nodeData.metadata?.importance || 3;
   const [isHovered, setIsHovered] = useState(false);
-  const { selectNode } = useBoardStore();
-
-  const handleNodeClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    selectNode(nodeData.id);
-  };
 
   return (
     <div
       className={`topic-node ${selected ? 'selected' : ''}`}
-      onClick={handleNodeClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{

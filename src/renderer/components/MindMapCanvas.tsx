@@ -114,11 +114,14 @@ export const MindMapCanvas: React.FC = () => {
           }
         }
         if (change.type === 'select' && change.id) {
-          selectNode(change.selected ? change.id : null);
+          // 親ノード接続モード中は選択変更をスキップ（onNodeClickで処理する）
+          if (!isConnectingParent) {
+            selectNode(change.selected ? change.id : null);
+          }
         }
       });
     },
-    [updateNodePosition, selectNode]
+    [updateNodePosition, selectNode, isConnectingParent]
   );
 
   /**
@@ -126,8 +129,10 @@ export const MindMapCanvas: React.FC = () => {
    */
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
+      console.log('[onNodeClick] isConnectingParent:', isConnectingParent, 'connectingFromNodeId:', connectingFromNodeId, 'clicked:', node.id);
       // 親ノード接続モードの場合は接続処理
       if (isConnectingParent && connectingFromNodeId) {
+        console.log('[onNodeClick] Connecting', connectingFromNodeId, 'to', node.id);
         connectToParent(connectingFromNodeId, node.id);
       } else {
         selectNode(node.id);
