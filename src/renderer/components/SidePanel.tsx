@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useBoardStore } from '../stores/boardStore';
 import { TimelineModal } from './TimelineModal';
+import { CreateTopicModal } from './CreateTopicModal';
 import type { MindNode, NodeType, Role } from '@shared/types';
 
 /**
@@ -25,7 +26,9 @@ export const SidePanel: React.FC = () => {
     selectNode,
     isConnectingParent,
     startConnectingParent,
-    cancelConnectingParent
+    cancelConnectingParent,
+    removeParentChild,
+    setMainParent
   } = useBoardStore();
   const [questionInput, setQuestionInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +38,7 @@ export const SidePanel: React.FC = () => {
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
   const [showTimelineModal, setShowTimelineModal] = useState(false);
+  const [showCreateTopicModal, setShowCreateTopicModal] = useState(false);
   const [panelWidth, setPanelWidth] = useState(320);
   const [isResizing, setIsResizing] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -104,26 +108,40 @@ export const SidePanel: React.FC = () => {
         content: questionInput.trim()
       });
 
-      // コンテキストを収集（メイン親チェーンのみ）
-      const mainParentId = selectedNode.parentIds[0];
-      const parentNode = mainParentId ? getNodeById(mainParentId) : null;
-      const contextMessages = parentNode ? collectContext(nodes, parentNode) : [];
+      // コンテキストを収集（メイン親チェーン + サブ親チェーン）
+      // selectedNodeから収集開始し、selectedNode自身は後で追加するので除外
+      const contextResult = collectContextWithSubParents(nodes, selectedNode);
+      // selectedNode自身をメインコンテキストから除外（最後の要素）
+      const mainContextWithoutSelf = contextResult.mainContext.slice(0, -1);
+      const contextMessages = formatContextForLLM({
+        mainContext: mainContextWithoutSelf,
+        subContexts: contextResult.subContexts
+      });
       
       // LLMにリクエスト
+      const llmMessages = [
+        {
+          role: 'system' as const,
+          content: `あなたは「${board.title}」というテーマについて、ユーザーの思考を整理する手助けをするアシスタントです。的確で具体的な回答を心がけてください。`
+        },
+        ...contextMessages,
+        {
+          role: 'user' as const,
+          content: questionInput.trim()
+        }
+      ];
+      
+      console.log('[LLM Request] handleSendQuestion:', {
+        provider: board.settings.defaultProvider,
+        model: board.settings.defaultModel,
+        messages: llmMessages,
+        temperature: board.settings.temperature
+      });
+      
       const response = await window.electronAPI.sendLLMRequest({
         provider: board.settings.defaultProvider,
         model: board.settings.defaultModel,
-        messages: [
-          {
-            role: 'system',
-            content: `あなたは「${board.title}」というテーマについて、ユーザーの思考を整理する手助けをするアシスタントです。的確で具体的な回答を心がけてください。`
-          },
-          ...contextMessages,
-          {
-            role: 'user',
-            content: questionInput.trim()
-          }
-        ],
+        messages: llmMessages,
         temperature: board.settings.temperature
       });
 
@@ -292,6 +310,36 @@ export const SidePanel: React.FC = () => {
       setIsLoading(false);
     }
   }, [selectedNode, board, nodes, addNode]);
+
+  /**
+   * 手動でトピックを作成
+   */
+  const handleCreateTopic = useCallback((data: {
+    title: string;
+    content: string;
+    importance: 1 | 2 | 3 | 4 | 5;
+    tags: string[];
+  }) => {
+    if (!selectedNode || !board) return;
+
+    addNode({
+      boardId: board.id,
+      type: 'topic',
+      role: 'system',
+      title: data.title,
+      content: data.content,
+      parentIds: [selectedNode.id],
+      createdBy: 'user',
+      position: {
+        x: selectedNode.position.x + 180,
+        y: selectedNode.position.y + 80
+      },
+      metadata: {
+        importance: data.importance,
+        tags: data.tags.length > 0 ? data.tags : undefined
+      }
+    });
+  }, [selectedNode, board, addNode]);
 
   /**
    * サマリーを生成
@@ -641,6 +689,13 @@ export const SidePanel: React.FC = () => {
         selectNode={selectNode}
       />
 
+      {/* トピック作成モーダル */}
+      <CreateTopicModal
+        isOpen={showCreateTopicModal}
+        onClose={() => setShowCreateTopicModal(false)}
+        onSubmit={handleCreateTopic}
+      />
+
       <hr style={{ border: 'none', borderTop: '1px solid #334155', margin: '16px 0' }} />
 
       {/* 選択ノード情報 */}
@@ -751,6 +806,88 @@ export const SidePanel: React.FC = () => {
             )}
           </div>
 
+          {/* 親ノード一覧（質問ノードのみ表示） */}
+          {selectedNode.type === 'message' && selectedNode.role === 'user' && selectedNode.parentIds.length > 0 && (
+            <div style={{ marginBottom: '16px' }}>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#94a3b8' }}>
+                🔗 親ノード ({selectedNode.parentIds.length})
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {selectedNode.parentIds.map((parentId, index) => {
+                  const parent = getNodeById(parentId);
+                  if (!parent) return null;
+                  const isMainParent = index === 0;
+                  return (
+                    <div 
+                      key={parentId} 
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '8px 10px',
+                        background: isMainParent ? '#1e3a5f' : '#1e293b',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        border: isMainParent ? '1px solid #3b82f6' : '1px solid transparent'
+                      }}
+                    >
+                      <span 
+                        style={{ 
+                          flex: 1, 
+                          overflow: 'hidden', 
+                          textOverflow: 'ellipsis', 
+                          whiteSpace: 'nowrap',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => selectNode(parentId)}
+                        title={parent.title || parent.content}
+                      >
+                        {isMainParent && <span style={{ color: '#fbbf24' }}>⭐ </span>}
+                        {getNodeTypeIcon(parent.type)} {parent.title || parent.content.slice(0, 30)}
+                      </span>
+                      <div style={{ display: 'flex', gap: '4px', marginLeft: '8px' }}>
+                        {!isMainParent && (
+                          <button 
+                            onClick={() => setMainParent(selectedNode.id, parentId)} 
+                            title="メイン親に設定"
+                            style={{
+                              background: '#475569',
+                              border: 'none',
+                              borderRadius: '4px',
+                              padding: '4px 6px',
+                              cursor: 'pointer',
+                              fontSize: '12px',
+                              color: 'white'
+                            }}
+                          >
+                            ⬆️
+                          </button>
+                        )}
+                        {selectedNode.parentIds.length > 1 && (
+                          <button 
+                            onClick={() => removeParentChild(parentId, selectedNode.id)} 
+                            title="接続を削除"
+                            style={{
+                              background: '#7f1d1d',
+                              border: 'none',
+                              borderRadius: '4px',
+                              padding: '4px 6px',
+                              cursor: 'pointer',
+                              fontSize: '12px',
+                              color: 'white'
+                            }}
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* アクション */}
           <div style={{ marginBottom: '16px' }}>
             <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#94a3b8' }}>
@@ -795,6 +932,12 @@ export const SidePanel: React.FC = () => {
                     }}
                   >
                     💡 トピック生成
+                  </button>
+                  <button 
+                    onClick={() => setShowCreateTopicModal(true)}
+                    style={actionButtonStyle}
+                  >
+                    ✏️ トピック作成
                   </button>
                   <button 
                     onClick={handleGenerateNote} 
@@ -870,23 +1013,97 @@ export const SidePanel: React.FC = () => {
 };
 
 /**
- * コンテキストメッセージを収集する
- * メイン親を辿ってrootまでのチェーンを取得
+ * コンテキストメッセージを収集する（サブ親を含む）
+ * メイン親チェーン + サブ親チェーン（メイン親と合流するまで）を取得
+ * topic/noteも含める
  */
-function collectContext(nodes: MindNode[], startNode: MindNode): Array<{ role: 'user' | 'assistant' | 'system'; content: string }> {
-  const messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }> = [];
-  const visited = new Set<string>();
+interface ContextResult {
+  mainContext: Array<{ role: 'user' | 'assistant' | 'system'; content: string; nodeType: string }>;
+  subContexts: Array<{
+    parentNodeId: string;
+    messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string; nodeType: string }>;
+  }>;
+}
+
+/**
+ * ノードからコンテキストメッセージを生成
+ */
+function nodeToContextMessage(node: MindNode): { role: 'user' | 'assistant' | 'system'; content: string; nodeType: string } | null {
+  if (node.type === 'message') {
+    return {
+      role: node.role,
+      content: node.content,
+      nodeType: 'message'
+    };
+  } else if (node.type === 'topic') {
+    return {
+      role: 'system' as const,
+      content: `[トピック] ${node.title || node.content}`,
+      nodeType: 'topic'
+    };
+  } else if (node.type === 'note') {
+    return {
+      role: 'system' as const,
+      content: `[メモ] ${node.title ? node.title + ': ' : ''}${node.content}`,
+      nodeType: 'note'
+    };
+  }
+  return null;
+}
+
+/**
+ * メイン親チェーンを収集（rootまで）
+ */
+function collectMainChain(nodes: MindNode[], startNode: MindNode): { messages: ContextResult['mainContext']; visitedIds: Set<string> } {
+  const messages: ContextResult['mainContext'] = [];
+  const visitedIds = new Set<string>();
   
   let current: MindNode | undefined = startNode;
   
+  while (current && !visitedIds.has(current.id)) {
+    visitedIds.add(current.id);
+    
+    const msg = nodeToContextMessage(current);
+    if (msg) {
+      messages.unshift(msg);
+    }
+    
+    // メイン親を辿る
+    const mainParentId: string | undefined = current.parentIds[0];
+    if (mainParentId) {
+      current = nodes.find((n) => n.id === mainParentId);
+    } else {
+      break;
+    }
+  }
+  
+  return { messages, visitedIds };
+}
+
+/**
+ * サブ親チェーンを収集（メイン親チェーンと合流するまで）
+ */
+function collectSubChain(
+  nodes: MindNode[], 
+  subParentId: string, 
+  mainChainIds: Set<string>
+): ContextResult['subContexts'][0]['messages'] {
+  const messages: ContextResult['subContexts'][0]['messages'] = [];
+  const visited = new Set<string>();
+  
+  let current: MindNode | undefined = nodes.find((n) => n.id === subParentId);
+  
   while (current && !visited.has(current.id)) {
+    // メイン親チェーンと合流したら終了
+    if (mainChainIds.has(current.id)) {
+      break;
+    }
+    
     visited.add(current.id);
     
-    if (current.type === 'message') {
-      messages.unshift({
-        role: current.role,
-        content: current.content
-      });
+    const msg = nodeToContextMessage(current);
+    if (msg) {
+      messages.unshift(msg);
     }
     
     // メイン親を辿る
@@ -899,6 +1116,73 @@ function collectContext(nodes: MindNode[], startNode: MindNode): Array<{ role: '
   }
   
   return messages;
+}
+
+/**
+ * コンテキストを収集（メイン親 + サブ親）
+ */
+function collectContextWithSubParents(nodes: MindNode[], startNode: MindNode): ContextResult {
+  // メイン親チェーンを収集
+  const { messages: mainContext, visitedIds: mainChainIds } = collectMainChain(nodes, startNode);
+  
+  // サブ親チェーンを収集
+  const subContexts: ContextResult['subContexts'] = [];
+  
+  // startNodeのサブ親（parentIds[1]以降）を処理
+  for (let i = 1; i < startNode.parentIds.length; i++) {
+    const subParentId = startNode.parentIds[i];
+    const subMessages = collectSubChain(nodes, subParentId, mainChainIds);
+    
+    if (subMessages.length > 0) {
+      subContexts.push({
+        parentNodeId: subParentId,
+        messages: subMessages
+      });
+    }
+  }
+  
+  return { mainContext, subContexts };
+}
+
+/**
+ * コンテキストをLLM用のメッセージ配列に変換
+ */
+function formatContextForLLM(
+  contextResult: ContextResult
+): Array<{ role: 'user' | 'assistant' | 'system'; content: string }> {
+  const messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }> = [];
+  
+  // メイン親チェーンを追加
+  for (const msg of contextResult.mainContext) {
+    messages.push({ role: msg.role, content: msg.content });
+  }
+  
+  // サブ親チェーンを追加（関連文脈として）
+  if (contextResult.subContexts.length > 0) {
+    let subContextText = '--- 関連する別の議論 ---\n';
+    for (const sub of contextResult.subContexts) {
+      for (const msg of sub.messages) {
+        subContextText += `[${msg.role}] ${msg.content}\n\n`;
+      }
+    }
+    subContextText += '--- 関連議論ここまで ---';
+    
+    messages.push({
+      role: 'system',
+      content: subContextText
+    });
+  }
+  
+  return messages;
+}
+
+/**
+ * 旧API互換: コンテキストメッセージを収集する
+ * @deprecated collectContextWithSubParents を使用してください
+ */
+function collectContext(nodes: MindNode[], startNode: MindNode): Array<{ role: 'user' | 'assistant' | 'system'; content: string }> {
+  const result = collectContextWithSubParents(nodes, startNode);
+  return formatContextForLLM(result);
 }
 
 function getNodeTypeIcon(type: NodeType): string {

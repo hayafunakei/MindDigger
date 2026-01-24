@@ -63,6 +63,10 @@ interface BoardActions {
   cancelConnectingParent: () => void;
   /** 親ノードを接続 */
   connectToParent: (childId: NodeId, parentId: NodeId) => void;
+  /** 親子関係を削除 */
+  removeParentChild: (parentId: NodeId, childId: NodeId) => void;
+  /** メイン親を変更（parentIds[0]を入れ替え） */
+  setMainParent: (nodeId: NodeId, newMainParentId: NodeId) => void;
 }
 
 export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
@@ -321,7 +325,6 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
   },
 
   startConnectingParent: (nodeId) => {
-    console.log('[startConnectingParent] Setting isConnectingParent=true, nodeId:', nodeId);
     set({
       isConnectingParent: true,
       connectingFromNodeId: nodeId,
@@ -372,6 +375,69 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
       isDirty: true,
       isConnectingParent: false,
       connectingFromNodeId: null
+    }));
+  },
+
+  removeParentChild: (parentId, childId) => {
+    const state = get();
+    const childNode = state.nodes.find((n) => n.id === childId);
+    
+    if (!childNode) return;
+    
+    // 最後の親は削除不可
+    if (childNode.parentIds.length <= 1) return;
+    
+    const now = new Date().toISOString();
+    
+    set((state) => ({
+      nodes: state.nodes.map((n) => {
+        if (n.id === childId) {
+          return {
+            ...n,
+            parentIds: n.parentIds.filter((id) => id !== parentId),
+            updatedAt: now
+          };
+        }
+        if (n.id === parentId) {
+          return {
+            ...n,
+            childrenIds: n.childrenIds.filter((id) => id !== childId),
+            updatedAt: now
+          };
+        }
+        return n;
+      }),
+      isDirty: true
+    }));
+  },
+
+  setMainParent: (nodeId, newMainParentId) => {
+    const state = get();
+    const node = state.nodes.find((n) => n.id === nodeId);
+    
+    if (!node) return;
+    
+    // 新しいメイン親がparentIdsに含まれているか確認
+    if (!node.parentIds.includes(newMainParentId)) return;
+    
+    // 既にメイン親の場合は何もしない
+    if (node.parentIds[0] === newMainParentId) return;
+    
+    const now = new Date().toISOString();
+    const otherParents = node.parentIds.filter((id) => id !== newMainParentId);
+    
+    set((state) => ({
+      nodes: state.nodes.map((n) => {
+        if (n.id === nodeId) {
+          return {
+            ...n,
+            parentIds: [newMainParentId, ...otherParents],
+            updatedAt: now
+          };
+        }
+        return n;
+      }),
+      isDirty: true
     }));
   }
 }));

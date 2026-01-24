@@ -115,7 +115,7 @@ function requireReact_production() {
   var isArrayImpl = Array.isArray;
   function noop2() {
   }
-  var ReactSharedInternals = { H: null, A: null, T: null, S: null }, hasOwnProperty = Object.prototype.hasOwnProperty;
+  var ReactSharedInternals = { H: null, A: null, T: null, S: null }, hasOwnProperty2 = Object.prototype.hasOwnProperty;
   function ReactElement(type, key, props) {
     var refProp = props.ref;
     return {
@@ -139,8 +139,8 @@ function requireReact_production() {
     });
   }
   var userProvidedKeyEscapeRegex = /\/+/g;
-  function getElementKey(element, index2) {
-    return "object" === typeof element && null !== element && null != element.key ? escape("" + element.key) : index2.toString(36);
+  function getElementKey(element2, index2) {
+    return "object" === typeof element2 && null !== element2 && null != element2.key ? escape("" + element2.key) : index2.toString(36);
   }
   function resolveThenable(thenable) {
     switch (thenable.status) {
@@ -334,15 +334,15 @@ function requireReact_production() {
   react_production.cacheSignal = function() {
     return null;
   };
-  react_production.cloneElement = function(element, config, children2) {
-    if (null === element || void 0 === element)
+  react_production.cloneElement = function(element2, config, children2) {
+    if (null === element2 || void 0 === element2)
       throw Error(
-        "The argument must be a React element, but you passed " + element + "."
+        "The argument must be a React element, but you passed " + element2 + "."
       );
-    var props = assign({}, element.props), key = element.key;
+    var props = assign({}, element2.props), key = element2.key;
     if (null != config)
       for (propName in void 0 !== config.key && (key = "" + config.key), config)
-        !hasOwnProperty.call(config, propName) || "key" === propName || "__self" === propName || "__source" === propName || "ref" === propName && void 0 === config.ref || (props[propName] = config[propName]);
+        !hasOwnProperty2.call(config, propName) || "key" === propName || "__self" === propName || "__source" === propName || "ref" === propName && void 0 === config.ref || (props[propName] = config[propName]);
     var propName = arguments.length - 2;
     if (1 === propName) props.children = children2;
     else if (1 < propName) {
@@ -350,7 +350,7 @@ function requireReact_production() {
         childArray[i] = arguments[i + 2];
       props.children = childArray;
     }
-    return ReactElement(element.type, key, props);
+    return ReactElement(element2.type, key, props);
   };
   react_production.createContext = function(defaultValue) {
     defaultValue = {
@@ -372,7 +372,7 @@ function requireReact_production() {
     var propName, props = {}, key = null;
     if (null != config)
       for (propName in void 0 !== config.key && (key = "" + config.key), config)
-        hasOwnProperty.call(config, propName) && "key" !== propName && "__self" !== propName && "__source" !== propName && (props[propName] = config[propName]);
+        hasOwnProperty2.call(config, propName) && "key" !== propName && "__self" !== propName && "__source" !== propName && (props[propName] = config[propName]);
     var childrenLength = arguments.length - 2;
     if (1 === childrenLength) props.children = children2;
     else if (1 < childrenLength) {
@@ -514,13 +514,13 @@ function requireScheduler_production() {
   if (hasRequiredScheduler_production) return scheduler_production;
   hasRequiredScheduler_production = 1;
   (function(exports$1) {
-    function push(heap, node) {
+    function push2(heap, node2) {
       var index2 = heap.length;
-      heap.push(node);
+      heap.push(node2);
       a: for (; 0 < index2; ) {
         var parentIndex = index2 - 1 >>> 1, parent = heap[parentIndex];
-        if (0 < compare(parent, node))
-          heap[parentIndex] = node, heap[index2] = parent, index2 = parentIndex;
+        if (0 < compare(parent, node2))
+          heap[parentIndex] = node2, heap[index2] = parent, index2 = parentIndex;
         else break a;
       }
     }
@@ -564,7 +564,7 @@ function requireScheduler_production() {
       for (var timer2 = peek(timerQueue); null !== timer2; ) {
         if (null === timer2.callback) pop(timerQueue);
         else if (timer2.startTime <= currentTime)
-          pop(timerQueue), timer2.sortIndex = timer2.expirationTime, push(taskQueue, timer2);
+          pop(timerQueue), timer2.sortIndex = timer2.expirationTime, push2(taskQueue, timer2);
         else break;
         timer2 = peek(timerQueue);
       }
@@ -745,7 +745,7 @@ function requireScheduler_production() {
         expirationTime: timeout2,
         sortIndex: -1
       };
-      options > currentTime ? (priorityLevel.sortIndex = options, push(timerQueue, priorityLevel), null === peek(taskQueue) && priorityLevel === peek(timerQueue) && (isHostTimeoutScheduled ? (localClearTimeout(taskTimeoutID), taskTimeoutID = -1) : isHostTimeoutScheduled = true, requestHostTimeout(handleTimeout, options - currentTime))) : (priorityLevel.sortIndex = timeout2, push(taskQueue, priorityLevel), isHostCallbackScheduled || isPerformingWork || (isHostCallbackScheduled = true, isMessageLoopRunning || (isMessageLoopRunning = true, schedulePerformWorkUntilDeadline())));
+      options > currentTime ? (priorityLevel.sortIndex = options, push2(timerQueue, priorityLevel), null === peek(taskQueue) && priorityLevel === peek(timerQueue) && (isHostTimeoutScheduled ? (localClearTimeout(taskTimeoutID), taskTimeoutID = -1) : isHostTimeoutScheduled = true, requestHostTimeout(handleTimeout, options - currentTime))) : (priorityLevel.sortIndex = timeout2, push2(taskQueue, priorityLevel), isHostCallbackScheduled || isPerformingWork || (isHostCallbackScheduled = true, isMessageLoopRunning || (isMessageLoopRunning = true, schedulePerformWorkUntilDeadline())));
       return priorityLevel;
     };
     exports$1.unstable_shouldYield = shouldYieldToHost;
@@ -789,14 +789,14 @@ function requireReactDom_production() {
   if (hasRequiredReactDom_production) return reactDom_production;
   hasRequiredReactDom_production = 1;
   var React2 = requireReact();
-  function formatProdErrorMessage(code) {
-    var url = "https://react.dev/errors/" + code;
+  function formatProdErrorMessage(code2) {
+    var url = "https://react.dev/errors/" + code2;
     if (1 < arguments.length) {
       url += "?args[]=" + encodeURIComponent(arguments[1]);
       for (var i = 2; i < arguments.length; i++)
         url += "&args[]=" + encodeURIComponent(arguments[i]);
     }
-    return "Minified React error #" + code + "; visit " + url + " for the full message or use the non-minified dev environment for full errors and additional helpful warnings.";
+    return "Minified React error #" + code2 + "; visit " + url + " for the full message or use the non-minified dev environment for full errors and additional helpful warnings.";
   }
   function noop2() {
   }
@@ -965,28 +965,28 @@ function requireReactDomClient_production() {
   if (hasRequiredReactDomClient_production) return reactDomClient_production;
   hasRequiredReactDomClient_production = 1;
   var Scheduler = requireScheduler(), React2 = requireReact(), ReactDOM2 = requireReactDom();
-  function formatProdErrorMessage(code) {
-    var url = "https://react.dev/errors/" + code;
+  function formatProdErrorMessage(code2) {
+    var url = "https://react.dev/errors/" + code2;
     if (1 < arguments.length) {
       url += "?args[]=" + encodeURIComponent(arguments[1]);
       for (var i = 2; i < arguments.length; i++)
         url += "&args[]=" + encodeURIComponent(arguments[i]);
     }
-    return "Minified React error #" + code + "; visit " + url + " for the full message or use the non-minified dev environment for full errors and additional helpful warnings.";
+    return "Minified React error #" + code2 + "; visit " + url + " for the full message or use the non-minified dev environment for full errors and additional helpful warnings.";
   }
-  function isValidContainer(node) {
-    return !(!node || 1 !== node.nodeType && 9 !== node.nodeType && 11 !== node.nodeType);
+  function isValidContainer(node2) {
+    return !(!node2 || 1 !== node2.nodeType && 9 !== node2.nodeType && 11 !== node2.nodeType);
   }
   function getNearestMountedFiber(fiber) {
-    var node = fiber, nearestMounted = fiber;
-    if (fiber.alternate) for (; node.return; ) node = node.return;
+    var node2 = fiber, nearestMounted = fiber;
+    if (fiber.alternate) for (; node2.return; ) node2 = node2.return;
     else {
-      fiber = node;
+      fiber = node2;
       do
-        node = fiber, 0 !== (node.flags & 4098) && (nearestMounted = node.return), fiber = node.return;
+        node2 = fiber, 0 !== (node2.flags & 4098) && (nearestMounted = node2.return), fiber = node2.return;
       while (fiber);
     }
-    return 3 === node.tag ? nearestMounted : null;
+    return 3 === node2.tag ? nearestMounted : null;
   }
   function getSuspenseInstanceFromFiber(fiber) {
     if (13 === fiber.tag) {
@@ -1076,13 +1076,13 @@ function requireReactDomClient_production() {
     if (3 !== a.tag) throw Error(formatProdErrorMessage(188));
     return a.stateNode.current === a ? fiber : alternate;
   }
-  function findCurrentHostFiberImpl(node) {
-    var tag = node.tag;
-    if (5 === tag || 26 === tag || 27 === tag || 6 === tag) return node;
-    for (node = node.child; null !== node; ) {
-      tag = findCurrentHostFiberImpl(node);
+  function findCurrentHostFiberImpl(node2) {
+    var tag = node2.tag;
+    if (5 === tag || 26 === tag || 27 === tag || 6 === tag) return node2;
+    for (node2 = node2.child; null !== node2; ) {
+      tag = findCurrentHostFiberImpl(node2);
       if (null !== tag) return tag;
-      node = node.sibling;
+      node2 = node2.sibling;
     }
     return null;
   }
@@ -1152,16 +1152,16 @@ function requireReactDomClient_production() {
   function pop(cursor) {
     0 > index2 || (cursor.current = valueStack[index2], valueStack[index2] = null, index2--);
   }
-  function push(cursor, value) {
+  function push2(cursor, value) {
     index2++;
     valueStack[index2] = cursor.current;
     cursor.current = value;
   }
   var contextStackCursor = createCursor(null), contextFiberStackCursor = createCursor(null), rootInstanceStackCursor = createCursor(null), hostTransitionProviderCursor = createCursor(null);
   function pushHostContainer(fiber, nextRootInstance) {
-    push(rootInstanceStackCursor, nextRootInstance);
-    push(contextFiberStackCursor, fiber);
-    push(contextStackCursor, null);
+    push2(rootInstanceStackCursor, nextRootInstance);
+    push2(contextFiberStackCursor, fiber);
+    push2(contextStackCursor, null);
     switch (nextRootInstance.nodeType) {
       case 9:
       case 11:
@@ -1183,7 +1183,7 @@ function requireReactDomClient_production() {
           }
     }
     pop(contextStackCursor);
-    push(contextStackCursor, fiber);
+    push2(contextStackCursor, fiber);
   }
   function popHostContainer() {
     pop(contextStackCursor);
@@ -1191,17 +1191,17 @@ function requireReactDomClient_production() {
     pop(rootInstanceStackCursor);
   }
   function pushHostContext(fiber) {
-    null !== fiber.memoizedState && push(hostTransitionProviderCursor, fiber);
+    null !== fiber.memoizedState && push2(hostTransitionProviderCursor, fiber);
     var context = contextStackCursor.current;
     var JSCompiler_inline_result = getChildHostContextProd(context, fiber.type);
-    context !== JSCompiler_inline_result && (push(contextFiberStackCursor, fiber), push(contextStackCursor, JSCompiler_inline_result));
+    context !== JSCompiler_inline_result && (push2(contextFiberStackCursor, fiber), push2(contextStackCursor, JSCompiler_inline_result));
   }
   function popHostContext(fiber) {
     contextFiberStackCursor.current === fiber && (pop(contextStackCursor), pop(contextFiberStackCursor));
     hostTransitionProviderCursor.current === fiber && (pop(hostTransitionProviderCursor), HostTransitionContext._currentValue = sharedNotPendingObject);
   }
   var prefix, suffix;
-  function describeBuiltInComponentFrame(name) {
+  function describeBuiltInComponentFrame(name2) {
     if (void 0 === prefix)
       try {
         throw Error();
@@ -1210,7 +1210,7 @@ function requireReactDomClient_production() {
         prefix = match && match[1] || "";
         suffix = -1 < x.stack.indexOf("\n    at") ? " (<anonymous>)" : -1 < x.stack.indexOf("@") ? "@unknown:0:0" : "";
       }
-    return "\n" + prefix + name + suffix;
+    return "\n" + prefix + name2 + suffix;
   }
   var reentry = false;
   function describeNativeComponentFrame(fn, construct) {
@@ -1330,16 +1330,16 @@ function requireReactDomClient_production() {
   }
   function getStackByFiberInDevAndProd(workInProgress2) {
     try {
-      var info = "", previous = null;
+      var info = "", previous2 = null;
       do
-        info += describeFiber(workInProgress2, previous), previous = workInProgress2, workInProgress2 = workInProgress2.return;
+        info += describeFiber(workInProgress2, previous2), previous2 = workInProgress2, workInProgress2 = workInProgress2.return;
       while (workInProgress2);
       return info;
     } catch (x) {
       return "\nError generating stack: " + x.message + "\n" + x.stack;
     }
   }
-  var hasOwnProperty = Object.prototype.hasOwnProperty, scheduleCallback$3 = Scheduler.unstable_scheduleCallback, cancelCallback$1 = Scheduler.unstable_cancelCallback, shouldYield = Scheduler.unstable_shouldYield, requestPaint = Scheduler.unstable_requestPaint, now2 = Scheduler.unstable_now, getCurrentPriorityLevel = Scheduler.unstable_getCurrentPriorityLevel, ImmediatePriority = Scheduler.unstable_ImmediatePriority, UserBlockingPriority = Scheduler.unstable_UserBlockingPriority, NormalPriority$1 = Scheduler.unstable_NormalPriority, LowPriority = Scheduler.unstable_LowPriority, IdlePriority = Scheduler.unstable_IdlePriority, log$1 = Scheduler.log, unstable_setDisableYieldValue = Scheduler.unstable_setDisableYieldValue, rendererID = null, injectedHook = null;
+  var hasOwnProperty2 = Object.prototype.hasOwnProperty, scheduleCallback$3 = Scheduler.unstable_scheduleCallback, cancelCallback$1 = Scheduler.unstable_cancelCallback, shouldYield = Scheduler.unstable_shouldYield, requestPaint = Scheduler.unstable_requestPaint, now2 = Scheduler.unstable_now, getCurrentPriorityLevel = Scheduler.unstable_getCurrentPriorityLevel, ImmediatePriority = Scheduler.unstable_ImmediatePriority, UserBlockingPriority = Scheduler.unstable_UserBlockingPriority, NormalPriority$1 = Scheduler.unstable_NormalPriority, LowPriority = Scheduler.unstable_LowPriority, IdlePriority = Scheduler.unstable_IdlePriority, log$1 = Scheduler.log, unstable_setDisableYieldValue = Scheduler.unstable_setDisableYieldValue, rendererID = null, injectedHook = null;
   function setIsStrictModeForDevtools(newIsStrictMode) {
     "function" === typeof log$1 && unstable_setDisableYieldValue(newIsStrictMode);
     if (injectedHook && "function" === typeof injectedHook.setStrictMode)
@@ -1580,12 +1580,12 @@ function requireReactDomClient_production() {
     }
   }
   var randomKey = Math.random().toString(36).slice(2), internalInstanceKey = "__reactFiber$" + randomKey, internalPropsKey = "__reactProps$" + randomKey, internalContainerInstanceKey = "__reactContainer$" + randomKey, internalEventHandlersKey = "__reactEvents$" + randomKey, internalEventHandlerListenersKey = "__reactListeners$" + randomKey, internalEventHandlesSetKey = "__reactHandles$" + randomKey, internalRootNodeResourcesKey = "__reactResources$" + randomKey, internalHoistableMarker = "__reactMarker$" + randomKey;
-  function detachDeletedInstance(node) {
-    delete node[internalInstanceKey];
-    delete node[internalPropsKey];
-    delete node[internalEventHandlersKey];
-    delete node[internalEventHandlerListenersKey];
-    delete node[internalEventHandlesSetKey];
+  function detachDeletedInstance(node2) {
+    delete node2[internalInstanceKey];
+    delete node2[internalPropsKey];
+    delete node2[internalEventHandlersKey];
+    delete node2[internalEventHandlerListenersKey];
+    delete node2[internalEventHandlesSetKey];
   }
   function getClosestInstanceFromNode(targetNode) {
     var targetInst = targetNode[internalInstanceKey];
@@ -1605,11 +1605,11 @@ function requireReactDomClient_production() {
     }
     return null;
   }
-  function getInstanceFromNode(node) {
-    if (node = node[internalInstanceKey] || node[internalContainerInstanceKey]) {
-      var tag = node.tag;
+  function getInstanceFromNode(node2) {
+    if (node2 = node2[internalInstanceKey] || node2[internalContainerInstanceKey]) {
+      var tag = node2.tag;
       if (5 === tag || 6 === tag || 13 === tag || 31 === tag || 26 === tag || 27 === tag || 3 === tag)
-        return node;
+        return node2;
     }
     return null;
   }
@@ -1623,8 +1623,8 @@ function requireReactDomClient_production() {
     resources || (resources = root3[internalRootNodeResourcesKey] = { hoistableStyles: /* @__PURE__ */ new Map(), hoistableScripts: /* @__PURE__ */ new Map() });
     return resources;
   }
-  function markNodeAsHoistable(node) {
-    node[internalHoistableMarker] = true;
+  function markNodeAsHoistable(node2) {
+    node2[internalHoistableMarker] = true;
   }
   var allNativeEvents = /* @__PURE__ */ new Set(), registrationNameDependencies = {};
   function registerTwoPhaseEvent(registrationName, dependencies) {
@@ -1640,60 +1640,60 @@ function requireReactDomClient_production() {
     "^[:A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD][:A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040]*$"
   ), illegalAttributeNameCache = {}, validatedAttributeNameCache = {};
   function isAttributeNameSafe(attributeName) {
-    if (hasOwnProperty.call(validatedAttributeNameCache, attributeName))
+    if (hasOwnProperty2.call(validatedAttributeNameCache, attributeName))
       return true;
-    if (hasOwnProperty.call(illegalAttributeNameCache, attributeName)) return false;
+    if (hasOwnProperty2.call(illegalAttributeNameCache, attributeName)) return false;
     if (VALID_ATTRIBUTE_NAME_REGEX.test(attributeName))
       return validatedAttributeNameCache[attributeName] = true;
     illegalAttributeNameCache[attributeName] = true;
     return false;
   }
-  function setValueForAttribute(node, name, value) {
-    if (isAttributeNameSafe(name))
-      if (null === value) node.removeAttribute(name);
+  function setValueForAttribute(node2, name2, value) {
+    if (isAttributeNameSafe(name2))
+      if (null === value) node2.removeAttribute(name2);
       else {
         switch (typeof value) {
           case "undefined":
           case "function":
           case "symbol":
-            node.removeAttribute(name);
+            node2.removeAttribute(name2);
             return;
           case "boolean":
-            var prefix$10 = name.toLowerCase().slice(0, 5);
+            var prefix$10 = name2.toLowerCase().slice(0, 5);
             if ("data-" !== prefix$10 && "aria-" !== prefix$10) {
-              node.removeAttribute(name);
+              node2.removeAttribute(name2);
               return;
             }
         }
-        node.setAttribute(name, "" + value);
+        node2.setAttribute(name2, "" + value);
       }
   }
-  function setValueForKnownAttribute(node, name, value) {
-    if (null === value) node.removeAttribute(name);
+  function setValueForKnownAttribute(node2, name2, value) {
+    if (null === value) node2.removeAttribute(name2);
     else {
       switch (typeof value) {
         case "undefined":
         case "function":
         case "symbol":
         case "boolean":
-          node.removeAttribute(name);
+          node2.removeAttribute(name2);
           return;
       }
-      node.setAttribute(name, "" + value);
+      node2.setAttribute(name2, "" + value);
     }
   }
-  function setValueForNamespacedAttribute(node, namespace2, name, value) {
-    if (null === value) node.removeAttribute(name);
+  function setValueForNamespacedAttribute(node2, namespace2, name2, value) {
+    if (null === value) node2.removeAttribute(name2);
     else {
       switch (typeof value) {
         case "undefined":
         case "function":
         case "symbol":
         case "boolean":
-          node.removeAttribute(name);
+          node2.removeAttribute(name2);
           return;
       }
-      node.setAttributeNS(namespace2, name, "" + value);
+      node2.setAttributeNS(namespace2, name2, "" + value);
     }
   }
   function getToStringValue(value) {
@@ -1714,14 +1714,14 @@ function requireReactDomClient_production() {
     var type = elem.type;
     return (elem = elem.nodeName) && "input" === elem.toLowerCase() && ("checkbox" === type || "radio" === type);
   }
-  function trackValueOnNode(node, valueField, currentValue) {
+  function trackValueOnNode(node2, valueField, currentValue) {
     var descriptor = Object.getOwnPropertyDescriptor(
-      node.constructor.prototype,
+      node2.constructor.prototype,
       valueField
     );
-    if (!node.hasOwnProperty(valueField) && "undefined" !== typeof descriptor && "function" === typeof descriptor.get && "function" === typeof descriptor.set) {
+    if (!node2.hasOwnProperty(valueField) && "undefined" !== typeof descriptor && "function" === typeof descriptor.get && "function" === typeof descriptor.set) {
       var get2 = descriptor.get, set2 = descriptor.set;
-      Object.defineProperty(node, valueField, {
+      Object.defineProperty(node2, valueField, {
         configurable: true,
         get: function() {
           return get2.call(this);
@@ -1731,7 +1731,7 @@ function requireReactDomClient_production() {
           set2.call(this, value);
         }
       });
-      Object.defineProperty(node, valueField, {
+      Object.defineProperty(node2, valueField, {
         enumerable: descriptor.enumerable
       });
       return {
@@ -1742,31 +1742,31 @@ function requireReactDomClient_production() {
           currentValue = "" + value;
         },
         stopTracking: function() {
-          node._valueTracker = null;
-          delete node[valueField];
+          node2._valueTracker = null;
+          delete node2[valueField];
         }
       };
     }
   }
-  function track(node) {
-    if (!node._valueTracker) {
-      var valueField = isCheckable(node) ? "checked" : "value";
-      node._valueTracker = trackValueOnNode(
-        node,
+  function track(node2) {
+    if (!node2._valueTracker) {
+      var valueField = isCheckable(node2) ? "checked" : "value";
+      node2._valueTracker = trackValueOnNode(
+        node2,
         valueField,
-        "" + node[valueField]
+        "" + node2[valueField]
       );
     }
   }
-  function updateValueIfChanged(node) {
-    if (!node) return false;
-    var tracker = node._valueTracker;
+  function updateValueIfChanged(node2) {
+    if (!node2) return false;
+    var tracker = node2._valueTracker;
     if (!tracker) return true;
     var lastValue = tracker.getValue();
     var value = "";
-    node && (value = isCheckable(node) ? node.checked ? "true" : "false" : node.value);
-    node = value;
-    return node !== lastValue ? (tracker.setValue(node), true) : false;
+    node2 && (value = isCheckable(node2) ? node2.checked ? "true" : "false" : node2.value);
+    node2 = value;
+    return node2 !== lastValue ? (tracker.setValue(node2), true) : false;
   }
   function getActiveElement(doc) {
     doc = doc || ("undefined" !== typeof document ? document : void 0);
@@ -1786,74 +1786,74 @@ function requireReactDomClient_production() {
       }
     );
   }
-  function updateInput(element, value, defaultValue, lastDefaultValue, checked, defaultChecked, type, name) {
-    element.name = "";
-    null != type && "function" !== typeof type && "symbol" !== typeof type && "boolean" !== typeof type ? element.type = type : element.removeAttribute("type");
+  function updateInput(element2, value, defaultValue, lastDefaultValue, checked, defaultChecked, type, name2) {
+    element2.name = "";
+    null != type && "function" !== typeof type && "symbol" !== typeof type && "boolean" !== typeof type ? element2.type = type : element2.removeAttribute("type");
     if (null != value)
       if ("number" === type) {
-        if (0 === value && "" === element.value || element.value != value)
-          element.value = "" + getToStringValue(value);
+        if (0 === value && "" === element2.value || element2.value != value)
+          element2.value = "" + getToStringValue(value);
       } else
-        element.value !== "" + getToStringValue(value) && (element.value = "" + getToStringValue(value));
+        element2.value !== "" + getToStringValue(value) && (element2.value = "" + getToStringValue(value));
     else
-      "submit" !== type && "reset" !== type || element.removeAttribute("value");
-    null != value ? setDefaultValue(element, type, getToStringValue(value)) : null != defaultValue ? setDefaultValue(element, type, getToStringValue(defaultValue)) : null != lastDefaultValue && element.removeAttribute("value");
-    null == checked && null != defaultChecked && (element.defaultChecked = !!defaultChecked);
-    null != checked && (element.checked = checked && "function" !== typeof checked && "symbol" !== typeof checked);
-    null != name && "function" !== typeof name && "symbol" !== typeof name && "boolean" !== typeof name ? element.name = "" + getToStringValue(name) : element.removeAttribute("name");
+      "submit" !== type && "reset" !== type || element2.removeAttribute("value");
+    null != value ? setDefaultValue(element2, type, getToStringValue(value)) : null != defaultValue ? setDefaultValue(element2, type, getToStringValue(defaultValue)) : null != lastDefaultValue && element2.removeAttribute("value");
+    null == checked && null != defaultChecked && (element2.defaultChecked = !!defaultChecked);
+    null != checked && (element2.checked = checked && "function" !== typeof checked && "symbol" !== typeof checked);
+    null != name2 && "function" !== typeof name2 && "symbol" !== typeof name2 && "boolean" !== typeof name2 ? element2.name = "" + getToStringValue(name2) : element2.removeAttribute("name");
   }
-  function initInput(element, value, defaultValue, checked, defaultChecked, type, name, isHydrating2) {
-    null != type && "function" !== typeof type && "symbol" !== typeof type && "boolean" !== typeof type && (element.type = type);
+  function initInput(element2, value, defaultValue, checked, defaultChecked, type, name2, isHydrating2) {
+    null != type && "function" !== typeof type && "symbol" !== typeof type && "boolean" !== typeof type && (element2.type = type);
     if (null != value || null != defaultValue) {
       if (!("submit" !== type && "reset" !== type || void 0 !== value && null !== value)) {
-        track(element);
+        track(element2);
         return;
       }
       defaultValue = null != defaultValue ? "" + getToStringValue(defaultValue) : "";
       value = null != value ? "" + getToStringValue(value) : defaultValue;
-      isHydrating2 || value === element.value || (element.value = value);
-      element.defaultValue = value;
+      isHydrating2 || value === element2.value || (element2.value = value);
+      element2.defaultValue = value;
     }
     checked = null != checked ? checked : defaultChecked;
     checked = "function" !== typeof checked && "symbol" !== typeof checked && !!checked;
-    element.checked = isHydrating2 ? element.checked : !!checked;
-    element.defaultChecked = !!checked;
-    null != name && "function" !== typeof name && "symbol" !== typeof name && "boolean" !== typeof name && (element.name = name);
-    track(element);
+    element2.checked = isHydrating2 ? element2.checked : !!checked;
+    element2.defaultChecked = !!checked;
+    null != name2 && "function" !== typeof name2 && "symbol" !== typeof name2 && "boolean" !== typeof name2 && (element2.name = name2);
+    track(element2);
   }
-  function setDefaultValue(node, type, value) {
-    "number" === type && getActiveElement(node.ownerDocument) === node || node.defaultValue === "" + value || (node.defaultValue = "" + value);
+  function setDefaultValue(node2, type, value) {
+    "number" === type && getActiveElement(node2.ownerDocument) === node2 || node2.defaultValue === "" + value || (node2.defaultValue = "" + value);
   }
-  function updateOptions(node, multiple, propValue, setDefaultSelected) {
-    node = node.options;
+  function updateOptions(node2, multiple, propValue, setDefaultSelected) {
+    node2 = node2.options;
     if (multiple) {
       multiple = {};
       for (var i = 0; i < propValue.length; i++)
         multiple["$" + propValue[i]] = true;
-      for (propValue = 0; propValue < node.length; propValue++)
-        i = multiple.hasOwnProperty("$" + node[propValue].value), node[propValue].selected !== i && (node[propValue].selected = i), i && setDefaultSelected && (node[propValue].defaultSelected = true);
+      for (propValue = 0; propValue < node2.length; propValue++)
+        i = multiple.hasOwnProperty("$" + node2[propValue].value), node2[propValue].selected !== i && (node2[propValue].selected = i), i && setDefaultSelected && (node2[propValue].defaultSelected = true);
     } else {
       propValue = "" + getToStringValue(propValue);
       multiple = null;
-      for (i = 0; i < node.length; i++) {
-        if (node[i].value === propValue) {
-          node[i].selected = true;
-          setDefaultSelected && (node[i].defaultSelected = true);
+      for (i = 0; i < node2.length; i++) {
+        if (node2[i].value === propValue) {
+          node2[i].selected = true;
+          setDefaultSelected && (node2[i].defaultSelected = true);
           return;
         }
-        null !== multiple || node[i].disabled || (multiple = node[i]);
+        null !== multiple || node2[i].disabled || (multiple = node2[i]);
       }
       null !== multiple && (multiple.selected = true);
     }
   }
-  function updateTextarea(element, value, defaultValue) {
-    if (null != value && (value = "" + getToStringValue(value), value !== element.value && (element.value = value), null == defaultValue)) {
-      element.defaultValue !== value && (element.defaultValue = value);
+  function updateTextarea(element2, value, defaultValue) {
+    if (null != value && (value = "" + getToStringValue(value), value !== element2.value && (element2.value = value), null == defaultValue)) {
+      element2.defaultValue !== value && (element2.defaultValue = value);
       return;
     }
-    element.defaultValue = null != defaultValue ? "" + getToStringValue(defaultValue) : "";
+    element2.defaultValue = null != defaultValue ? "" + getToStringValue(defaultValue) : "";
   }
-  function initTextarea(element, value, defaultValue, children2) {
+  function initTextarea(element2, value, defaultValue, children2) {
     if (null == value) {
       if (null != children2) {
         if (null != defaultValue) throw Error(formatProdErrorMessage(92));
@@ -1867,20 +1867,20 @@ function requireReactDomClient_production() {
       value = defaultValue;
     }
     defaultValue = getToStringValue(value);
-    element.defaultValue = defaultValue;
-    children2 = element.textContent;
-    children2 === defaultValue && "" !== children2 && null !== children2 && (element.value = children2);
-    track(element);
+    element2.defaultValue = defaultValue;
+    children2 = element2.textContent;
+    children2 === defaultValue && "" !== children2 && null !== children2 && (element2.value = children2);
+    track(element2);
   }
-  function setTextContent(node, text) {
-    if (text) {
-      var firstChild = node.firstChild;
-      if (firstChild && firstChild === node.lastChild && 3 === firstChild.nodeType) {
-        firstChild.nodeValue = text;
+  function setTextContent(node2, text2) {
+    if (text2) {
+      var firstChild = node2.firstChild;
+      if (firstChild && firstChild === node2.lastChild && 3 === firstChild.nodeType) {
+        firstChild.nodeValue = text2;
         return;
       }
     }
-    node.textContent = text;
+    node2.textContent = text2;
   }
   var unitlessNumbers = new Set(
     "animationIterationCount aspectRatio borderImageOutset borderImageSlice borderImageWidth boxFlex boxFlexGroup boxOrdinalGroup columnCount columns flex flexGrow flexPositive flexShrink flexNegative flexOrder gridArea gridRow gridRowEnd gridRowSpan gridRowStart gridColumn gridColumnEnd gridColumnSpan gridColumnStart fontWeight lineClamp lineHeight opacity order orphans scale tabSize widows zIndex zoom fillOpacity floodOpacity stopOpacity strokeDasharray strokeDashoffset strokeMiterlimit strokeOpacity strokeWidth MozAnimationIterationCount MozBoxFlex MozBoxFlexGroup MozLineClamp msAnimationIterationCount msFlex msZoom msFlexGrow msFlexNegative msFlexOrder msFlexPositive msFlexShrink msGridColumn msGridColumnSpan msGridRow msGridRowSpan WebkitAnimationIterationCount WebkitBoxFlex WebKitBoxFlexGroup WebkitBoxOrdinalGroup WebkitColumnCount WebkitColumns WebkitFlex WebkitFlexGrow WebkitFlexPositive WebkitFlexShrink WebkitLineClamp".split(
@@ -1891,18 +1891,18 @@ function requireReactDomClient_production() {
     var isCustomProperty = 0 === styleName.indexOf("--");
     null == value || "boolean" === typeof value || "" === value ? isCustomProperty ? style3.setProperty(styleName, "") : "float" === styleName ? style3.cssFloat = "" : style3[styleName] = "" : isCustomProperty ? style3.setProperty(styleName, value) : "number" !== typeof value || 0 === value || unitlessNumbers.has(styleName) ? "float" === styleName ? style3.cssFloat = value : style3[styleName] = ("" + value).trim() : style3[styleName] = value + "px";
   }
-  function setValueForStyles(node, styles, prevStyles) {
+  function setValueForStyles(node2, styles, prevStyles) {
     if (null != styles && "object" !== typeof styles)
       throw Error(formatProdErrorMessage(62));
-    node = node.style;
+    node2 = node2.style;
     if (null != prevStyles) {
       for (var styleName in prevStyles)
-        !prevStyles.hasOwnProperty(styleName) || null != styles && styles.hasOwnProperty(styleName) || (0 === styleName.indexOf("--") ? node.setProperty(styleName, "") : "float" === styleName ? node.cssFloat = "" : node[styleName] = "");
+        !prevStyles.hasOwnProperty(styleName) || null != styles && styles.hasOwnProperty(styleName) || (0 === styleName.indexOf("--") ? node2.setProperty(styleName, "") : "float" === styleName ? node2.cssFloat = "" : node2[styleName] = "");
       for (var styleName$16 in styles)
-        styleName = styles[styleName$16], styles.hasOwnProperty(styleName$16) && prevStyles[styleName$16] !== styleName && setValueForStyle(node, styleName$16, styleName);
+        styleName = styles[styleName$16], styles.hasOwnProperty(styleName$16) && prevStyles[styleName$16] !== styleName && setValueForStyle(node2, styleName$16, styleName);
     } else
       for (var styleName$17 in styles)
-        styles.hasOwnProperty(styleName$17) && setValueForStyle(node, styleName$17, styles[styleName$17]);
+        styles.hasOwnProperty(styleName$17) && setValueForStyle(node2, styleName$17, styles[styleName$17]);
   }
   function isCustomElement(tagName) {
     if (-1 === tagName.indexOf("-")) return false;
@@ -2495,36 +2495,36 @@ function requireReactDomClient_production() {
     if (keysA.length !== keysB.length) return false;
     for (keysB = 0; keysB < keysA.length; keysB++) {
       var currentKey = keysA[keysB];
-      if (!hasOwnProperty.call(objB, currentKey) || !objectIs(objA[currentKey], objB[currentKey]))
+      if (!hasOwnProperty2.call(objB, currentKey) || !objectIs(objA[currentKey], objB[currentKey]))
         return false;
     }
     return true;
   }
-  function getLeafNode(node) {
-    for (; node && node.firstChild; ) node = node.firstChild;
-    return node;
+  function getLeafNode(node2) {
+    for (; node2 && node2.firstChild; ) node2 = node2.firstChild;
+    return node2;
   }
   function getNodeForCharacterOffset(root3, offset) {
-    var node = getLeafNode(root3);
+    var node2 = getLeafNode(root3);
     root3 = 0;
-    for (var nodeEnd; node; ) {
-      if (3 === node.nodeType) {
-        nodeEnd = root3 + node.textContent.length;
+    for (var nodeEnd; node2; ) {
+      if (3 === node2.nodeType) {
+        nodeEnd = root3 + node2.textContent.length;
         if (root3 <= offset && nodeEnd >= offset)
-          return { node, offset: offset - root3 };
+          return { node: node2, offset: offset - root3 };
         root3 = nodeEnd;
       }
       a: {
-        for (; node; ) {
-          if (node.nextSibling) {
-            node = node.nextSibling;
+        for (; node2; ) {
+          if (node2.nextSibling) {
+            node2 = node2.nextSibling;
             break a;
           }
-          node = node.parentNode;
+          node2 = node2.parentNode;
         }
-        node = void 0;
+        node2 = void 0;
       }
-      node = getLeafNode(node);
+      node2 = getLeafNode(node2);
     }
   }
   function containsNode(outerNode, innerNode) {
@@ -2532,17 +2532,17 @@ function requireReactDomClient_production() {
   }
   function getActiveElementDeep(containerInfo) {
     containerInfo = null != containerInfo && null != containerInfo.ownerDocument && null != containerInfo.ownerDocument.defaultView ? containerInfo.ownerDocument.defaultView : window;
-    for (var element = getActiveElement(containerInfo.document); element instanceof containerInfo.HTMLIFrameElement; ) {
+    for (var element2 = getActiveElement(containerInfo.document); element2 instanceof containerInfo.HTMLIFrameElement; ) {
       try {
-        var JSCompiler_inline_result = "string" === typeof element.contentWindow.location.href;
+        var JSCompiler_inline_result = "string" === typeof element2.contentWindow.location.href;
       } catch (err) {
         JSCompiler_inline_result = false;
       }
-      if (JSCompiler_inline_result) containerInfo = element.contentWindow;
+      if (JSCompiler_inline_result) containerInfo = element2.contentWindow;
       else break;
-      element = getActiveElement(containerInfo.document);
+      element2 = getActiveElement(containerInfo.document);
     }
-    return element;
+    return element2;
   }
   function hasSelectionCapabilities(elem) {
     var nodeName = elem && elem.nodeName && elem.nodeName.toLowerCase();
@@ -2781,10 +2781,10 @@ function requireReactDomClient_production() {
     elements.lanes = lanes;
     return elements;
   }
-  function createFiberFromText(content, mode, lanes) {
-    content = createFiberImplClass(6, content, null, mode);
-    content.lanes = lanes;
-    return content;
+  function createFiberFromText(content2, mode, lanes) {
+    content2 = createFiberImplClass(6, content2, null, mode);
+    content2.lanes = lanes;
+    return content2;
   }
   function createFiberFromDehydratedFragment(dehydratedNode) {
     var fiber = createFiberImplClass(18, null, null, 0);
@@ -2994,7 +2994,7 @@ function requireReactDomClient_production() {
   }
   var valueCursor = createCursor(null), currentlyRenderingFiber$1 = null, lastContextDependency = null;
   function pushProvider(providerFiber, context, nextValue) {
-    push(valueCursor, context._currentValue);
+    push2(valueCursor, context._currentValue);
     context._currentValue = nextValue;
   }
   function popProvider(context) {
@@ -3013,34 +3013,34 @@ function requireReactDomClient_production() {
     var fiber = workInProgress2.child;
     null !== fiber && (fiber.return = workInProgress2);
     for (; null !== fiber; ) {
-      var list = fiber.dependencies;
-      if (null !== list) {
+      var list2 = fiber.dependencies;
+      if (null !== list2) {
         var nextFiber = fiber.child;
-        list = list.firstContext;
-        a: for (; null !== list; ) {
-          var dependency = list;
-          list = fiber;
+        list2 = list2.firstContext;
+        a: for (; null !== list2; ) {
+          var dependency = list2;
+          list2 = fiber;
           for (var i = 0; i < contexts.length; i++)
             if (dependency.context === contexts[i]) {
-              list.lanes |= renderLanes2;
-              dependency = list.alternate;
+              list2.lanes |= renderLanes2;
+              dependency = list2.alternate;
               null !== dependency && (dependency.lanes |= renderLanes2);
               scheduleContextWorkOnParentPath(
-                list.return,
+                list2.return,
                 renderLanes2,
                 workInProgress2
               );
               forcePropagateEntireTree || (nextFiber = null);
               break a;
             }
-          list = dependency.next;
+          list2 = dependency.next;
         }
       } else if (18 === fiber.tag) {
         nextFiber = fiber.return;
         if (null === nextFiber) throw Error(formatProdErrorMessage(341));
         nextFiber.lanes |= renderLanes2;
-        list = nextFiber.alternate;
-        null !== list && (list.lanes |= renderLanes2);
+        list2 = nextFiber.alternate;
+        null !== list2 && (list2.lanes |= renderLanes2);
         scheduleContextWorkOnParentPath(nextFiber, renderLanes2, workInProgress2);
         nextFiber = null;
       } else nextFiber = fiber.child;
@@ -3225,7 +3225,7 @@ function requireReactDomClient_production() {
     return null !== cacheResumedFromPreviousRender ? cacheResumedFromPreviousRender : workInProgressRoot.pooledCache;
   }
   function pushTransition(offscreenWorkInProgress, prevCachePool) {
-    null === prevCachePool ? push(resumedCache, resumedCache.current) : push(resumedCache, prevCachePool.pool);
+    null === prevCachePool ? push2(resumedCache, resumedCache.current) : push2(resumedCache, prevCachePool.pool);
   }
   function getSuspendedCache() {
     var cacheFromPool = peekCacheFromPool();
@@ -3308,9 +3308,9 @@ function requireReactDomClient_production() {
     null === thenableState$1 && (thenableState$1 = []);
     return trackUsedThenable(thenableState$1, thenable, index3);
   }
-  function coerceRef(workInProgress2, element) {
-    element = element.props.ref;
-    workInProgress2.ref = void 0 !== element ? element : null;
+  function coerceRef(workInProgress2, element2) {
+    element2 = element2.props.ref;
+    workInProgress2.ref = void 0 !== element2 ? element2 : null;
   }
   function throwOnInvalidObjectTypeImpl(returnFiber, newChild) {
     if (newChild.$$typeof === REACT_LEGACY_ELEMENT_TYPE)
@@ -3368,27 +3368,27 @@ function requireReactDomClient_production() {
       current.return = returnFiber;
       return current;
     }
-    function updateElement(returnFiber, current, element, lanes) {
-      var elementType = element.type;
+    function updateElement(returnFiber, current, element2, lanes) {
+      var elementType = element2.type;
       if (elementType === REACT_FRAGMENT_TYPE)
         return updateFragment(
           returnFiber,
           current,
-          element.props.children,
+          element2.props.children,
           lanes,
-          element.key
+          element2.key
         );
       if (null !== current && (current.elementType === elementType || "object" === typeof elementType && null !== elementType && elementType.$$typeof === REACT_LAZY_TYPE && resolveLazy(elementType) === current.type))
-        return current = useFiber(current, element.props), coerceRef(current, element), current.return = returnFiber, current;
+        return current = useFiber(current, element2.props), coerceRef(current, element2), current.return = returnFiber, current;
       current = createFiberFromTypeAndProps(
-        element.type,
-        element.key,
-        element.props,
+        element2.type,
+        element2.key,
+        element2.props,
         null,
         returnFiber.mode,
         lanes
       );
-      coerceRef(current, element);
+      coerceRef(current, element2);
       current.return = returnFiber;
       return current;
     }
@@ -3944,13 +3944,13 @@ function requireReactDomClient_production() {
   var currentTreeHiddenStackCursor = createCursor(null), prevEntangledRenderLanesCursor = createCursor(0);
   function pushHiddenContext(fiber, context) {
     fiber = entangledRenderLanes;
-    push(prevEntangledRenderLanesCursor, fiber);
-    push(currentTreeHiddenStackCursor, context);
+    push2(prevEntangledRenderLanesCursor, fiber);
+    push2(currentTreeHiddenStackCursor, context);
     entangledRenderLanes = fiber | context.baseLanes;
   }
   function reuseHiddenContextOnStack() {
-    push(prevEntangledRenderLanesCursor, entangledRenderLanes);
-    push(currentTreeHiddenStackCursor, currentTreeHiddenStackCursor.current);
+    push2(prevEntangledRenderLanesCursor, entangledRenderLanes);
+    push2(currentTreeHiddenStackCursor, currentTreeHiddenStackCursor.current);
   }
   function popHiddenContext() {
     entangledRenderLanes = prevEntangledRenderLanesCursor.current;
@@ -3960,21 +3960,21 @@ function requireReactDomClient_production() {
   var suspenseHandlerStackCursor = createCursor(null), shellBoundary = null;
   function pushPrimaryTreeSuspenseHandler(handler) {
     var current = handler.alternate;
-    push(suspenseStackCursor, suspenseStackCursor.current & 1);
-    push(suspenseHandlerStackCursor, handler);
+    push2(suspenseStackCursor, suspenseStackCursor.current & 1);
+    push2(suspenseHandlerStackCursor, handler);
     null === shellBoundary && (null === current || null !== currentTreeHiddenStackCursor.current ? shellBoundary = handler : null !== current.memoizedState && (shellBoundary = handler));
   }
   function pushDehydratedActivitySuspenseHandler(fiber) {
-    push(suspenseStackCursor, suspenseStackCursor.current);
-    push(suspenseHandlerStackCursor, fiber);
+    push2(suspenseStackCursor, suspenseStackCursor.current);
+    push2(suspenseHandlerStackCursor, fiber);
     null === shellBoundary && (shellBoundary = fiber);
   }
   function pushOffscreenSuspenseHandler(fiber) {
-    22 === fiber.tag ? (push(suspenseStackCursor, suspenseStackCursor.current), push(suspenseHandlerStackCursor, fiber), null === shellBoundary && (shellBoundary = fiber)) : reuseSuspenseHandlerOnStack();
+    22 === fiber.tag ? (push2(suspenseStackCursor, suspenseStackCursor.current), push2(suspenseHandlerStackCursor, fiber), null === shellBoundary && (shellBoundary = fiber)) : reuseSuspenseHandlerOnStack();
   }
   function reuseSuspenseHandlerOnStack() {
-    push(suspenseStackCursor, suspenseStackCursor.current);
-    push(suspenseHandlerStackCursor, suspenseHandlerStackCursor.current);
+    push2(suspenseStackCursor, suspenseStackCursor.current);
+    push2(suspenseHandlerStackCursor, suspenseHandlerStackCursor.current);
   }
   function popSuspenseHandler(fiber) {
     pop(suspenseHandlerStackCursor);
@@ -3983,25 +3983,25 @@ function requireReactDomClient_production() {
   }
   var suspenseStackCursor = createCursor(0);
   function findFirstSuspended(row) {
-    for (var node = row; null !== node; ) {
-      if (13 === node.tag) {
-        var state = node.memoizedState;
+    for (var node2 = row; null !== node2; ) {
+      if (13 === node2.tag) {
+        var state = node2.memoizedState;
         if (null !== state && (state = state.dehydrated, null === state || isSuspenseInstancePending(state) || isSuspenseInstanceFallback(state)))
-          return node;
-      } else if (19 === node.tag && ("forwards" === node.memoizedProps.revealOrder || "backwards" === node.memoizedProps.revealOrder || "unstable_legacy-backwards" === node.memoizedProps.revealOrder || "together" === node.memoizedProps.revealOrder)) {
-        if (0 !== (node.flags & 128)) return node;
-      } else if (null !== node.child) {
-        node.child.return = node;
-        node = node.child;
+          return node2;
+      } else if (19 === node2.tag && ("forwards" === node2.memoizedProps.revealOrder || "backwards" === node2.memoizedProps.revealOrder || "unstable_legacy-backwards" === node2.memoizedProps.revealOrder || "together" === node2.memoizedProps.revealOrder)) {
+        if (0 !== (node2.flags & 128)) return node2;
+      } else if (null !== node2.child) {
+        node2.child.return = node2;
+        node2 = node2.child;
         continue;
       }
-      if (node === row) break;
-      for (; null === node.sibling; ) {
-        if (null === node.return || node.return === row) return null;
-        node = node.return;
+      if (node2 === row) break;
+      for (; null === node2.sibling; ) {
+        if (null === node2.return || node2.return === row) return null;
+        node2 = node2.return;
       }
-      node.sibling.return = node.return;
-      node = node.sibling;
+      node2.sibling.return = node2.return;
+      node2 = node2.sibling;
     }
     return null;
   }
@@ -4394,36 +4394,36 @@ function requireReactDomClient_production() {
       null === setPendingState ? (actionNode.next = actionQueue.pending = actionNode, runActionStateAction(actionQueue, actionNode)) : (actionNode.next = setPendingState.next, actionQueue.pending = setPendingState.next = actionNode);
     }
   }
-  function runActionStateAction(actionQueue, node) {
-    var action = node.action, payload = node.payload, prevState = actionQueue.state;
-    if (node.isTransition) {
+  function runActionStateAction(actionQueue, node2) {
+    var action = node2.action, payload = node2.payload, prevState = actionQueue.state;
+    if (node2.isTransition) {
       var prevTransition = ReactSharedInternals.T, currentTransition = {};
       ReactSharedInternals.T = currentTransition;
       try {
         var returnValue = action(prevState, payload), onStartTransitionFinish = ReactSharedInternals.S;
         null !== onStartTransitionFinish && onStartTransitionFinish(currentTransition, returnValue);
-        handleActionReturnValue(actionQueue, node, returnValue);
+        handleActionReturnValue(actionQueue, node2, returnValue);
       } catch (error) {
-        onActionError(actionQueue, node, error);
+        onActionError(actionQueue, node2, error);
       } finally {
         null !== prevTransition && null !== currentTransition.types && (prevTransition.types = currentTransition.types), ReactSharedInternals.T = prevTransition;
       }
     } else
       try {
-        prevTransition = action(prevState, payload), handleActionReturnValue(actionQueue, node, prevTransition);
+        prevTransition = action(prevState, payload), handleActionReturnValue(actionQueue, node2, prevTransition);
       } catch (error$66) {
-        onActionError(actionQueue, node, error$66);
+        onActionError(actionQueue, node2, error$66);
       }
   }
-  function handleActionReturnValue(actionQueue, node, returnValue) {
+  function handleActionReturnValue(actionQueue, node2, returnValue) {
     null !== returnValue && "object" === typeof returnValue && "function" === typeof returnValue.then ? returnValue.then(
       function(nextState) {
-        onActionSuccess(actionQueue, node, nextState);
+        onActionSuccess(actionQueue, node2, nextState);
       },
       function(error) {
-        return onActionError(actionQueue, node, error);
+        return onActionError(actionQueue, node2, error);
       }
-    ) : onActionSuccess(actionQueue, node, returnValue);
+    ) : onActionSuccess(actionQueue, node2, returnValue);
   }
   function onActionSuccess(actionQueue, actionNode, nextState) {
     actionNode.status = "fulfilled";
@@ -6011,7 +6011,7 @@ function requireReactDomClient_production() {
     nextProps = nextProps.children;
     var suspenseContext = suspenseStackCursor.current, shouldForceFallback = 0 !== (suspenseContext & 2);
     shouldForceFallback ? (suspenseContext = suspenseContext & 1 | 2, workInProgress2.flags |= 128) : suspenseContext &= 1;
-    push(suspenseStackCursor, suspenseContext);
+    push2(suspenseStackCursor, suspenseContext);
     reconcileChildren(current, workInProgress2, nextProps, renderLanes2);
     nextProps = isHydrating ? treeForkCount : 0;
     if (!shouldForceFallback && null !== current && 0 !== (current.flags & 128))
@@ -6181,7 +6181,7 @@ function requireReactDomClient_production() {
         }
         didSuspendBefore = workInProgress2.memoizedState;
         null !== didSuspendBefore && (didSuspendBefore.rendering = null, didSuspendBefore.tail = null, didSuspendBefore.lastEffect = null);
-        push(suspenseStackCursor, suspenseStackCursor.current);
+        push2(suspenseStackCursor, suspenseStackCursor.current);
         if (state$102) break;
         else return null;
       case 22:
@@ -6860,7 +6860,7 @@ function requireReactDomClient_production() {
                   current = renderLanes2;
                   for (renderLanes2 = workInProgress2.child; null !== renderLanes2; )
                     resetWorkInProgress(renderLanes2, current), renderLanes2 = renderLanes2.sibling;
-                  push(
+                  push2(
                     suspenseStackCursor,
                     suspenseStackCursor.current & 1 | 2
                   );
@@ -6881,7 +6881,7 @@ function requireReactDomClient_production() {
           newProps.isBackwards ? (nextResource.sibling = workInProgress2.child, workInProgress2.child = nextResource) : (current = newProps.last, null !== current ? current.sibling = nextResource : workInProgress2.child = nextResource, newProps.last = nextResource);
         }
         if (null !== newProps.tail)
-          return current = newProps.tail, newProps.rendering = current, newProps.tail = current.sibling, newProps.renderingStartTime = now2(), current.sibling = null, renderLanes2 = suspenseStackCursor.current, push(
+          return current = newProps.tail, newProps.rendering = current, newProps.tail = current.sibling, newProps.renderingStartTime = now2(), current.sibling = null, renderLanes2 = suspenseStackCursor.current, push2(
             suspenseStackCursor,
             type ? renderLanes2 & 1 | 2 : renderLanes2 & 1
           ), isHydrating && pushTreeFork(workInProgress2, newProps.treeForkCount), current;
@@ -7143,21 +7143,21 @@ function requireReactDomClient_production() {
       if (!(fiber.flags & 2)) return fiber.stateNode;
     }
   }
-  function insertOrAppendPlacementNodeIntoContainer(node, before, parent) {
-    var tag = node.tag;
+  function insertOrAppendPlacementNodeIntoContainer(node2, before, parent) {
+    var tag = node2.tag;
     if (5 === tag || 6 === tag)
-      node = node.stateNode, before ? (9 === parent.nodeType ? parent.body : "HTML" === parent.nodeName ? parent.ownerDocument.body : parent).insertBefore(node, before) : (before = 9 === parent.nodeType ? parent.body : "HTML" === parent.nodeName ? parent.ownerDocument.body : parent, before.appendChild(node), parent = parent._reactRootContainer, null !== parent && void 0 !== parent || null !== before.onclick || (before.onclick = noop$1));
-    else if (4 !== tag && (27 === tag && isSingletonScope(node.type) && (parent = node.stateNode, before = null), node = node.child, null !== node))
-      for (insertOrAppendPlacementNodeIntoContainer(node, before, parent), node = node.sibling; null !== node; )
-        insertOrAppendPlacementNodeIntoContainer(node, before, parent), node = node.sibling;
+      node2 = node2.stateNode, before ? (9 === parent.nodeType ? parent.body : "HTML" === parent.nodeName ? parent.ownerDocument.body : parent).insertBefore(node2, before) : (before = 9 === parent.nodeType ? parent.body : "HTML" === parent.nodeName ? parent.ownerDocument.body : parent, before.appendChild(node2), parent = parent._reactRootContainer, null !== parent && void 0 !== parent || null !== before.onclick || (before.onclick = noop$1));
+    else if (4 !== tag && (27 === tag && isSingletonScope(node2.type) && (parent = node2.stateNode, before = null), node2 = node2.child, null !== node2))
+      for (insertOrAppendPlacementNodeIntoContainer(node2, before, parent), node2 = node2.sibling; null !== node2; )
+        insertOrAppendPlacementNodeIntoContainer(node2, before, parent), node2 = node2.sibling;
   }
-  function insertOrAppendPlacementNode(node, before, parent) {
-    var tag = node.tag;
+  function insertOrAppendPlacementNode(node2, before, parent) {
+    var tag = node2.tag;
     if (5 === tag || 6 === tag)
-      node = node.stateNode, before ? parent.insertBefore(node, before) : parent.appendChild(node);
-    else if (4 !== tag && (27 === tag && isSingletonScope(node.type) && (parent = node.stateNode), node = node.child, null !== node))
-      for (insertOrAppendPlacementNode(node, before, parent), node = node.sibling; null !== node; )
-        insertOrAppendPlacementNode(node, before, parent), node = node.sibling;
+      node2 = node2.stateNode, before ? parent.insertBefore(node2, before) : parent.appendChild(node2);
+    else if (4 !== tag && (27 === tag && isSingletonScope(node2.type) && (parent = node2.stateNode), node2 = node2.child, null !== node2))
+      for (insertOrAppendPlacementNode(node2, before, parent), node2 = node2.sibling; null !== node2; )
+        insertOrAppendPlacementNode(node2, before, parent), node2 = node2.sibling;
   }
   function commitHostSingletonAcquisition(finishedWork) {
     var singleton = finishedWork.stateNode, props = finishedWork.memoizedProps;
@@ -7196,25 +7196,25 @@ function requireReactDomClient_production() {
               JSCompiler_temp = null;
               break a;
             }
-            var length = 0, start2 = -1, end = -1, indexWithinAnchor = 0, indexWithinFocus = 0, node = root3, parentNode = null;
+            var length = 0, start2 = -1, end = -1, indexWithinAnchor = 0, indexWithinFocus = 0, node2 = root3, parentNode = null;
             b: for (; ; ) {
               for (var next; ; ) {
-                node !== JSCompiler_temp || 0 !== anchorOffset && 3 !== node.nodeType || (start2 = length + anchorOffset);
-                node !== focusNode || 0 !== selection2 && 3 !== node.nodeType || (end = length + selection2);
-                3 === node.nodeType && (length += node.nodeValue.length);
-                if (null === (next = node.firstChild)) break;
-                parentNode = node;
-                node = next;
+                node2 !== JSCompiler_temp || 0 !== anchorOffset && 3 !== node2.nodeType || (start2 = length + anchorOffset);
+                node2 !== focusNode || 0 !== selection2 && 3 !== node2.nodeType || (end = length + selection2);
+                3 === node2.nodeType && (length += node2.nodeValue.length);
+                if (null === (next = node2.firstChild)) break;
+                parentNode = node2;
+                node2 = next;
               }
               for (; ; ) {
-                if (node === root3) break b;
+                if (node2 === root3) break b;
                 parentNode === JSCompiler_temp && ++indexWithinAnchor === anchorOffset && (start2 = length);
                 parentNode === focusNode && ++indexWithinFocus === selection2 && (end = length);
-                if (null !== (next = node.nextSibling)) break;
-                node = parentNode;
-                parentNode = node.parentNode;
+                if (null !== (next = node2.nextSibling)) break;
+                node2 = parentNode;
+                parentNode = node2.parentNode;
               }
-              node = next;
+              node2 = next;
             }
             JSCompiler_temp = -1 === start2 || -1 === end ? null : { start: start2, end };
           } else JSCompiler_temp = null;
@@ -8757,9 +8757,9 @@ function requireReactDomClient_production() {
     );
   }
   function isRenderConsistentWithExternalStores(finishedWork) {
-    for (var node = finishedWork; ; ) {
-      var tag = node.tag;
-      if ((0 === tag || 11 === tag || 15 === tag) && node.flags & 16384 && (tag = node.updateQueue, null !== tag && (tag = tag.stores, null !== tag)))
+    for (var node2 = finishedWork; ; ) {
+      var tag = node2.tag;
+      if ((0 === tag || 11 === tag || 15 === tag) && node2.flags & 16384 && (tag = node2.updateQueue, null !== tag && (tag = tag.stores, null !== tag)))
         for (var i = 0; i < tag.length; i++) {
           var check = tag[i], getSnapshot = check.getSnapshot;
           check = check.value;
@@ -8769,17 +8769,17 @@ function requireReactDomClient_production() {
             return false;
           }
         }
-      tag = node.child;
-      if (node.subtreeFlags & 16384 && null !== tag)
-        tag.return = node, node = tag;
+      tag = node2.child;
+      if (node2.subtreeFlags & 16384 && null !== tag)
+        tag.return = node2, node2 = tag;
       else {
-        if (node === finishedWork) break;
-        for (; null === node.sibling; ) {
-          if (null === node.return || node.return === finishedWork) return true;
-          node = node.return;
+        if (node2 === finishedWork) break;
+        for (; null === node2.sibling; ) {
+          if (null === node2.return || node2.return === finishedWork) return true;
+          node2 = node2.return;
         }
-        node.sibling.return = node.return;
-        node = node.sibling;
+        node2.sibling.return = node2.return;
+        node2 = node2.sibling;
       }
     }
     return true;
@@ -10714,7 +10714,7 @@ function requireReactDomClient_production() {
       case "li":
         break;
       case "input":
-        var name = null, type = null, value = null, defaultValue = null, lastDefaultValue = null, checked = null, defaultChecked = null;
+        var name2 = null, type = null, value = null, defaultValue = null, lastDefaultValue = null, checked = null, defaultChecked = null;
         for (propKey in lastProps) {
           var lastProp = lastProps[propKey];
           if (lastProps.hasOwnProperty(propKey) && null != lastProp)
@@ -10738,7 +10738,7 @@ function requireReactDomClient_production() {
                 type = propKey;
                 break;
               case "name":
-                name = propKey;
+                name2 = propKey;
                 break;
               case "checked":
                 checked = propKey;
@@ -10776,7 +10776,7 @@ function requireReactDomClient_production() {
           checked,
           defaultChecked,
           type,
-          name
+          name2
         );
         return;
       case "select":
@@ -10798,9 +10798,9 @@ function requireReactDomClient_production() {
                   lastDefaultValue
                 );
             }
-        for (name in nextProps)
-          if (type = nextProps[name], lastDefaultValue = lastProps[name], nextProps.hasOwnProperty(name) && (null != type || null != lastDefaultValue))
-            switch (name) {
+        for (name2 in nextProps)
+          if (type = nextProps[name2], lastDefaultValue = lastProps[name2], nextProps.hasOwnProperty(name2) && (null != type || null != lastDefaultValue))
+            switch (name2) {
               case "value":
                 propKey$201 = type;
                 break;
@@ -10813,7 +10813,7 @@ function requireReactDomClient_production() {
                 type !== lastDefaultValue && setProp(
                   domElement,
                   tag,
-                  name,
+                  name2,
                   type,
                   nextProps,
                   lastDefaultValue
@@ -10827,31 +10827,31 @@ function requireReactDomClient_production() {
       case "textarea":
         propKey = propKey$201 = null;
         for (defaultValue in lastProps)
-          if (name = lastProps[defaultValue], lastProps.hasOwnProperty(defaultValue) && null != name && !nextProps.hasOwnProperty(defaultValue))
+          if (name2 = lastProps[defaultValue], lastProps.hasOwnProperty(defaultValue) && null != name2 && !nextProps.hasOwnProperty(defaultValue))
             switch (defaultValue) {
               case "value":
                 break;
               case "children":
                 break;
               default:
-                setProp(domElement, tag, defaultValue, null, nextProps, name);
+                setProp(domElement, tag, defaultValue, null, nextProps, name2);
             }
         for (value in nextProps)
-          if (name = nextProps[value], type = lastProps[value], nextProps.hasOwnProperty(value) && (null != name || null != type))
+          if (name2 = nextProps[value], type = lastProps[value], nextProps.hasOwnProperty(value) && (null != name2 || null != type))
             switch (value) {
               case "value":
-                propKey$201 = name;
+                propKey$201 = name2;
                 break;
               case "defaultValue":
-                propKey = name;
+                propKey = name2;
                 break;
               case "children":
                 break;
               case "dangerouslySetInnerHTML":
-                if (null != name) throw Error(formatProdErrorMessage(91));
+                if (null != name2) throw Error(formatProdErrorMessage(91));
                 break;
               default:
-                name !== type && setProp(domElement, tag, value, name, nextProps, type);
+                name2 !== type && setProp(domElement, tag, value, name2, nextProps, type);
             }
         updateTextarea(domElement, propKey$201, propKey);
         return;
@@ -11042,71 +11042,71 @@ function requireReactDomClient_production() {
     return "head" === type;
   }
   function clearHydrationBoundary(parentInstance, hydrationInstance) {
-    var node = hydrationInstance, depth = 0;
+    var node2 = hydrationInstance, depth = 0;
     do {
-      var nextNode = node.nextSibling;
-      parentInstance.removeChild(node);
+      var nextNode = node2.nextSibling;
+      parentInstance.removeChild(node2);
       if (nextNode && 8 === nextNode.nodeType)
-        if (node = nextNode.data, "/$" === node || "/&" === node) {
+        if (node2 = nextNode.data, "/$" === node2 || "/&" === node2) {
           if (0 === depth) {
             parentInstance.removeChild(nextNode);
             retryIfBlockedOn(hydrationInstance);
             return;
           }
           depth--;
-        } else if ("$" === node || "$?" === node || "$~" === node || "$!" === node || "&" === node)
+        } else if ("$" === node2 || "$?" === node2 || "$~" === node2 || "$!" === node2 || "&" === node2)
           depth++;
-        else if ("html" === node)
+        else if ("html" === node2)
           releaseSingletonInstance(parentInstance.ownerDocument.documentElement);
-        else if ("head" === node) {
-          node = parentInstance.ownerDocument.head;
-          releaseSingletonInstance(node);
-          for (var node$jscomp$0 = node.firstChild; node$jscomp$0; ) {
+        else if ("head" === node2) {
+          node2 = parentInstance.ownerDocument.head;
+          releaseSingletonInstance(node2);
+          for (var node$jscomp$0 = node2.firstChild; node$jscomp$0; ) {
             var nextNode$jscomp$0 = node$jscomp$0.nextSibling, nodeName = node$jscomp$0.nodeName;
-            node$jscomp$0[internalHoistableMarker] || "SCRIPT" === nodeName || "STYLE" === nodeName || "LINK" === nodeName && "stylesheet" === node$jscomp$0.rel.toLowerCase() || node.removeChild(node$jscomp$0);
+            node$jscomp$0[internalHoistableMarker] || "SCRIPT" === nodeName || "STYLE" === nodeName || "LINK" === nodeName && "stylesheet" === node$jscomp$0.rel.toLowerCase() || node2.removeChild(node$jscomp$0);
             node$jscomp$0 = nextNode$jscomp$0;
           }
         } else
-          "body" === node && releaseSingletonInstance(parentInstance.ownerDocument.body);
-      node = nextNode;
-    } while (node);
+          "body" === node2 && releaseSingletonInstance(parentInstance.ownerDocument.body);
+      node2 = nextNode;
+    } while (node2);
     retryIfBlockedOn(hydrationInstance);
   }
   function hideOrUnhideDehydratedBoundary(suspenseInstance, isHidden) {
-    var node = suspenseInstance;
+    var node2 = suspenseInstance;
     suspenseInstance = 0;
     do {
-      var nextNode = node.nextSibling;
-      1 === node.nodeType ? isHidden ? (node._stashedDisplay = node.style.display, node.style.display = "none") : (node.style.display = node._stashedDisplay || "", "" === node.getAttribute("style") && node.removeAttribute("style")) : 3 === node.nodeType && (isHidden ? (node._stashedText = node.nodeValue, node.nodeValue = "") : node.nodeValue = node._stashedText || "");
+      var nextNode = node2.nextSibling;
+      1 === node2.nodeType ? isHidden ? (node2._stashedDisplay = node2.style.display, node2.style.display = "none") : (node2.style.display = node2._stashedDisplay || "", "" === node2.getAttribute("style") && node2.removeAttribute("style")) : 3 === node2.nodeType && (isHidden ? (node2._stashedText = node2.nodeValue, node2.nodeValue = "") : node2.nodeValue = node2._stashedText || "");
       if (nextNode && 8 === nextNode.nodeType)
-        if (node = nextNode.data, "/$" === node)
+        if (node2 = nextNode.data, "/$" === node2)
           if (0 === suspenseInstance) break;
           else suspenseInstance--;
         else
-          "$" !== node && "$?" !== node && "$~" !== node && "$!" !== node || suspenseInstance++;
-      node = nextNode;
-    } while (node);
+          "$" !== node2 && "$?" !== node2 && "$~" !== node2 && "$!" !== node2 || suspenseInstance++;
+      node2 = nextNode;
+    } while (node2);
   }
   function clearContainerSparingly(container) {
     var nextNode = container.firstChild;
     nextNode && 10 === nextNode.nodeType && (nextNode = nextNode.nextSibling);
     for (; nextNode; ) {
-      var node = nextNode;
+      var node2 = nextNode;
       nextNode = nextNode.nextSibling;
-      switch (node.nodeName) {
+      switch (node2.nodeName) {
         case "HTML":
         case "HEAD":
         case "BODY":
-          clearContainerSparingly(node);
-          detachDeletedInstance(node);
+          clearContainerSparingly(node2);
+          detachDeletedInstance(node2);
           continue;
         case "SCRIPT":
         case "STYLE":
           continue;
         case "LINK":
-          if ("stylesheet" === node.rel.toLowerCase()) continue;
+          if ("stylesheet" === node2.rel.toLowerCase()) continue;
       }
-      container.removeChild(node);
+      container.removeChild(node2);
     }
   }
   function canHydrateInstance(instance, type, props, inRootOrSingleton) {
@@ -11117,8 +11117,8 @@ function requireReactDomClient_production() {
           break;
       } else if (!inRootOrSingleton)
         if ("input" === type && "hidden" === instance.type) {
-          var name = null == anyProps.name ? null : "" + anyProps.name;
-          if ("hidden" === anyProps.type && instance.getAttribute("name") === name)
+          var name2 = null == anyProps.name ? null : "" + anyProps.name;
+          if ("hidden" === anyProps.type && instance.getAttribute("name") === name2)
             return instance;
         } else return instance;
       else if (!instance[internalHoistableMarker])
@@ -11127,18 +11127,18 @@ function requireReactDomClient_production() {
             if (!instance.hasAttribute("itemprop")) break;
             return instance;
           case "link":
-            name = instance.getAttribute("rel");
-            if ("stylesheet" === name && instance.hasAttribute("data-precedence"))
+            name2 = instance.getAttribute("rel");
+            if ("stylesheet" === name2 && instance.hasAttribute("data-precedence"))
               break;
-            else if (name !== anyProps.rel || instance.getAttribute("href") !== (null == anyProps.href || "" === anyProps.href ? null : anyProps.href) || instance.getAttribute("crossorigin") !== (null == anyProps.crossOrigin ? null : anyProps.crossOrigin) || instance.getAttribute("title") !== (null == anyProps.title ? null : anyProps.title))
+            else if (name2 !== anyProps.rel || instance.getAttribute("href") !== (null == anyProps.href || "" === anyProps.href ? null : anyProps.href) || instance.getAttribute("crossorigin") !== (null == anyProps.crossOrigin ? null : anyProps.crossOrigin) || instance.getAttribute("title") !== (null == anyProps.title ? null : anyProps.title))
               break;
             return instance;
           case "style":
             if (instance.hasAttribute("data-precedence")) break;
             return instance;
           case "script":
-            name = instance.getAttribute("src");
-            if ((name !== (null == anyProps.src ? null : anyProps.src) || instance.getAttribute("type") !== (null == anyProps.type ? null : anyProps.type) || instance.getAttribute("crossorigin") !== (null == anyProps.crossOrigin ? null : anyProps.crossOrigin)) && name && instance.hasAttribute("async") && !instance.hasAttribute("itemprop"))
+            name2 = instance.getAttribute("src");
+            if ((name2 !== (null == anyProps.src ? null : anyProps.src) || instance.getAttribute("type") !== (null == anyProps.type ? null : anyProps.type) || instance.getAttribute("crossorigin") !== (null == anyProps.crossOrigin ? null : anyProps.crossOrigin)) && name2 && instance.hasAttribute("async") && !instance.hasAttribute("itemprop"))
               break;
             return instance;
           default:
@@ -11149,8 +11149,8 @@ function requireReactDomClient_production() {
     }
     return null;
   }
-  function canHydrateTextInstance(instance, text, inRootOrSingleton) {
-    if ("" === text) return null;
+  function canHydrateTextInstance(instance, text2, inRootOrSingleton) {
+    if ("" === text2) return null;
     for (; 3 !== instance.nodeType; ) {
       if ((1 !== instance.nodeType || "INPUT" !== instance.nodeName || "hidden" !== instance.type) && !inRootOrSingleton)
         return null;
@@ -11188,18 +11188,18 @@ function requireReactDomClient_production() {
       instance._reactRetry = listener;
     }
   }
-  function getNextHydratable(node) {
-    for (; null != node; node = node.nextSibling) {
-      var nodeType = node.nodeType;
+  function getNextHydratable(node2) {
+    for (; null != node2; node2 = node2.nextSibling) {
+      var nodeType = node2.nodeType;
       if (1 === nodeType || 3 === nodeType) break;
       if (8 === nodeType) {
-        nodeType = node.data;
+        nodeType = node2.data;
         if ("$" === nodeType || "$!" === nodeType || "$?" === nodeType || "$~" === nodeType || "&" === nodeType || "F!" === nodeType || "F" === nodeType)
           break;
         if ("/$" === nodeType || "/&" === nodeType) return null;
       }
     }
-    return node;
+    return node2;
   }
   var previousHydratableOnEnteringScopedSingleton = null;
   function getNextHydratableInstanceAfterHydrationBoundary(hydrationInstance) {
@@ -11377,17 +11377,17 @@ function requireReactDomClient_production() {
             options2
           );
           (options2 = preloadPropsMap.get(key)) && adoptPreloadPropsForStylesheet(href, options2);
-          var link = resource = ownerDocument.createElement("link");
-          markNodeAsHoistable(link);
-          setInitialProperties(link, "link", href);
-          link._p = new Promise(function(resolve, reject) {
-            link.onload = resolve;
-            link.onerror = reject;
+          var link2 = resource = ownerDocument.createElement("link");
+          markNodeAsHoistable(link2);
+          setInitialProperties(link2, "link", href);
+          link2._p = new Promise(function(resolve, reject) {
+            link2.onload = resolve;
+            link2.onerror = reject;
           });
-          link.addEventListener("load", function() {
+          link2.addEventListener("load", function() {
             state.loading |= 1;
           });
-          link.addEventListener("error", function() {
+          link2.addEventListener("error", function() {
             state.loading |= 2;
           });
           state.loading |= 4;
@@ -11589,8 +11589,8 @@ function requireReactDomClient_production() {
     for (var nodes = root3.querySelectorAll(
       'link[rel="stylesheet"][data-precedence],style[data-precedence]'
     ), last = nodes.length ? nodes[nodes.length - 1] : null, prior = last, i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      if (node.dataset.precedence === precedence) prior = node;
+      var node2 = nodes[i];
+      if (node2.dataset.precedence === precedence) prior = node2;
       else if (prior !== last) break;
     }
     prior ? prior.parentNode.insertBefore(instance, prior.nextSibling) : (precedence = 9 === root3.nodeType ? root3.head : root3, precedence.insertBefore(instance, precedence.firstChild));
@@ -11617,12 +11617,12 @@ function requireReactDomClient_production() {
     cache.set(type, null);
     ownerDocument = ownerDocument.getElementsByTagName(type);
     for (caches = 0; caches < ownerDocument.length; caches++) {
-      var node = ownerDocument[caches];
-      if (!(node[internalHoistableMarker] || node[internalInstanceKey] || "link" === type && "stylesheet" === node.getAttribute("rel")) && "http://www.w3.org/2000/svg" !== node.namespaceURI) {
-        var nodeKey = node.getAttribute(keyAttribute) || "";
+      var node2 = ownerDocument[caches];
+      if (!(node2[internalHoistableMarker] || node2[internalInstanceKey] || "link" === type && "stylesheet" === node2.getAttribute("rel")) && "http://www.w3.org/2000/svg" !== node2.namespaceURI) {
+        var nodeKey = node2.getAttribute(keyAttribute) || "";
         nodeKey = type + nodeKey;
         var existing = cache.get(nodeKey);
-        existing ? existing.push(node) : cache.set(nodeKey, [node]);
+        existing ? existing.push(node2) : cache.set(nodeKey, [node2]);
       }
     }
     return cache;
@@ -11752,17 +11752,17 @@ function requireReactDomClient_production() {
         for (var nodes = root3.querySelectorAll(
           "link[data-precedence],style[data-precedence]"
         ), i = 0; i < nodes.length; i++) {
-          var node = nodes[i];
-          if ("LINK" === node.nodeName || "not all" !== node.getAttribute("media"))
-            precedences.set(node.dataset.precedence, node), last = node;
+          var node2 = nodes[i];
+          if ("LINK" === node2.nodeName || "not all" !== node2.getAttribute("media"))
+            precedences.set(node2.dataset.precedence, node2), last = node2;
         }
         last && precedences.set(null, last);
       }
       nodes = resource.instance;
-      node = nodes.getAttribute("data-precedence");
-      i = precedences.get(node) || last;
+      node2 = nodes.getAttribute("data-precedence");
+      i = precedences.get(node2) || last;
       i === last && precedences.set(null, nodes);
-      precedences.set(node, nodes);
+      precedences.set(node2, nodes);
       this.count++;
       last = onUnsuspend.bind(this);
       nodes.addEventListener("load", last);
@@ -11833,15 +11833,15 @@ function requireReactDomClient_production() {
     parentComponent = emptyContextObject;
     return parentComponent;
   }
-  function updateContainerImpl(rootFiber, lane, element, container, parentComponent, callback) {
+  function updateContainerImpl(rootFiber, lane, element2, container, parentComponent, callback) {
     parentComponent = getContextForSubtree(parentComponent);
     null === container.context ? container.context = parentComponent : container.pendingContext = parentComponent;
     container = createUpdate(lane);
-    container.payload = { element };
+    container.payload = { element: element2 };
     callback = void 0 === callback ? null : callback;
     null !== callback && (container.callback = callback);
-    element = enqueueUpdate(rootFiber, container, lane);
-    null !== element && (scheduleUpdateOnFiber(element, rootFiber, lane), entangleTransitions(element, rootFiber, lane));
+    element2 = enqueueUpdate(rootFiber, container, lane);
+    null !== element2 && (scheduleUpdateOnFiber(element2, rootFiber, lane), entangleTransitions(element2, rootFiber, lane));
   }
   function markRetryLaneImpl(fiber, retryLane) {
     fiber = fiber.memoizedState;
@@ -12228,8 +12228,8 @@ function requireReactDomClient_production() {
     }
     return true;
   }
-  function attemptReplayContinuousQueuedEventInMap(queuedEvent, key, map) {
-    attemptReplayContinuousQueuedEvent(queuedEvent) && map.delete(key);
+  function attemptReplayContinuousQueuedEventInMap(queuedEvent, key, map2) {
+    attemptReplayContinuousQueuedEvent(queuedEvent) && map2.delete(key);
   }
   function replayUnblockedEvents() {
     hasScheduledReplayAttempt = false;
@@ -12499,14 +12499,14 @@ function requireClient() {
 }
 var clientExports = requireClient();
 const ReactDOM = /* @__PURE__ */ getDefaultExportFromCjs(clientExports);
-const createStoreImpl$1 = (createState) => {
+const createStoreImpl$1 = (createState2) => {
   let state;
   const listeners = /* @__PURE__ */ new Set();
-  const setState = (partial, replace) => {
+  const setState = (partial, replace2) => {
     const nextState = typeof partial === "function" ? partial(state) : partial;
     if (!Object.is(nextState, state)) {
       const previousState = state;
-      state = (replace != null ? replace : typeof nextState !== "object" || nextState === null) ? nextState : Object.assign({}, state, nextState);
+      state = (replace2 != null ? replace2 : typeof nextState !== "object" || nextState === null) ? nextState : Object.assign({}, state, nextState);
       listeners.forEach((listener) => listener(state, previousState));
     }
   };
@@ -12517,10 +12517,10 @@ const createStoreImpl$1 = (createState) => {
     return () => listeners.delete(listener);
   };
   const api = { setState, getState, getInitialState: getInitialState2, subscribe };
-  const initialState = state = createState(setState, getState, api);
+  const initialState = state = createState2(setState, getState, api);
   return api;
 };
-const createStore$2 = ((createState) => createState ? createStoreImpl$1(createState) : createStoreImpl$1);
+const createStore$2 = ((createState2) => createState2 ? createStoreImpl$1(createState2) : createStoreImpl$1);
 const identity$3 = (arg) => arg;
 function useStore$1(api, selector2 = identity$3) {
   const slice = React.useSyncExternalStore(
@@ -12531,13 +12531,13 @@ function useStore$1(api, selector2 = identity$3) {
   React.useDebugValue(slice);
   return slice;
 }
-const createImpl = (createState) => {
-  const api = createStore$2(createState);
+const createImpl = (createState2) => {
+  const api = createStore$2(createState2);
   const useBoundStore = (selector2) => useStore$1(api, selector2);
   Object.assign(useBoundStore, api);
   return useBoundStore;
 };
-const create$1 = ((createState) => createState ? createImpl(createState) : createImpl);
+const create$2 = ((createState2) => createState2 ? createImpl(createState2) : createImpl);
 const byteToHex = [];
 for (let i = 0; i < 256; ++i) {
   byteToHex.push((i + 256).toString(16).slice(1));
@@ -12571,7 +12571,7 @@ function v4(options, buf, offset) {
   rnds[8] = rnds[8] & 63 | 128;
   return unsafeStringify(rnds);
 }
-const useBoardStore = create$1((set2, get2) => ({
+const useBoardStore = create$2((set2, get2) => ({
   // 初期状態
   board: null,
   nodes: [],
@@ -12587,6 +12587,7 @@ const useBoardStore = create$1((set2, get2) => ({
     const now2 = (/* @__PURE__ */ new Date()).toISOString();
     const boardId = v4();
     const rootNodeId = v4();
+    const initialQuestionId = v4();
     const rootNode = {
       id: rootNodeId,
       boardId,
@@ -12605,6 +12606,24 @@ const useBoardStore = create$1((set2, get2) => ({
         pin: true
       }
     };
+    const initialQuestionContent = description || title;
+    const initialQuestionNode = {
+      id: initialQuestionId,
+      boardId,
+      type: "message",
+      role: "user",
+      title: "",
+      content: initialQuestionContent,
+      parentIds: [rootNodeId],
+      childrenIds: [],
+      createdBy: "user",
+      createdAt: now2,
+      updatedAt: now2,
+      position: { x: 0, y: 150 },
+      metadata: {
+        importance: 4
+      }
+    };
     const board = {
       id: boardId,
       title,
@@ -12620,9 +12639,15 @@ const useBoardStore = create$1((set2, get2) => ({
     };
     set2({
       board,
-      nodes: [rootNode],
+      nodes: [
+        {
+          ...rootNode,
+          childrenIds: [initialQuestionId]
+        },
+        initialQuestionNode
+      ],
       summaries: [],
-      selectedNodeId: null,
+      selectedNodeId: initialQuestionId,
       filePath: null,
       isDirty: true
     });
@@ -12649,7 +12674,7 @@ const useBoardStore = create$1((set2, get2) => ({
   },
   addNode: (nodeData) => {
     const now2 = (/* @__PURE__ */ new Date()).toISOString();
-    const node = {
+    const node2 = {
       ...nodeData,
       id: v4(),
       childrenIds: [],
@@ -12661,18 +12686,18 @@ const useBoardStore = create$1((set2, get2) => ({
         if (nodeData.parentIds.includes(n.id)) {
           return {
             ...n,
-            childrenIds: [...n.childrenIds, node.id],
+            childrenIds: [...n.childrenIds, node2.id],
             updatedAt: now2
           };
         }
         return n;
       });
       return {
-        nodes: [...updatedNodes, node],
+        nodes: [...updatedNodes, node2],
         isDirty: true
       };
     });
-    return node;
+    return node2;
   },
   updateNode: (nodeId, updates) => {
     set2((state) => ({
@@ -12687,9 +12712,9 @@ const useBoardStore = create$1((set2, get2) => ({
       const nodeToDelete = state.nodes.find((n) => n.id === nodeId);
       if (!nodeToDelete) return state;
       const getDescendants = (id2) => {
-        const node = state.nodes.find((n) => n.id === id2);
-        if (!node) return [];
-        return [id2, ...node.childrenIds.flatMap(getDescendants)];
+        const node2 = state.nodes.find((n) => n.id === id2);
+        if (!node2) return [];
+        return [id2, ...node2.childrenIds.flatMap(getDescendants)];
       };
       const nodesToDelete = new Set(getDescendants(nodeId));
       const updatedNodes = state.nodes.filter((n) => !nodesToDelete.has(n.id)).map((n) => ({
@@ -12729,8 +12754,8 @@ const useBoardStore = create$1((set2, get2) => ({
       isDirty: true
     }));
   },
-  setFilePath: (path) => {
-    set2({ filePath: path });
+  setFilePath: (path2) => {
+    set2({ filePath: path2 });
   },
   markClean: () => {
     set2({ isDirty: false });
@@ -12806,9 +12831,58 @@ const useBoardStore = create$1((set2, get2) => ({
       isConnectingParent: false,
       connectingFromNodeId: null
     }));
+  },
+  removeParentChild: (parentId, childId) => {
+    const state = get2();
+    const childNode = state.nodes.find((n) => n.id === childId);
+    if (!childNode) return;
+    if (childNode.parentIds.length <= 1) return;
+    const now2 = (/* @__PURE__ */ new Date()).toISOString();
+    set2((state2) => ({
+      nodes: state2.nodes.map((n) => {
+        if (n.id === childId) {
+          return {
+            ...n,
+            parentIds: n.parentIds.filter((id2) => id2 !== parentId),
+            updatedAt: now2
+          };
+        }
+        if (n.id === parentId) {
+          return {
+            ...n,
+            childrenIds: n.childrenIds.filter((id2) => id2 !== childId),
+            updatedAt: now2
+          };
+        }
+        return n;
+      }),
+      isDirty: true
+    }));
+  },
+  setMainParent: (nodeId, newMainParentId) => {
+    const state = get2();
+    const node2 = state.nodes.find((n) => n.id === nodeId);
+    if (!node2) return;
+    if (!node2.parentIds.includes(newMainParentId)) return;
+    if (node2.parentIds[0] === newMainParentId) return;
+    const now2 = (/* @__PURE__ */ new Date()).toISOString();
+    const otherParents = node2.parentIds.filter((id2) => id2 !== newMainParentId);
+    set2((state2) => ({
+      nodes: state2.nodes.map((n) => {
+        if (n.id === nodeId) {
+          return {
+            ...n,
+            parentIds: [newMainParentId, ...otherParents],
+            updatedAt: now2
+          };
+        }
+        return n;
+      }),
+      isDirty: true
+    }));
   }
 }));
-const useSettingsStore = create$1((set2, get2) => ({
+const useSettingsStore = create$2((set2, get2) => ({
   settings: {
     theme: "system"
   },
@@ -13007,8 +13081,8 @@ const BoardSelectorDialog = ({ isOpen, onClose }) => {
   const loadBoardList = async () => {
     setIsLoadingList(true);
     try {
-      const list = await window.electronAPI.getBoardList();
-      setBoards(list);
+      const list2 = await window.electronAPI.getBoardList();
+      setBoards(list2);
     } catch (error) {
       console.error("Failed to load board list:", error);
     } finally {
@@ -13226,9 +13300,9 @@ const Toolbar = () => {
     if (!data) return;
     setLoading(true);
     try {
-      const path = await window.electronAPI.saveBoard(data, useBoardStore.getState().filePath || void 0);
-      if (path) {
-        setFilePath(path);
+      const path2 = await window.electronAPI.saveBoard(data, useBoardStore.getState().filePath || void 0);
+      if (path2) {
+        setFilePath(path2);
         markClean();
       }
     } catch (error) {
@@ -13454,12 +13528,12 @@ function dispatch() {
 function Dispatch(_) {
   this._ = _;
 }
-function parseTypenames$1(typenames, types) {
+function parseTypenames$1(typenames, types2) {
   return typenames.trim().split(/^|\s+/).map(function(t) {
-    var name = "", i = t.indexOf(".");
-    if (i >= 0) name = t.slice(i + 1), t = t.slice(0, i);
-    if (t && !types.hasOwnProperty(t)) throw new Error("unknown type: " + t);
-    return { type: t, name };
+    var name2 = "", i = t.indexOf(".");
+    if (i >= 0) name2 = t.slice(i + 1), t = t.slice(0, i);
+    if (t && !types2.hasOwnProperty(t)) throw new Error("unknown type: " + t);
+    return { type: t, name: name2 };
   });
 }
 Dispatch.prototype = dispatch.prototype = {
@@ -13492,21 +13566,21 @@ Dispatch.prototype = dispatch.prototype = {
     for (var t = this._[type], i = 0, n = t.length; i < n; ++i) t[i].value.apply(that, args);
   }
 };
-function get$1(type, name) {
+function get$1(type, name2) {
   for (var i = 0, n = type.length, c; i < n; ++i) {
-    if ((c = type[i]).name === name) {
+    if ((c = type[i]).name === name2) {
       return c.value;
     }
   }
 }
-function set$1(type, name, callback) {
+function set$1(type, name2, callback) {
   for (var i = 0, n = type.length; i < n; ++i) {
-    if (type[i].name === name) {
+    if (type[i].name === name2) {
       type[i] = noop, type = type.slice(0, i).concat(type.slice(i + 1));
       break;
     }
   }
-  if (callback != null) type.push({ name, value: callback });
+  if (callback != null) type.push({ name: name2, value: callback });
   return type;
 }
 var xhtml = "http://www.w3.org/1999/xhtml";
@@ -13517,15 +13591,15 @@ const namespaces = {
   xml: "http://www.w3.org/XML/1998/namespace",
   xmlns: "http://www.w3.org/2000/xmlns/"
 };
-function namespace(name) {
-  var prefix = name += "", i = prefix.indexOf(":");
-  if (i >= 0 && (prefix = name.slice(0, i)) !== "xmlns") name = name.slice(i + 1);
-  return namespaces.hasOwnProperty(prefix) ? { space: namespaces[prefix], local: name } : name;
+function namespace(name2) {
+  var prefix = name2 += "", i = prefix.indexOf(":");
+  if (i >= 0 && (prefix = name2.slice(0, i)) !== "xmlns") name2 = name2.slice(i + 1);
+  return namespaces.hasOwnProperty(prefix) ? { space: namespaces[prefix], local: name2 } : name2;
 }
-function creatorInherit(name) {
+function creatorInherit(name2) {
   return function() {
     var document2 = this.ownerDocument, uri = this.namespaceURI;
-    return uri === xhtml && document2.documentElement.namespaceURI === xhtml ? document2.createElement(name) : document2.createElementNS(uri, name);
+    return uri === xhtml && document2.documentElement.namespaceURI === xhtml ? document2.createElement(name2) : document2.createElementNS(uri, name2);
   };
 }
 function creatorFixed(fullname) {
@@ -13533,8 +13607,8 @@ function creatorFixed(fullname) {
     return this.ownerDocument.createElementNS(fullname.space, fullname.local);
   };
 }
-function creator(name) {
-  var fullname = namespace(name);
+function creator(name2) {
+  var fullname = namespace(name2);
   return (fullname.local ? creatorFixed : creatorInherit)(fullname);
 }
 function none() {
@@ -13547,9 +13621,9 @@ function selector(selector2) {
 function selection_select(select2) {
   if (typeof select2 !== "function") select2 = selector(select2);
   for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group = groups[j], n = group.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
-      if ((node = group[i]) && (subnode = select2.call(node, node.__data__, i, group))) {
-        if ("__data__" in node) subnode.__data__ = node.__data__;
+    for (var group = groups[j], n = group.length, subgroup = subgroups[j] = new Array(n), node2, subnode, i = 0; i < n; ++i) {
+      if ((node2 = group[i]) && (subnode = select2.call(node2, node2.__data__, i, group))) {
+        if ("__data__" in node2) subnode.__data__ = node2.__data__;
         subgroup[i] = subnode;
       }
     }
@@ -13559,11 +13633,11 @@ function selection_select(select2) {
 function array(x) {
   return x == null ? [] : Array.isArray(x) ? x : Array.from(x);
 }
-function empty() {
+function empty$2() {
   return [];
 }
 function selectorAll(selector2) {
-  return selector2 == null ? empty : function() {
+  return selector2 == null ? empty$2 : function() {
     return this.querySelectorAll(selector2);
   };
 }
@@ -13576,10 +13650,10 @@ function selection_selectAll(select2) {
   if (typeof select2 === "function") select2 = arrayAll(select2);
   else select2 = selectorAll(select2);
   for (var groups = this._groups, m = groups.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
-    for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
-      if (node = group[i]) {
-        subgroups.push(select2.call(node, node.__data__, i, group));
-        parents.push(node);
+    for (var group = groups[j], n = group.length, node2, i = 0; i < n; ++i) {
+      if (node2 = group[i]) {
+        subgroups.push(select2.call(node2, node2.__data__, i, group));
+        parents.push(node2);
       }
     }
   }
@@ -13591,14 +13665,14 @@ function matcher(selector2) {
   };
 }
 function childMatcher(selector2) {
-  return function(node) {
-    return node.matches(selector2);
+  return function(node2) {
+    return node2.matches(selector2);
   };
 }
-var find = Array.prototype.find;
+var find$1 = Array.prototype.find;
 function childFind(match) {
   return function() {
-    return find.call(this.children, match);
+    return find$1.call(this.children, match);
   };
 }
 function childFirst() {
@@ -13622,9 +13696,9 @@ function selection_selectChildren(match) {
 function selection_filter(match) {
   if (typeof match !== "function") match = matcher(match);
   for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group = groups[j], n = group.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
-      if ((node = group[i]) && match.call(node, node.__data__, i, group)) {
-        subgroup.push(node);
+    for (var group = groups[j], n = group.length, subgroup = subgroups[j] = [], node2, i = 0; i < n; ++i) {
+      if ((node2 = group[i]) && match.call(node2, node2.__data__, i, group)) {
+        subgroup.push(node2);
       }
     }
   }
@@ -13663,71 +13737,71 @@ function constant$3(x) {
     return x;
   };
 }
-function bindIndex(parent, group, enter, update, exit, data) {
-  var i = 0, node, groupLength = group.length, dataLength = data.length;
+function bindIndex(parent, group, enter, update, exit2, data) {
+  var i = 0, node2, groupLength = group.length, dataLength = data.length;
   for (; i < dataLength; ++i) {
-    if (node = group[i]) {
-      node.__data__ = data[i];
-      update[i] = node;
+    if (node2 = group[i]) {
+      node2.__data__ = data[i];
+      update[i] = node2;
     } else {
       enter[i] = new EnterNode(parent, data[i]);
     }
   }
   for (; i < groupLength; ++i) {
-    if (node = group[i]) {
-      exit[i] = node;
+    if (node2 = group[i]) {
+      exit2[i] = node2;
     }
   }
 }
-function bindKey(parent, group, enter, update, exit, data, key) {
-  var i, node, nodeByKeyValue = /* @__PURE__ */ new Map(), groupLength = group.length, dataLength = data.length, keyValues = new Array(groupLength), keyValue;
+function bindKey(parent, group, enter, update, exit2, data, key) {
+  var i, node2, nodeByKeyValue = /* @__PURE__ */ new Map(), groupLength = group.length, dataLength = data.length, keyValues = new Array(groupLength), keyValue;
   for (i = 0; i < groupLength; ++i) {
-    if (node = group[i]) {
-      keyValues[i] = keyValue = key.call(node, node.__data__, i, group) + "";
+    if (node2 = group[i]) {
+      keyValues[i] = keyValue = key.call(node2, node2.__data__, i, group) + "";
       if (nodeByKeyValue.has(keyValue)) {
-        exit[i] = node;
+        exit2[i] = node2;
       } else {
-        nodeByKeyValue.set(keyValue, node);
+        nodeByKeyValue.set(keyValue, node2);
       }
     }
   }
   for (i = 0; i < dataLength; ++i) {
     keyValue = key.call(parent, data[i], i, data) + "";
-    if (node = nodeByKeyValue.get(keyValue)) {
-      update[i] = node;
-      node.__data__ = data[i];
+    if (node2 = nodeByKeyValue.get(keyValue)) {
+      update[i] = node2;
+      node2.__data__ = data[i];
       nodeByKeyValue.delete(keyValue);
     } else {
       enter[i] = new EnterNode(parent, data[i]);
     }
   }
   for (i = 0; i < groupLength; ++i) {
-    if ((node = group[i]) && nodeByKeyValue.get(keyValues[i]) === node) {
-      exit[i] = node;
+    if ((node2 = group[i]) && nodeByKeyValue.get(keyValues[i]) === node2) {
+      exit2[i] = node2;
     }
   }
 }
-function datum(node) {
-  return node.__data__;
+function datum(node2) {
+  return node2.__data__;
 }
 function selection_data(value, key) {
   if (!arguments.length) return Array.from(this, datum);
   var bind = key ? bindKey : bindIndex, parents = this._parents, groups = this._groups;
   if (typeof value !== "function") value = constant$3(value);
-  for (var m = groups.length, update = new Array(m), enter = new Array(m), exit = new Array(m), j = 0; j < m; ++j) {
-    var parent = parents[j], group = groups[j], groupLength = group.length, data = arraylike(value.call(parent, parent && parent.__data__, j, parents)), dataLength = data.length, enterGroup = enter[j] = new Array(dataLength), updateGroup = update[j] = new Array(dataLength), exitGroup = exit[j] = new Array(groupLength);
+  for (var m = groups.length, update = new Array(m), enter = new Array(m), exit2 = new Array(m), j = 0; j < m; ++j) {
+    var parent = parents[j], group = groups[j], groupLength = group.length, data = arraylike(value.call(parent, parent && parent.__data__, j, parents)), dataLength = data.length, enterGroup = enter[j] = new Array(dataLength), updateGroup = update[j] = new Array(dataLength), exitGroup = exit2[j] = new Array(groupLength);
     bind(parent, group, enterGroup, updateGroup, exitGroup, data, key);
-    for (var i0 = 0, i1 = 0, previous, next; i0 < dataLength; ++i0) {
-      if (previous = enterGroup[i0]) {
+    for (var i0 = 0, i1 = 0, previous2, next; i0 < dataLength; ++i0) {
+      if (previous2 = enterGroup[i0]) {
         if (i0 >= i1) i1 = i0 + 1;
         while (!(next = updateGroup[i1]) && ++i1 < dataLength) ;
-        previous._next = next || null;
+        previous2._next = next || null;
       }
     }
   }
   update = new Selection$1(update, parents);
   update._enter = enter;
-  update._exit = exit;
+  update._exit = exit2;
   return update;
 }
 function arraylike(data) {
@@ -13737,7 +13811,7 @@ function selection_exit() {
   return new Selection$1(this._exit || this._groups.map(sparse), this._parents);
 }
 function selection_join(onenter, onupdate, onexit) {
-  var enter = this.enter(), update = this, exit = this.exit();
+  var enter = this.enter(), update = this, exit2 = this.exit();
   if (typeof onenter === "function") {
     enter = onenter(enter);
     if (enter) enter = enter.selection();
@@ -13748,16 +13822,16 @@ function selection_join(onenter, onupdate, onexit) {
     update = onupdate(update);
     if (update) update = update.selection();
   }
-  if (onexit == null) exit.remove();
-  else onexit(exit);
+  if (onexit == null) exit2.remove();
+  else onexit(exit2);
   return enter && update ? enter.merge(update).order() : update;
 }
 function selection_merge(context) {
   var selection2 = context.selection ? context.selection() : context;
   for (var groups0 = this._groups, groups1 = selection2._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
-    for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
-      if (node = group0[i] || group1[i]) {
-        merge[i] = node;
+    for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge2 = merges[j] = new Array(n), node2, i = 0; i < n; ++i) {
+      if (node2 = group0[i] || group1[i]) {
+        merge2[i] = node2;
       }
     }
   }
@@ -13768,10 +13842,10 @@ function selection_merge(context) {
 }
 function selection_order() {
   for (var groups = this._groups, j = -1, m = groups.length; ++j < m; ) {
-    for (var group = groups[j], i = group.length - 1, next = group[i], node; --i >= 0; ) {
-      if (node = group[i]) {
-        if (next && node.compareDocumentPosition(next) ^ 4) next.parentNode.insertBefore(node, next);
-        next = node;
+    for (var group = groups[j], i = group.length - 1, next = group[i], node2; --i >= 0; ) {
+      if (node2 = group[i]) {
+        if (next && node2.compareDocumentPosition(next) ^ 4) next.parentNode.insertBefore(node2, next);
+        next = node2;
       }
     }
   }
@@ -13783,9 +13857,9 @@ function selection_sort(compare) {
     return a && b ? compare(a.__data__, b.__data__) : !a - !b;
   }
   for (var groups = this._groups, m = groups.length, sortgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group = groups[j], n = group.length, sortgroup = sortgroups[j] = new Array(n), node, i = 0; i < n; ++i) {
-      if (node = group[i]) {
-        sortgroup[i] = node;
+    for (var group = groups[j], n = group.length, sortgroup = sortgroups[j] = new Array(n), node2, i = 0; i < n; ++i) {
+      if (node2 = group[i]) {
+        sortgroup[i] = node2;
       }
     }
     sortgroup.sort(compareNode);
@@ -13807,15 +13881,15 @@ function selection_nodes() {
 function selection_node() {
   for (var groups = this._groups, j = 0, m = groups.length; j < m; ++j) {
     for (var group = groups[j], i = 0, n = group.length; i < n; ++i) {
-      var node = group[i];
-      if (node) return node;
+      var node2 = group[i];
+      if (node2) return node2;
     }
   }
   return null;
 }
 function selection_size() {
   let size = 0;
-  for (const node of this) ++size;
+  for (const node2 of this) ++size;
   return size;
 }
 function selection_empty() {
@@ -13823,15 +13897,15 @@ function selection_empty() {
 }
 function selection_each(callback) {
   for (var groups = this._groups, j = 0, m = groups.length; j < m; ++j) {
-    for (var group = groups[j], i = 0, n = group.length, node; i < n; ++i) {
-      if (node = group[i]) callback.call(node, node.__data__, i, group);
+    for (var group = groups[j], i = 0, n = group.length, node2; i < n; ++i) {
+      if (node2 = group[i]) callback.call(node2, node2.__data__, i, group);
     }
   }
   return this;
 }
-function attrRemove$1(name) {
+function attrRemove$1(name2) {
   return function() {
-    this.removeAttribute(name);
+    this.removeAttribute(name2);
   };
 }
 function attrRemoveNS$1(fullname) {
@@ -13839,9 +13913,9 @@ function attrRemoveNS$1(fullname) {
     this.removeAttributeNS(fullname.space, fullname.local);
   };
 }
-function attrConstant$1(name, value) {
+function attrConstant$1(name2, value) {
   return function() {
-    this.setAttribute(name, value);
+    this.setAttribute(name2, value);
   };
 }
 function attrConstantNS$1(fullname, value) {
@@ -13849,11 +13923,11 @@ function attrConstantNS$1(fullname, value) {
     this.setAttributeNS(fullname.space, fullname.local, value);
   };
 }
-function attrFunction$1(name, value) {
+function attrFunction$1(name2, value) {
   return function() {
     var v = value.apply(this, arguments);
-    if (v == null) this.removeAttribute(name);
-    else this.setAttribute(name, v);
+    if (v == null) this.removeAttribute(name2);
+    else this.setAttribute(name2, v);
   };
 }
 function attrFunctionNS$1(fullname, value) {
@@ -13863,96 +13937,96 @@ function attrFunctionNS$1(fullname, value) {
     else this.setAttributeNS(fullname.space, fullname.local, v);
   };
 }
-function selection_attr(name, value) {
-  var fullname = namespace(name);
+function selection_attr(name2, value) {
+  var fullname = namespace(name2);
   if (arguments.length < 2) {
-    var node = this.node();
-    return fullname.local ? node.getAttributeNS(fullname.space, fullname.local) : node.getAttribute(fullname);
+    var node2 = this.node();
+    return fullname.local ? node2.getAttributeNS(fullname.space, fullname.local) : node2.getAttribute(fullname);
   }
   return this.each((value == null ? fullname.local ? attrRemoveNS$1 : attrRemove$1 : typeof value === "function" ? fullname.local ? attrFunctionNS$1 : attrFunction$1 : fullname.local ? attrConstantNS$1 : attrConstant$1)(fullname, value));
 }
-function defaultView(node) {
-  return node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView;
+function defaultView(node2) {
+  return node2.ownerDocument && node2.ownerDocument.defaultView || node2.document && node2 || node2.defaultView;
 }
-function styleRemove$1(name) {
+function styleRemove$1(name2) {
   return function() {
-    this.style.removeProperty(name);
+    this.style.removeProperty(name2);
   };
 }
-function styleConstant$1(name, value, priority) {
+function styleConstant$1(name2, value, priority) {
   return function() {
-    this.style.setProperty(name, value, priority);
+    this.style.setProperty(name2, value, priority);
   };
 }
-function styleFunction$1(name, value, priority) {
-  return function() {
-    var v = value.apply(this, arguments);
-    if (v == null) this.style.removeProperty(name);
-    else this.style.setProperty(name, v, priority);
-  };
-}
-function selection_style(name, value, priority) {
-  return arguments.length > 1 ? this.each((value == null ? styleRemove$1 : typeof value === "function" ? styleFunction$1 : styleConstant$1)(name, value, priority == null ? "" : priority)) : styleValue(this.node(), name);
-}
-function styleValue(node, name) {
-  return node.style.getPropertyValue(name) || defaultView(node).getComputedStyle(node, null).getPropertyValue(name);
-}
-function propertyRemove(name) {
-  return function() {
-    delete this[name];
-  };
-}
-function propertyConstant(name, value) {
-  return function() {
-    this[name] = value;
-  };
-}
-function propertyFunction(name, value) {
+function styleFunction$1(name2, value, priority) {
   return function() {
     var v = value.apply(this, arguments);
-    if (v == null) delete this[name];
-    else this[name] = v;
+    if (v == null) this.style.removeProperty(name2);
+    else this.style.setProperty(name2, v, priority);
   };
 }
-function selection_property(name, value) {
-  return arguments.length > 1 ? this.each((value == null ? propertyRemove : typeof value === "function" ? propertyFunction : propertyConstant)(name, value)) : this.node()[name];
+function selection_style(name2, value, priority) {
+  return arguments.length > 1 ? this.each((value == null ? styleRemove$1 : typeof value === "function" ? styleFunction$1 : styleConstant$1)(name2, value, priority == null ? "" : priority)) : styleValue(this.node(), name2);
 }
-function classArray(string) {
-  return string.trim().split(/^|\s+/);
+function styleValue(node2, name2) {
+  return node2.style.getPropertyValue(name2) || defaultView(node2).getComputedStyle(node2, null).getPropertyValue(name2);
 }
-function classList(node) {
-  return node.classList || new ClassList(node);
+function propertyRemove(name2) {
+  return function() {
+    delete this[name2];
+  };
 }
-function ClassList(node) {
-  this._node = node;
-  this._names = classArray(node.getAttribute("class") || "");
+function propertyConstant(name2, value) {
+  return function() {
+    this[name2] = value;
+  };
+}
+function propertyFunction(name2, value) {
+  return function() {
+    var v = value.apply(this, arguments);
+    if (v == null) delete this[name2];
+    else this[name2] = v;
+  };
+}
+function selection_property(name2, value) {
+  return arguments.length > 1 ? this.each((value == null ? propertyRemove : typeof value === "function" ? propertyFunction : propertyConstant)(name2, value)) : this.node()[name2];
+}
+function classArray(string2) {
+  return string2.trim().split(/^|\s+/);
+}
+function classList(node2) {
+  return node2.classList || new ClassList(node2);
+}
+function ClassList(node2) {
+  this._node = node2;
+  this._names = classArray(node2.getAttribute("class") || "");
 }
 ClassList.prototype = {
-  add: function(name) {
-    var i = this._names.indexOf(name);
+  add: function(name2) {
+    var i = this._names.indexOf(name2);
     if (i < 0) {
-      this._names.push(name);
+      this._names.push(name2);
       this._node.setAttribute("class", this._names.join(" "));
     }
   },
-  remove: function(name) {
-    var i = this._names.indexOf(name);
+  remove: function(name2) {
+    var i = this._names.indexOf(name2);
     if (i >= 0) {
       this._names.splice(i, 1);
       this._node.setAttribute("class", this._names.join(" "));
     }
   },
-  contains: function(name) {
-    return this._names.indexOf(name) >= 0;
+  contains: function(name2) {
+    return this._names.indexOf(name2) >= 0;
   }
 };
-function classedAdd(node, names) {
-  var list = classList(node), i = -1, n = names.length;
-  while (++i < n) list.add(names[i]);
+function classedAdd(node2, names) {
+  var list2 = classList(node2), i = -1, n = names.length;
+  while (++i < n) list2.add(names[i]);
 }
-function classedRemove(node, names) {
-  var list = classList(node), i = -1, n = names.length;
-  while (++i < n) list.remove(names[i]);
+function classedRemove(node2, names) {
+  var list2 = classList(node2), i = -1, n = names.length;
+  while (++i < n) list2.remove(names[i]);
 }
 function classedTrue(names) {
   return function() {
@@ -13969,11 +14043,11 @@ function classedFunction(names, value) {
     (value.apply(this, arguments) ? classedAdd : classedRemove)(this, names);
   };
 }
-function selection_classed(name, value) {
-  var names = classArray(name + "");
+function selection_classed(name2, value) {
+  var names = classArray(name2 + "");
   if (arguments.length < 2) {
-    var list = classList(this.node()), i = -1, n = names.length;
-    while (++i < n) if (!list.contains(names[i])) return false;
+    var list2 = classList(this.node()), i = -1, n = names.length;
+    while (++i < n) if (!list2.contains(names[i])) return false;
     return true;
   }
   return this.each((typeof value === "function" ? classedFunction : value ? classedTrue : classedFalse)(names, value));
@@ -14024,8 +14098,8 @@ function lower() {
 function selection_lower() {
   return this.each(lower);
 }
-function selection_append(name) {
-  var create2 = typeof name === "function" ? name : creator(name);
+function selection_append(name2) {
+  var create2 = typeof name2 === "function" ? name2 : creator(name2);
   return this.select(function() {
     return this.appendChild(create2.apply(this, arguments));
   });
@@ -14033,8 +14107,8 @@ function selection_append(name) {
 function constantNull() {
   return null;
 }
-function selection_insert(name, before) {
-  var create2 = typeof name === "function" ? name : creator(name), select2 = before == null ? constantNull : typeof before === "function" ? before : selector(before);
+function selection_insert(name2, before) {
+  var create2 = typeof name2 === "function" ? name2 : creator(name2), select2 = before == null ? constantNull : typeof before === "function" ? before : selector(before);
   return this.select(function() {
     return this.insertBefore(create2.apply(this, arguments), select2.apply(this, arguments) || null);
   });
@@ -14067,9 +14141,9 @@ function contextListener(listener) {
 }
 function parseTypenames(typenames) {
   return typenames.trim().split(/^|\s+/).map(function(t) {
-    var name = "", i = t.indexOf(".");
-    if (i >= 0) name = t.slice(i + 1), t = t.slice(0, i);
-    return { type: t, name };
+    var name2 = "", i = t.indexOf(".");
+    if (i >= 0) name2 = t.slice(i + 1), t = t.slice(0, i);
+    return { type: t, name: name2 };
   });
 }
 function onRemove(typename) {
@@ -14121,8 +14195,8 @@ function selection_on(typename, value, options) {
   for (i = 0; i < n; ++i) this.each(on(typenames[i], value, options));
   return this;
 }
-function dispatchEvent(node, type, params) {
-  var window2 = defaultView(node), event = window2.CustomEvent;
+function dispatchEvent(node2, type, params) {
+  var window2 = defaultView(node2), event = window2.CustomEvent;
   if (typeof event === "function") {
     event = new event(type, params);
   } else {
@@ -14130,7 +14204,7 @@ function dispatchEvent(node, type, params) {
     if (params) event.initEvent(type, params.bubbles, params.cancelable), event.detail = params.detail;
     else event.initEvent(type, false, false);
   }
-  node.dispatchEvent(event);
+  node2.dispatchEvent(event);
 }
 function dispatchConstant(type, params) {
   return function() {
@@ -14147,18 +14221,18 @@ function selection_dispatch(type, params) {
 }
 function* selection_iterator() {
   for (var groups = this._groups, j = 0, m = groups.length; j < m; ++j) {
-    for (var group = groups[j], i = 0, n = group.length, node; i < n; ++i) {
-      if (node = group[i]) yield node;
+    for (var group = groups[j], i = 0, n = group.length, node2; i < n; ++i) {
+      if (node2 = group[i]) yield node2;
     }
   }
 }
-var root = [null];
+var root$3 = [null];
 function Selection$1(groups, parents) {
   this._groups = groups;
   this._parents = parents;
 }
 function selection() {
-  return new Selection$1([[document.documentElement]], root);
+  return new Selection$1([[document.documentElement]], root$3);
 }
 function selection_selection() {
   return this;
@@ -14202,27 +14276,27 @@ Selection$1.prototype = selection.prototype = {
   [Symbol.iterator]: selection_iterator
 };
 function select(selector2) {
-  return typeof selector2 === "string" ? new Selection$1([[document.querySelector(selector2)]], [document.documentElement]) : new Selection$1([[selector2]], root);
+  return typeof selector2 === "string" ? new Selection$1([[document.querySelector(selector2)]], [document.documentElement]) : new Selection$1([[selector2]], root$3);
 }
 function sourceEvent(event) {
   let sourceEvent2;
   while (sourceEvent2 = event.sourceEvent) event = sourceEvent2;
   return event;
 }
-function pointer(event, node) {
+function pointer(event, node2) {
   event = sourceEvent(event);
-  if (node === void 0) node = event.currentTarget;
-  if (node) {
-    var svg = node.ownerSVGElement || node;
-    if (svg.createSVGPoint) {
-      var point = svg.createSVGPoint();
-      point.x = event.clientX, point.y = event.clientY;
-      point = point.matrixTransform(node.getScreenCTM().inverse());
-      return [point.x, point.y];
+  if (node2 === void 0) node2 = event.currentTarget;
+  if (node2) {
+    var svg2 = node2.ownerSVGElement || node2;
+    if (svg2.createSVGPoint) {
+      var point2 = svg2.createSVGPoint();
+      point2.x = event.clientX, point2.y = event.clientY;
+      point2 = point2.matrixTransform(node2.getScreenCTM().inverse());
+      return [point2.x, point2.y];
     }
-    if (node.getBoundingClientRect) {
-      var rect = node.getBoundingClientRect();
-      return [event.clientX - rect.left - node.clientLeft, event.clientY - rect.top - node.clientTop];
+    if (node2.getBoundingClientRect) {
+      var rect = node2.getBoundingClientRect();
+      return [event.clientX - rect.left - node2.clientLeft, event.clientY - rect.top - node2.clientTop];
     }
   }
   return [event.pageX, event.pageY];
@@ -14438,9 +14512,9 @@ function define(constructor, factory, prototype) {
   constructor.prototype = factory.prototype = prototype;
   prototype.constructor = constructor;
 }
-function extend(parent, definition) {
+function extend$2(parent, definition2) {
   var prototype = Object.create(parent.prototype);
-  for (var key in definition) prototype[key] = definition[key];
+  for (var key in definition2) prototype[key] = definition2[key];
   return prototype;
 }
 function Color() {
@@ -14598,7 +14672,7 @@ var named = {
   yellow: 16776960,
   yellowgreen: 10145074
 };
-define(Color, color, {
+define(Color, color$1, {
   copy(channels) {
     return Object.assign(new this.constructor(), this, channels);
   },
@@ -14625,7 +14699,7 @@ function color_formatHsl() {
 function color_formatRgb() {
   return this.rgb().formatRgb();
 }
-function color(format) {
+function color$1(format) {
   var m, l;
   format = (format + "").trim().toLowerCase();
   return (m = reHex.exec(format)) ? (l = m[1].length, m = parseInt(m[1], 16), l === 6 ? rgbn(m) : l === 3 ? new Rgb(m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, (m & 15) << 4 | m & 15, 1) : l === 8 ? rgba(m >> 24 & 255, m >> 16 & 255, m >> 8 & 255, (m & 255) / 255) : l === 4 ? rgba(m >> 12 & 15 | m >> 8 & 240, m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, ((m & 15) << 4 | m & 15) / 255) : null) : (m = reRgbInteger.exec(format)) ? new Rgb(m[1], m[2], m[3], 1) : (m = reRgbPercent.exec(format)) ? new Rgb(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, 1) : (m = reRgbaInteger.exec(format)) ? rgba(m[1], m[2], m[3], m[4]) : (m = reRgbaPercent.exec(format)) ? rgba(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, m[4]) : (m = reHslPercent.exec(format)) ? hsla(m[1], m[2] / 100, m[3] / 100, 1) : (m = reHslaPercent.exec(format)) ? hsla(m[1], m[2] / 100, m[3] / 100, m[4]) : named.hasOwnProperty(format) ? rgbn(named[format]) : format === "transparent" ? new Rgb(NaN, NaN, NaN, 0) : null;
@@ -14638,7 +14712,7 @@ function rgba(r, g, b, a) {
   return new Rgb(r, g, b, a);
 }
 function rgbConvert(o) {
-  if (!(o instanceof Color)) o = color(o);
+  if (!(o instanceof Color)) o = color$1(o);
   if (!o) return new Rgb();
   o = o.rgb();
   return new Rgb(o.r, o.g, o.b, o.opacity);
@@ -14652,7 +14726,7 @@ function Rgb(r, g, b, opacity) {
   this.b = +b;
   this.opacity = +opacity;
 }
-define(Rgb, rgb, extend(Color, {
+define(Rgb, rgb, extend$2(Color, {
   brighter(k) {
     k = k == null ? brighter : Math.pow(brighter, k);
     return new Rgb(this.r * k, this.g * k, this.b * k, this.opacity);
@@ -14705,7 +14779,7 @@ function hsla(h, s, l, a) {
 }
 function hslConvert(o) {
   if (o instanceof Hsl) return new Hsl(o.h, o.s, o.l, o.opacity);
-  if (!(o instanceof Color)) o = color(o);
+  if (!(o instanceof Color)) o = color$1(o);
   if (!o) return new Hsl();
   if (o instanceof Hsl) return o;
   o = o.rgb();
@@ -14730,7 +14804,7 @@ function Hsl(h, s, l, opacity) {
   this.l = +l;
   this.opacity = +opacity;
 }
-define(Hsl, hsl, extend(Color, {
+define(Hsl, hsl, extend$2(Color, {
   brighter(k) {
     k = k == null ? brighter : Math.pow(brighter, k);
     return new Hsl(this.h, this.s, this.l * k, this.opacity);
@@ -14857,7 +14931,7 @@ function zero(b) {
     return b;
   };
 }
-function one(b) {
+function one$2(b) {
   return function(t) {
     return b(t) + "";
   };
@@ -14885,14 +14959,14 @@ function interpolateString(a, b) {
     if (s[i]) s[i] += bs;
     else s[++i] = bs;
   }
-  return s.length < 2 ? q[0] ? one(q[0].x) : zero(b) : (b = q.length, function(t) {
+  return s.length < 2 ? q[0] ? one$2(q[0].x) : zero(b) : (b = q.length, function(t) {
     for (var i2 = 0, o; i2 < b; ++i2) s[(o = q[i2]).i] = o.x(t);
     return s.join("");
   });
 }
 function interpolate$1(a, b) {
   var t = typeof b, c;
-  return b == null || t === "boolean" ? constant$1(b) : (t === "number" ? interpolateNumber : t === "string" ? (c = color(b)) ? (b = c, interpolateRgb) : interpolateString : b instanceof color ? interpolateRgb : b instanceof Date ? date : isNumberArray(b) ? numberArray : Array.isArray(b) ? genericArray : typeof b.valueOf !== "function" && typeof b.toString !== "function" || isNaN(b) ? object : interpolateNumber)(a, b);
+  return b == null || t === "boolean" ? constant$1(b) : (t === "number" ? interpolateNumber : t === "string" ? (c = color$1(b)) ? (b = c, interpolateRgb) : interpolateString : b instanceof color$1 ? interpolateRgb : b instanceof Date ? date : isNumberArray(b) ? numberArray : Array.isArray(b) ? genericArray : typeof b.valueOf !== "function" && typeof b.toString !== "function" || isNaN(b) ? object : interpolateNumber)(a, b);
 }
 var degrees = 180 / Math.PI;
 var identity$2 = {
@@ -14931,7 +15005,7 @@ function parseSvg(value) {
   value = value.matrix;
   return decompose(value.a, value.b, value.c, value.d, value.e, value.f);
 }
-function interpolateTransform(parse, pxComma, pxParen, degParen) {
+function interpolateTransform(parse2, pxComma, pxParen, degParen) {
   function pop(s) {
     return s.length ? s.pop() + " " : "";
   }
@@ -14969,7 +15043,7 @@ function interpolateTransform(parse, pxComma, pxParen, degParen) {
   }
   return function(a, b) {
     var s = [], q = [];
-    a = parse(a), b = parse(b);
+    a = parse2(a), b = parse2(b);
     translate(a.translateX, a.translateY, b.translateX, b.translateY, s, q);
     rotate(a.rotate, b.rotate, s, q);
     skewX(a.skewX, b.skewX, s, q);
@@ -15135,12 +15209,12 @@ var STARTED = 3;
 var RUNNING = 4;
 var ENDING = 5;
 var ENDED = 6;
-function schedule(node, name, id2, index2, group, timing) {
-  var schedules = node.__transition;
-  if (!schedules) node.__transition = {};
+function schedule(node2, name2, id2, index2, group, timing) {
+  var schedules = node2.__transition;
+  if (!schedules) node2.__transition = {};
   else if (id2 in schedules) return;
-  create(node, id2, {
-    name,
+  create$1(node2, id2, {
+    name: name2,
     index: index2,
     // For context during callback.
     group,
@@ -15155,116 +15229,116 @@ function schedule(node, name, id2, index2, group, timing) {
     state: CREATED
   });
 }
-function init(node, id2) {
-  var schedule2 = get(node, id2);
+function init(node2, id2) {
+  var schedule2 = get(node2, id2);
   if (schedule2.state > CREATED) throw new Error("too late; already scheduled");
   return schedule2;
 }
-function set(node, id2) {
-  var schedule2 = get(node, id2);
+function set(node2, id2) {
+  var schedule2 = get(node2, id2);
   if (schedule2.state > STARTED) throw new Error("too late; already running");
   return schedule2;
 }
-function get(node, id2) {
-  var schedule2 = node.__transition;
+function get(node2, id2) {
+  var schedule2 = node2.__transition;
   if (!schedule2 || !(schedule2 = schedule2[id2])) throw new Error("transition not found");
   return schedule2;
 }
-function create(node, id2, self) {
-  var schedules = node.__transition, tween;
-  schedules[id2] = self;
-  self.timer = timer(schedule2, 0, self.time);
+function create$1(node2, id2, self2) {
+  var schedules = node2.__transition, tween;
+  schedules[id2] = self2;
+  self2.timer = timer(schedule2, 0, self2.time);
   function schedule2(elapsed) {
-    self.state = SCHEDULED;
-    self.timer.restart(start2, self.delay, self.time);
-    if (self.delay <= elapsed) start2(elapsed - self.delay);
+    self2.state = SCHEDULED;
+    self2.timer.restart(start2, self2.delay, self2.time);
+    if (self2.delay <= elapsed) start2(elapsed - self2.delay);
   }
   function start2(elapsed) {
     var i, j, n, o;
-    if (self.state !== SCHEDULED) return stop();
+    if (self2.state !== SCHEDULED) return stop();
     for (i in schedules) {
       o = schedules[i];
-      if (o.name !== self.name) continue;
+      if (o.name !== self2.name) continue;
       if (o.state === STARTED) return timeout(start2);
       if (o.state === RUNNING) {
         o.state = ENDED;
         o.timer.stop();
-        o.on.call("interrupt", node, node.__data__, o.index, o.group);
+        o.on.call("interrupt", node2, node2.__data__, o.index, o.group);
         delete schedules[i];
       } else if (+i < id2) {
         o.state = ENDED;
         o.timer.stop();
-        o.on.call("cancel", node, node.__data__, o.index, o.group);
+        o.on.call("cancel", node2, node2.__data__, o.index, o.group);
         delete schedules[i];
       }
     }
     timeout(function() {
-      if (self.state === STARTED) {
-        self.state = RUNNING;
-        self.timer.restart(tick, self.delay, self.time);
+      if (self2.state === STARTED) {
+        self2.state = RUNNING;
+        self2.timer.restart(tick, self2.delay, self2.time);
         tick(elapsed);
       }
     });
-    self.state = STARTING;
-    self.on.call("start", node, node.__data__, self.index, self.group);
-    if (self.state !== STARTING) return;
-    self.state = STARTED;
-    tween = new Array(n = self.tween.length);
+    self2.state = STARTING;
+    self2.on.call("start", node2, node2.__data__, self2.index, self2.group);
+    if (self2.state !== STARTING) return;
+    self2.state = STARTED;
+    tween = new Array(n = self2.tween.length);
     for (i = 0, j = -1; i < n; ++i) {
-      if (o = self.tween[i].value.call(node, node.__data__, self.index, self.group)) {
+      if (o = self2.tween[i].value.call(node2, node2.__data__, self2.index, self2.group)) {
         tween[++j] = o;
       }
     }
     tween.length = j + 1;
   }
   function tick(elapsed) {
-    var t = elapsed < self.duration ? self.ease.call(null, elapsed / self.duration) : (self.timer.restart(stop), self.state = ENDING, 1), i = -1, n = tween.length;
+    var t = elapsed < self2.duration ? self2.ease.call(null, elapsed / self2.duration) : (self2.timer.restart(stop), self2.state = ENDING, 1), i = -1, n = tween.length;
     while (++i < n) {
-      tween[i].call(node, t);
+      tween[i].call(node2, t);
     }
-    if (self.state === ENDING) {
-      self.on.call("end", node, node.__data__, self.index, self.group);
+    if (self2.state === ENDING) {
+      self2.on.call("end", node2, node2.__data__, self2.index, self2.group);
       stop();
     }
   }
   function stop() {
-    self.state = ENDED;
-    self.timer.stop();
+    self2.state = ENDED;
+    self2.timer.stop();
     delete schedules[id2];
     for (var i in schedules) return;
-    delete node.__transition;
+    delete node2.__transition;
   }
 }
-function interrupt(node, name) {
-  var schedules = node.__transition, schedule2, active, empty2 = true, i;
+function interrupt(node2, name2) {
+  var schedules = node2.__transition, schedule2, active, empty2 = true, i;
   if (!schedules) return;
-  name = name == null ? null : name + "";
+  name2 = name2 == null ? null : name2 + "";
   for (i in schedules) {
-    if ((schedule2 = schedules[i]).name !== name) {
+    if ((schedule2 = schedules[i]).name !== name2) {
       empty2 = false;
       continue;
     }
     active = schedule2.state > STARTING && schedule2.state < ENDING;
     schedule2.state = ENDED;
     schedule2.timer.stop();
-    schedule2.on.call(active ? "interrupt" : "cancel", node, node.__data__, schedule2.index, schedule2.group);
+    schedule2.on.call(active ? "interrupt" : "cancel", node2, node2.__data__, schedule2.index, schedule2.group);
     delete schedules[i];
   }
-  if (empty2) delete node.__transition;
+  if (empty2) delete node2.__transition;
 }
-function selection_interrupt(name) {
+function selection_interrupt(name2) {
   return this.each(function() {
-    interrupt(this, name);
+    interrupt(this, name2);
   });
 }
-function tweenRemove(id2, name) {
+function tweenRemove(id2, name2) {
   var tween0, tween1;
   return function() {
     var schedule2 = set(this, id2), tween = schedule2.tween;
     if (tween !== tween0) {
       tween1 = tween0 = tween;
       for (var i = 0, n = tween1.length; i < n; ++i) {
-        if (tween1[i].name === name) {
+        if (tween1[i].name === name2) {
           tween1 = tween1.slice();
           tween1.splice(i, 1);
           break;
@@ -15274,15 +15348,15 @@ function tweenRemove(id2, name) {
     schedule2.tween = tween1;
   };
 }
-function tweenFunction(id2, name, value) {
+function tweenFunction(id2, name2, value) {
   var tween0, tween1;
   if (typeof value !== "function") throw new Error();
   return function() {
     var schedule2 = set(this, id2), tween = schedule2.tween;
     if (tween !== tween0) {
       tween1 = (tween0 = tween).slice();
-      for (var t = { name, value }, i = 0, n = tween1.length; i < n; ++i) {
-        if (tween1[i].name === name) {
+      for (var t = { name: name2, value }, i = 0, n = tween1.length; i < n; ++i) {
+        if (tween1[i].name === name2) {
           tween1[i] = t;
           break;
         }
@@ -15292,37 +15366,37 @@ function tweenFunction(id2, name, value) {
     schedule2.tween = tween1;
   };
 }
-function transition_tween(name, value) {
+function transition_tween(name2, value) {
   var id2 = this._id;
-  name += "";
+  name2 += "";
   if (arguments.length < 2) {
     var tween = get(this.node(), id2).tween;
     for (var i = 0, n = tween.length, t; i < n; ++i) {
-      if ((t = tween[i]).name === name) {
+      if ((t = tween[i]).name === name2) {
         return t.value;
       }
     }
     return null;
   }
-  return this.each((value == null ? tweenRemove : tweenFunction)(id2, name, value));
+  return this.each((value == null ? tweenRemove : tweenFunction)(id2, name2, value));
 }
-function tweenValue(transition, name, value) {
+function tweenValue(transition, name2, value) {
   var id2 = transition._id;
   transition.each(function() {
     var schedule2 = set(this, id2);
-    (schedule2.value || (schedule2.value = {}))[name] = value.apply(this, arguments);
+    (schedule2.value || (schedule2.value = {}))[name2] = value.apply(this, arguments);
   });
-  return function(node) {
-    return get(node, id2).value[name];
+  return function(node2) {
+    return get(node2, id2).value[name2];
   };
 }
 function interpolate(a, b) {
   var c;
-  return (typeof b === "number" ? interpolateNumber : b instanceof color ? interpolateRgb : (c = color(b)) ? (b = c, interpolateRgb) : interpolateString)(a, b);
+  return (typeof b === "number" ? interpolateNumber : b instanceof color$1 ? interpolateRgb : (c = color$1(b)) ? (b = c, interpolateRgb) : interpolateString)(a, b);
 }
-function attrRemove(name) {
+function attrRemove(name2) {
   return function() {
-    this.removeAttribute(name);
+    this.removeAttribute(name2);
   };
 }
 function attrRemoveNS(fullname) {
@@ -15330,10 +15404,10 @@ function attrRemoveNS(fullname) {
     this.removeAttributeNS(fullname.space, fullname.local);
   };
 }
-function attrConstant(name, interpolate2, value1) {
+function attrConstant(name2, interpolate2, value1) {
   var string00, string1 = value1 + "", interpolate0;
   return function() {
-    var string0 = this.getAttribute(name);
+    var string0 = this.getAttribute(name2);
     return string0 === string1 ? null : string0 === string00 ? interpolate0 : interpolate0 = interpolate2(string00 = string0, value1);
   };
 }
@@ -15344,12 +15418,12 @@ function attrConstantNS(fullname, interpolate2, value1) {
     return string0 === string1 ? null : string0 === string00 ? interpolate0 : interpolate0 = interpolate2(string00 = string0, value1);
   };
 }
-function attrFunction(name, interpolate2, value) {
+function attrFunction(name2, interpolate2, value) {
   var string00, string10, interpolate0;
   return function() {
     var string0, value1 = value(this), string1;
-    if (value1 == null) return void this.removeAttribute(name);
-    string0 = this.getAttribute(name);
+    if (value1 == null) return void this.removeAttribute(name2);
+    string0 = this.getAttribute(name2);
     string1 = value1 + "";
     return string0 === string1 ? null : string0 === string00 && string1 === string10 ? interpolate0 : (string10 = string1, interpolate0 = interpolate2(string00 = string0, value1));
   };
@@ -15364,13 +15438,13 @@ function attrFunctionNS(fullname, interpolate2, value) {
     return string0 === string1 ? null : string0 === string00 && string1 === string10 ? interpolate0 : (string10 = string1, interpolate0 = interpolate2(string00 = string0, value1));
   };
 }
-function transition_attr(name, value) {
-  var fullname = namespace(name), i = fullname === "transform" ? interpolateTransformSvg : interpolate;
-  return this.attrTween(name, typeof value === "function" ? (fullname.local ? attrFunctionNS : attrFunction)(fullname, i, tweenValue(this, "attr." + name, value)) : value == null ? (fullname.local ? attrRemoveNS : attrRemove)(fullname) : (fullname.local ? attrConstantNS : attrConstant)(fullname, i, value));
+function transition_attr(name2, value) {
+  var fullname = namespace(name2), i = fullname === "transform" ? interpolateTransformSvg : interpolate;
+  return this.attrTween(name2, typeof value === "function" ? (fullname.local ? attrFunctionNS : attrFunction)(fullname, i, tweenValue(this, "attr." + name2, value)) : value == null ? (fullname.local ? attrRemoveNS : attrRemove)(fullname) : (fullname.local ? attrConstantNS : attrConstant)(fullname, i, value));
 }
-function attrInterpolate(name, i) {
+function attrInterpolate(name2, i) {
   return function(t) {
-    this.setAttribute(name, i.call(this, t));
+    this.setAttribute(name2, i.call(this, t));
   };
 }
 function attrInterpolateNS(fullname, i) {
@@ -15388,22 +15462,22 @@ function attrTweenNS(fullname, value) {
   tween._value = value;
   return tween;
 }
-function attrTween(name, value) {
+function attrTween(name2, value) {
   var t0, i0;
   function tween() {
     var i = value.apply(this, arguments);
-    if (i !== i0) t0 = (i0 = i) && attrInterpolate(name, i);
+    if (i !== i0) t0 = (i0 = i) && attrInterpolate(name2, i);
     return t0;
   }
   tween._value = value;
   return tween;
 }
-function transition_attrTween(name, value) {
-  var key = "attr." + name;
+function transition_attrTween(name2, value) {
+  var key = "attr." + name2;
   if (arguments.length < 2) return (key = this.tween(key)) && key._value;
   if (value == null) return this.tween(key, null);
   if (typeof value !== "function") throw new Error();
-  var fullname = namespace(name);
+  var fullname = namespace(name2);
   return this.tween(key, (fullname.local ? attrTweenNS : attrTween)(fullname, value));
 }
 function delayFunction(id2, value) {
@@ -15458,9 +15532,9 @@ function transition_easeVarying(value) {
 function transition_filter(match) {
   if (typeof match !== "function") match = matcher(match);
   for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group = groups[j], n = group.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
-      if ((node = group[i]) && match.call(node, node.__data__, i, group)) {
-        subgroup.push(node);
+    for (var group = groups[j], n = group.length, subgroup = subgroups[j] = [], node2, i = 0; i < n; ++i) {
+      if ((node2 = group[i]) && match.call(node2, node2.__data__, i, group)) {
+        subgroup.push(node2);
       }
     }
   }
@@ -15469,9 +15543,9 @@ function transition_filter(match) {
 function transition_merge(transition) {
   if (transition._id !== this._id) throw new Error();
   for (var groups0 = this._groups, groups1 = transition._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
-    for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
-      if (node = group0[i] || group1[i]) {
-        merge[i] = node;
+    for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge2 = merges[j] = new Array(n), node2, i = 0; i < n; ++i) {
+      if (node2 = group0[i] || group1[i]) {
+        merge2[i] = node2;
       }
     }
   }
@@ -15480,24 +15554,24 @@ function transition_merge(transition) {
   }
   return new Transition(merges, this._parents, this._name, this._id);
 }
-function start(name) {
-  return (name + "").trim().split(/^|\s+/).every(function(t) {
+function start(name2) {
+  return (name2 + "").trim().split(/^|\s+/).every(function(t) {
     var i = t.indexOf(".");
     if (i >= 0) t = t.slice(0, i);
     return !t || t === "start";
   });
 }
-function onFunction(id2, name, listener) {
-  var on0, on1, sit = start(name) ? init : set;
+function onFunction(id2, name2, listener) {
+  var on0, on1, sit = start(name2) ? init : set;
   return function() {
     var schedule2 = sit(this, id2), on = schedule2.on;
-    if (on !== on0) (on1 = (on0 = on).copy()).on(name, listener);
+    if (on !== on0) (on1 = (on0 = on).copy()).on(name2, listener);
     schedule2.on = on1;
   };
 }
-function transition_on(name, listener) {
+function transition_on(name2, listener) {
   var id2 = this._id;
-  return arguments.length < 2 ? get(this.node(), id2).on.on(name) : this.each(onFunction(id2, name, listener));
+  return arguments.length < 2 ? get(this.node(), id2).on.on(name2) : this.each(onFunction(id2, name2, listener));
 }
 function removeFunction(id2) {
   return function() {
@@ -15510,101 +15584,101 @@ function transition_remove() {
   return this.on("end.remove", removeFunction(this._id));
 }
 function transition_select(select2) {
-  var name = this._name, id2 = this._id;
+  var name2 = this._name, id2 = this._id;
   if (typeof select2 !== "function") select2 = selector(select2);
   for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group = groups[j], n = group.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
-      if ((node = group[i]) && (subnode = select2.call(node, node.__data__, i, group))) {
-        if ("__data__" in node) subnode.__data__ = node.__data__;
+    for (var group = groups[j], n = group.length, subgroup = subgroups[j] = new Array(n), node2, subnode, i = 0; i < n; ++i) {
+      if ((node2 = group[i]) && (subnode = select2.call(node2, node2.__data__, i, group))) {
+        if ("__data__" in node2) subnode.__data__ = node2.__data__;
         subgroup[i] = subnode;
-        schedule(subgroup[i], name, id2, i, subgroup, get(node, id2));
+        schedule(subgroup[i], name2, id2, i, subgroup, get(node2, id2));
       }
     }
   }
-  return new Transition(subgroups, this._parents, name, id2);
+  return new Transition(subgroups, this._parents, name2, id2);
 }
 function transition_selectAll(select2) {
-  var name = this._name, id2 = this._id;
+  var name2 = this._name, id2 = this._id;
   if (typeof select2 !== "function") select2 = selectorAll(select2);
   for (var groups = this._groups, m = groups.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
-    for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
-      if (node = group[i]) {
-        for (var children2 = select2.call(node, node.__data__, i, group), child, inherit2 = get(node, id2), k = 0, l = children2.length; k < l; ++k) {
+    for (var group = groups[j], n = group.length, node2, i = 0; i < n; ++i) {
+      if (node2 = group[i]) {
+        for (var children2 = select2.call(node2, node2.__data__, i, group), child, inherit2 = get(node2, id2), k = 0, l = children2.length; k < l; ++k) {
           if (child = children2[k]) {
-            schedule(child, name, id2, k, children2, inherit2);
+            schedule(child, name2, id2, k, children2, inherit2);
           }
         }
         subgroups.push(children2);
-        parents.push(node);
+        parents.push(node2);
       }
     }
   }
-  return new Transition(subgroups, parents, name, id2);
+  return new Transition(subgroups, parents, name2, id2);
 }
 var Selection = selection.prototype.constructor;
 function transition_selection() {
   return new Selection(this._groups, this._parents);
 }
-function styleNull(name, interpolate2) {
+function styleNull(name2, interpolate2) {
   var string00, string10, interpolate0;
   return function() {
-    var string0 = styleValue(this, name), string1 = (this.style.removeProperty(name), styleValue(this, name));
+    var string0 = styleValue(this, name2), string1 = (this.style.removeProperty(name2), styleValue(this, name2));
     return string0 === string1 ? null : string0 === string00 && string1 === string10 ? interpolate0 : interpolate0 = interpolate2(string00 = string0, string10 = string1);
   };
 }
-function styleRemove(name) {
+function styleRemove(name2) {
   return function() {
-    this.style.removeProperty(name);
+    this.style.removeProperty(name2);
   };
 }
-function styleConstant(name, interpolate2, value1) {
+function styleConstant(name2, interpolate2, value1) {
   var string00, string1 = value1 + "", interpolate0;
   return function() {
-    var string0 = styleValue(this, name);
+    var string0 = styleValue(this, name2);
     return string0 === string1 ? null : string0 === string00 ? interpolate0 : interpolate0 = interpolate2(string00 = string0, value1);
   };
 }
-function styleFunction(name, interpolate2, value) {
+function styleFunction(name2, interpolate2, value) {
   var string00, string10, interpolate0;
   return function() {
-    var string0 = styleValue(this, name), value1 = value(this), string1 = value1 + "";
-    if (value1 == null) string1 = value1 = (this.style.removeProperty(name), styleValue(this, name));
+    var string0 = styleValue(this, name2), value1 = value(this), string1 = value1 + "";
+    if (value1 == null) string1 = value1 = (this.style.removeProperty(name2), styleValue(this, name2));
     return string0 === string1 ? null : string0 === string00 && string1 === string10 ? interpolate0 : (string10 = string1, interpolate0 = interpolate2(string00 = string0, value1));
   };
 }
-function styleMaybeRemove(id2, name) {
-  var on0, on1, listener0, key = "style." + name, event = "end." + key, remove2;
+function styleMaybeRemove(id2, name2) {
+  var on0, on1, listener0, key = "style." + name2, event = "end." + key, remove2;
   return function() {
-    var schedule2 = set(this, id2), on = schedule2.on, listener = schedule2.value[key] == null ? remove2 || (remove2 = styleRemove(name)) : void 0;
+    var schedule2 = set(this, id2), on = schedule2.on, listener = schedule2.value[key] == null ? remove2 || (remove2 = styleRemove(name2)) : void 0;
     if (on !== on0 || listener0 !== listener) (on1 = (on0 = on).copy()).on(event, listener0 = listener);
     schedule2.on = on1;
   };
 }
-function transition_style(name, value, priority) {
-  var i = (name += "") === "transform" ? interpolateTransformCss : interpolate;
-  return value == null ? this.styleTween(name, styleNull(name, i)).on("end.style." + name, styleRemove(name)) : typeof value === "function" ? this.styleTween(name, styleFunction(name, i, tweenValue(this, "style." + name, value))).each(styleMaybeRemove(this._id, name)) : this.styleTween(name, styleConstant(name, i, value), priority).on("end.style." + name, null);
+function transition_style(name2, value, priority) {
+  var i = (name2 += "") === "transform" ? interpolateTransformCss : interpolate;
+  return value == null ? this.styleTween(name2, styleNull(name2, i)).on("end.style." + name2, styleRemove(name2)) : typeof value === "function" ? this.styleTween(name2, styleFunction(name2, i, tweenValue(this, "style." + name2, value))).each(styleMaybeRemove(this._id, name2)) : this.styleTween(name2, styleConstant(name2, i, value), priority).on("end.style." + name2, null);
 }
-function styleInterpolate(name, i, priority) {
+function styleInterpolate(name2, i, priority) {
   return function(t) {
-    this.style.setProperty(name, i.call(this, t), priority);
+    this.style.setProperty(name2, i.call(this, t), priority);
   };
 }
-function styleTween(name, value, priority) {
+function styleTween(name2, value, priority) {
   var t, i0;
   function tween() {
     var i = value.apply(this, arguments);
-    if (i !== i0) t = (i0 = i) && styleInterpolate(name, i, priority);
+    if (i !== i0) t = (i0 = i) && styleInterpolate(name2, i, priority);
     return t;
   }
   tween._value = value;
   return tween;
 }
-function transition_styleTween(name, value, priority) {
-  var key = "style." + (name += "");
+function transition_styleTween(name2, value, priority) {
+  var key = "style." + (name2 += "");
   if (arguments.length < 2) return (key = this.tween(key)) && key._value;
   if (value == null) return this.tween(key, null);
   if (typeof value !== "function") throw new Error();
-  return this.tween(key, styleTween(name, value, priority == null ? "" : priority));
+  return this.tween(key, styleTween(name2, value, priority == null ? "" : priority));
 }
 function textConstant(value) {
   return function() {
@@ -15643,12 +15717,12 @@ function transition_textTween(value) {
   return this.tween(key, textTween(value));
 }
 function transition_transition() {
-  var name = this._name, id0 = this._id, id1 = newId();
+  var name2 = this._name, id0 = this._id, id1 = newId();
   for (var groups = this._groups, m = groups.length, j = 0; j < m; ++j) {
-    for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
-      if (node = group[i]) {
-        var inherit2 = get(node, id0);
-        schedule(node, name, id1, i, group, {
+    for (var group = groups[j], n = group.length, node2, i = 0; i < n; ++i) {
+      if (node2 = group[i]) {
+        var inherit2 = get(node2, id0);
+        schedule(node2, name2, id1, i, group, {
           time: inherit2.time + inherit2.delay + inherit2.duration,
           delay: 0,
           duration: inherit2.duration,
@@ -15657,7 +15731,7 @@ function transition_transition() {
       }
     }
   }
-  return new Transition(groups, this._parents, name, id1);
+  return new Transition(groups, this._parents, name2, id1);
 }
 function transition_end() {
   var on0, on1, that = this, id2 = that._id, size = that.size();
@@ -15679,10 +15753,10 @@ function transition_end() {
   });
 }
 var id = 0;
-function Transition(groups, parents, name, id2) {
+function Transition(groups, parents, name2, id2) {
   this._groups = groups;
   this._parents = parents;
-  this._name = name;
+  this._name = name2;
   this._id = id2;
 }
 function newId() {
@@ -15731,30 +15805,30 @@ var defaultTiming = {
   duration: 250,
   ease: cubicInOut
 };
-function inherit(node, id2) {
+function inherit(node2, id2) {
   var timing;
-  while (!(timing = node.__transition) || !(timing = timing[id2])) {
-    if (!(node = node.parentNode)) {
+  while (!(timing = node2.__transition) || !(timing = timing[id2])) {
+    if (!(node2 = node2.parentNode)) {
       throw new Error(`transition ${id2} not found`);
     }
   }
   return timing;
 }
-function selection_transition(name) {
+function selection_transition(name2) {
   var id2, timing;
-  if (name instanceof Transition) {
-    id2 = name._id, name = name._name;
+  if (name2 instanceof Transition) {
+    id2 = name2._id, name2 = name2._name;
   } else {
-    id2 = newId(), (timing = defaultTiming).time = now(), name = name == null ? null : name + "";
+    id2 = newId(), (timing = defaultTiming).time = now(), name2 = name2 == null ? null : name2 + "";
   }
   for (var groups = this._groups, m = groups.length, j = 0; j < m; ++j) {
-    for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
-      if (node = group[i]) {
-        schedule(node, name, id2, i, group, timing || inherit(node, id2));
+    for (var group = groups[j], n = group.length, node2, i = 0; i < n; ++i) {
+      if (node2 = group[i]) {
+        schedule(node2, name2, id2, i, group, timing || inherit(node2, id2));
       }
     }
   }
-  return new Transition(groups, this._parents, name, id2);
+  return new Transition(groups, this._parents, name2, id2);
 }
 selection.prototype.interrupt = selection_interrupt;
 selection.prototype.transition = selection_transition;
@@ -15786,8 +15860,8 @@ Transform.prototype = {
   translate: function(x, y) {
     return x === 0 & y === 0 ? this : new Transform(this.k, this.x + this.k * x, this.y + this.k * y);
   },
-  apply: function(point) {
-    return [point[0] * this.k + this.x, point[1] * this.k + this.y];
+  apply: function(point2) {
+    return [point2[0] * this.k + this.x, point2[1] * this.k + this.y];
   },
   applyX: function(x) {
     return x * this.k + this.x;
@@ -15816,9 +15890,9 @@ Transform.prototype = {
 };
 var identity$1 = new Transform(1, 0, 0);
 transform.prototype = Transform.prototype;
-function transform(node) {
-  while (!node.__zoom) if (!(node = node.parentNode)) return identity$1;
-  return node.__zoom;
+function transform(node2) {
+  while (!node2.__zoom) if (!(node2 = node2.parentNode)) return identity$1;
+  return node2.__zoom;
 }
 function nopropagation(event) {
   event.stopImmediatePropagation();
@@ -15863,11 +15937,11 @@ function zoom() {
   function zoom2(selection2) {
     selection2.property("__zoom", defaultTransform).on("wheel.zoom", wheeled, { passive: false }).on("mousedown.zoom", mousedowned).on("dblclick.zoom", dblclicked).filter(touchable).on("touchstart.zoom", touchstarted).on("touchmove.zoom", touchmoved).on("touchend.zoom touchcancel.zoom", touchended).style("-webkit-tap-highlight-color", "rgba(0,0,0,0)");
   }
-  zoom2.transform = function(collection, transform2, point, event) {
+  zoom2.transform = function(collection, transform2, point2, event) {
     var selection2 = collection.selection ? collection.selection() : collection;
     selection2.property("__zoom", defaultTransform);
     if (collection !== selection2) {
-      schedule2(collection, transform2, point, event);
+      schedule2(collection, transform2, point2, event);
     } else {
       selection2.interrupt().each(function() {
         gesture(this, arguments).event(event).start().zoom(null, typeof transform2 === "function" ? transform2.apply(this, arguments) : transform2).end();
@@ -15914,13 +15988,13 @@ function zoom() {
   function centroid(extent2) {
     return [(+extent2[0][0] + +extent2[1][0]) / 2, (+extent2[0][1] + +extent2[1][1]) / 2];
   }
-  function schedule2(transition, transform2, point, event) {
+  function schedule2(transition, transform2, point2, event) {
     transition.on("start.zoom", function() {
       gesture(this, arguments).event(event).start();
     }).on("interrupt.zoom end.zoom", function() {
       gesture(this, arguments).event(event).end();
     }).tween("zoom", function() {
-      var that = this, args = arguments, g = gesture(that, args).event(event), e = extent.apply(that, args), p = point == null ? centroid(e) : typeof point === "function" ? point.apply(that, args) : point, w = Math.max(e[1][0] - e[0][0], e[1][1] - e[0][1]), a = that.__zoom, b = typeof transform2 === "function" ? transform2.apply(that, args) : transform2, i = interpolate2(a.invert(p).concat(w / a.k), b.invert(p).concat(w / b.k));
+      var that = this, args = arguments, g = gesture(that, args).event(event), e = extent.apply(that, args), p = point2 == null ? centroid(e) : typeof point2 === "function" ? point2.apply(that, args) : point2, w = Math.max(e[1][0] - e[0][0], e[1][1] - e[0][1]), a = that.__zoom, b = typeof transform2 === "function" ? transform2.apply(that, args) : transform2, i = interpolate2(a.invert(p).concat(w / a.k), b.invert(p).concat(w / b.k));
       return function(t) {
         if (t === 1) t = b;
         else {
@@ -16235,17 +16309,17 @@ const oppositePosition = {
 function getConnectionStatus(isValid) {
   return isValid === null ? null : isValid ? "valid" : "invalid";
 }
-const isEdgeBase = (element) => "id" in element && "source" in element && "target" in element;
-const isNodeBase = (element) => "id" in element && "position" in element && !("source" in element) && !("target" in element);
-const isInternalNodeBase = (element) => "id" in element && "internals" in element && !("source" in element) && !("target" in element);
-const getNodePositionWithOrigin = (node, nodeOrigin = [0, 0]) => {
-  const { width, height } = getNodeDimensions(node);
-  const origin = node.origin ?? nodeOrigin;
+const isEdgeBase = (element2) => "id" in element2 && "source" in element2 && "target" in element2;
+const isNodeBase = (element2) => "id" in element2 && "position" in element2 && !("source" in element2) && !("target" in element2);
+const isInternalNodeBase = (element2) => "id" in element2 && "internals" in element2 && !("source" in element2) && !("target" in element2);
+const getNodePositionWithOrigin = (node2, nodeOrigin = [0, 0]) => {
+  const { width, height } = getNodeDimensions(node2);
+  const origin = node2.origin ?? nodeOrigin;
   const offsetX = width * origin[0];
   const offsetY = height * origin[1];
   return {
-    x: node.position.x - offsetX,
-    y: node.position.y - offsetY
+    x: node2.position.x - offsetX,
+    y: node2.position.y - offsetY
   };
 };
 const getNodesBounds = (nodes, params = { nodeOrigin: [0, 0] }) => {
@@ -16266,9 +16340,9 @@ const getNodesBounds = (nodes, params = { nodeOrigin: [0, 0] }) => {
 const getInternalNodesBounds = (nodeLookup, params = {}) => {
   let box = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity };
   let hasVisibleNodes = false;
-  nodeLookup.forEach((node) => {
-    if (params.filter === void 0 || params.filter(node)) {
-      box = getBoundsOfBoxes(box, nodeToBox(node));
+  nodeLookup.forEach((node2) => {
+    if (params.filter === void 0 || params.filter(node2)) {
+      box = getBoundsOfBoxes(box, nodeToBox(node2));
       hasVisibleNodes = true;
     }
   });
@@ -16281,34 +16355,34 @@ const getNodesInside = (nodes, rect, [tx, ty, tScale] = [0, 0, 1], partially = f
     height: rect.height / tScale
   };
   const visibleNodes = [];
-  for (const node of nodes.values()) {
-    const { measured, selectable = true, hidden = false } = node;
+  for (const node2 of nodes.values()) {
+    const { measured, selectable = true, hidden = false } = node2;
     if (excludeNonSelectableNodes && !selectable || hidden) {
       continue;
     }
-    const width = measured.width ?? node.width ?? node.initialWidth ?? null;
-    const height = measured.height ?? node.height ?? node.initialHeight ?? null;
-    const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node));
+    const width = measured.width ?? node2.width ?? node2.initialWidth ?? null;
+    const height = measured.height ?? node2.height ?? node2.initialHeight ?? null;
+    const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node2));
     const area = (width ?? 0) * (height ?? 0);
     const partiallyVisible = partially && overlappingArea > 0;
-    const forceInitialRender = !node.internals.handleBounds;
+    const forceInitialRender = !node2.internals.handleBounds;
     const isVisible = forceInitialRender || partiallyVisible || overlappingArea >= area;
-    if (isVisible || node.dragging) {
-      visibleNodes.push(node);
+    if (isVisible || node2.dragging) {
+      visibleNodes.push(node2);
     }
   }
   return visibleNodes;
 };
 const getConnectedEdges = (nodes, edges) => {
   const nodeIds = /* @__PURE__ */ new Set();
-  nodes.forEach((node) => {
-    nodeIds.add(node.id);
+  nodes.forEach((node2) => {
+    nodeIds.add(node2.id);
   });
   return edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
 };
 function getFitViewNodes(nodeLookup, options) {
   const fitViewNodes = /* @__PURE__ */ new Map();
-  const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
+  const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node2) => node2.id)) : null;
   nodeLookup.forEach((n) => {
     const isVisible = n.measured.width && n.measured.height && (options?.includeHiddenNodes || !n.hidden);
     if (isVisible && (!optionNodeIds || optionNodeIds.has(n.id))) {
@@ -16332,12 +16406,12 @@ async function fitViewport({ nodes, width, height, panZoom, minZoom, maxZoom }, 
   return Promise.resolve(true);
 }
 function calculateNodePosition({ nodeId, nextPosition, nodeLookup, nodeOrigin = [0, 0], nodeExtent, onError }) {
-  const node = nodeLookup.get(nodeId);
-  const parentNode = node.parentId ? nodeLookup.get(node.parentId) : void 0;
+  const node2 = nodeLookup.get(nodeId);
+  const parentNode = node2.parentId ? nodeLookup.get(node2.parentId) : void 0;
   const { x: parentX, y: parentY } = parentNode ? parentNode.internals.positionAbsolute : { x: 0, y: 0 };
-  const origin = node.origin ?? nodeOrigin;
-  let extent = node.extent || nodeExtent;
-  if (node.extent === "parent" && !node.expandParent) {
+  const origin = node2.origin ?? nodeOrigin;
+  let extent = node2.extent || nodeExtent;
+  if (node2.extent === "parent" && !node2.expandParent) {
     if (!parentNode) {
       onError?.("005", errorMessages["error005"]());
     } else {
@@ -16350,35 +16424,35 @@ function calculateNodePosition({ nodeId, nextPosition, nodeLookup, nodeOrigin = 
         ];
       }
     }
-  } else if (parentNode && isCoordinateExtent(node.extent)) {
+  } else if (parentNode && isCoordinateExtent(node2.extent)) {
     extent = [
-      [node.extent[0][0] + parentX, node.extent[0][1] + parentY],
-      [node.extent[1][0] + parentX, node.extent[1][1] + parentY]
+      [node2.extent[0][0] + parentX, node2.extent[0][1] + parentY],
+      [node2.extent[1][0] + parentX, node2.extent[1][1] + parentY]
     ];
   }
-  const positionAbsolute = isCoordinateExtent(extent) ? clampPosition(nextPosition, extent, node.measured) : nextPosition;
-  if (node.measured.width === void 0 || node.measured.height === void 0) {
+  const positionAbsolute = isCoordinateExtent(extent) ? clampPosition(nextPosition, extent, node2.measured) : nextPosition;
+  if (node2.measured.width === void 0 || node2.measured.height === void 0) {
     onError?.("015", errorMessages["error015"]());
   }
   return {
     position: {
-      x: positionAbsolute.x - parentX + (node.measured.width ?? 0) * origin[0],
-      y: positionAbsolute.y - parentY + (node.measured.height ?? 0) * origin[1]
+      x: positionAbsolute.x - parentX + (node2.measured.width ?? 0) * origin[0],
+      y: positionAbsolute.y - parentY + (node2.measured.height ?? 0) * origin[1]
     },
     positionAbsolute
   };
 }
 async function getElementsToRemove({ nodesToRemove = [], edgesToRemove = [], nodes, edges, onBeforeDelete }) {
-  const nodeIds = new Set(nodesToRemove.map((node) => node.id));
+  const nodeIds = new Set(nodesToRemove.map((node2) => node2.id));
   const matchingNodes = [];
-  for (const node of nodes) {
-    if (node.deletable === false) {
+  for (const node2 of nodes) {
+    if (node2.deletable === false) {
       continue;
     }
-    const isIncluded = nodeIds.has(node.id);
-    const parentHit = !isIncluded && node.parentId && matchingNodes.find((n) => n.id === node.parentId);
+    const isIncluded = nodeIds.has(node2.id);
+    const parentHit = !isIncluded && node2.parentId && matchingNodes.find((n) => n.id === node2.parentId);
     if (isIncluded || parentHit) {
-      matchingNodes.push(node);
+      matchingNodes.push(node2);
     }
   }
   const edgeIds = new Set(edgesToRemove.map((edge) => edge.id));
@@ -16407,9 +16481,9 @@ async function getElementsToRemove({ nodesToRemove = [], edgesToRemove = [], nod
   return onBeforeDeleteResult;
 }
 const clamp = (val, min = 0, max = 1) => Math.min(Math.max(val, min), max);
-const clampPosition = (position = { x: 0, y: 0 }, extent, dimensions) => ({
-  x: clamp(position.x, extent[0][0], extent[1][0] - (dimensions?.width ?? 0)),
-  y: clamp(position.y, extent[0][1], extent[1][1] - (dimensions?.height ?? 0))
+const clampPosition = (position2 = { x: 0, y: 0 }, extent, dimensions) => ({
+  x: clamp(position2.x, extent[0][0], extent[1][0] - (dimensions?.width ?? 0)),
+  y: clamp(position2.y, extent[0][1], extent[1][1] - (dimensions?.height ?? 0))
 });
 function clampPositionToParent(childPosition, childDimensions, parent) {
   const { width: parentWidth, height: parentHeight } = getNodeDimensions(parent);
@@ -16450,22 +16524,22 @@ const boxToRect = ({ x, y, x2, y2 }) => ({
   width: x2 - x,
   height: y2 - y
 });
-const nodeToRect = (node, nodeOrigin = [0, 0]) => {
-  const { x, y } = isInternalNodeBase(node) ? node.internals.positionAbsolute : getNodePositionWithOrigin(node, nodeOrigin);
+const nodeToRect = (node2, nodeOrigin = [0, 0]) => {
+  const { x, y } = isInternalNodeBase(node2) ? node2.internals.positionAbsolute : getNodePositionWithOrigin(node2, nodeOrigin);
   return {
     x,
     y,
-    width: node.measured?.width ?? node.width ?? node.initialWidth ?? 0,
-    height: node.measured?.height ?? node.height ?? node.initialHeight ?? 0
+    width: node2.measured?.width ?? node2.width ?? node2.initialWidth ?? 0,
+    height: node2.measured?.height ?? node2.height ?? node2.initialHeight ?? 0
   };
 };
-const nodeToBox = (node, nodeOrigin = [0, 0]) => {
-  const { x, y } = isInternalNodeBase(node) ? node.internals.positionAbsolute : getNodePositionWithOrigin(node, nodeOrigin);
+const nodeToBox = (node2, nodeOrigin = [0, 0]) => {
+  const { x, y } = isInternalNodeBase(node2) ? node2.internals.positionAbsolute : getNodePositionWithOrigin(node2, nodeOrigin);
   return {
     x,
     y,
-    x2: x + (node.measured?.width ?? node.width ?? node.initialWidth ?? 0),
-    y2: y + (node.measured?.height ?? node.height ?? node.initialHeight ?? 0)
+    x2: x + (node2.measured?.width ?? node2.width ?? node2.initialWidth ?? 0),
+    y2: y + (node2.measured?.height ?? node2.height ?? node2.initialHeight ?? 0)
   };
 };
 const getBoundsOfRects = (rect1, rect2) => boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
@@ -16478,18 +16552,18 @@ const isRectObject = (obj) => isNumeric(obj.width) && isNumeric(obj.height) && i
 const isNumeric = (n) => !isNaN(n) && isFinite(n);
 const devWarn = (id2, message) => {
 };
-const snapPosition = (position, snapGrid = [1, 1]) => {
+const snapPosition = (position2, snapGrid = [1, 1]) => {
   return {
-    x: snapGrid[0] * Math.round(position.x / snapGrid[0]),
-    y: snapGrid[1] * Math.round(position.y / snapGrid[1])
+    x: snapGrid[0] * Math.round(position2.x / snapGrid[0]),
+    y: snapGrid[1] * Math.round(position2.y / snapGrid[1])
   };
 };
 const pointToRendererPoint = ({ x, y }, [tx, ty, tScale], snapToGrid = false, snapGrid = [1, 1]) => {
-  const position = {
+  const position2 = {
     x: (x - tx) / tScale,
     y: (y - ty) / tScale
   };
-  return snapToGrid ? snapPosition(position, snapGrid) : position;
+  return snapToGrid ? snapPosition(position2, snapGrid) : position2;
 };
 const rendererPointToPoint = ({ x, y }, [tx, ty, tScale]) => {
   return {
@@ -16577,17 +16651,17 @@ const isMacOs = () => typeof navigator !== "undefined" && navigator?.userAgent?.
 function isCoordinateExtent(extent) {
   return extent !== void 0 && extent !== null && extent !== "parent";
 }
-function getNodeDimensions(node) {
+function getNodeDimensions(node2) {
   return {
-    width: node.measured?.width ?? node.width ?? node.initialWidth ?? 0,
-    height: node.measured?.height ?? node.height ?? node.initialHeight ?? 0
+    width: node2.measured?.width ?? node2.width ?? node2.initialWidth ?? 0,
+    height: node2.measured?.height ?? node2.height ?? node2.initialHeight ?? 0
   };
 }
-function nodeHasDimensions(node) {
-  return (node.measured?.width ?? node.width ?? node.initialWidth) !== void 0 && (node.measured?.height ?? node.height ?? node.initialHeight) !== void 0;
+function nodeHasDimensions(node2) {
+  return (node2.measured?.width ?? node2.width ?? node2.initialWidth) !== void 0 && (node2.measured?.height ?? node2.height ?? node2.initialHeight) !== void 0;
 }
-function evaluateAbsolutePosition(position, dimensions = { width: 0, height: 0 }, parentId, nodeLookup, nodeOrigin) {
-  const positionAbsolute = { ...position };
+function evaluateAbsolutePosition(position2, dimensions = { width: 0, height: 0 }, parentId, nodeLookup, nodeOrigin) {
+  const positionAbsolute = { ...position2 };
   const parent = nodeLookup.get(parentId);
   if (parent) {
     const origin = parent.origin || nodeOrigin;
@@ -16629,11 +16703,11 @@ function getPointerPosition(event, { snapGrid = [0, 0], snapToGrid = false, tran
     ...pointerPos
   };
 }
-const getDimensions = (node) => ({
-  width: node.offsetWidth,
-  height: node.offsetHeight
+const getDimensions = (node2) => ({
+  width: node2.offsetWidth,
+  height: node2.offsetHeight
 });
-const getHostForElement = (element) => element?.getRootNode?.() || window?.document;
+const getHostForElement = (element2) => element2?.getRootNode?.() || window?.document;
 const inputTags = ["INPUT", "SELECT", "TEXTAREA"];
 function isInputDOMNode(event) {
   const target = event.composedPath?.()?.[0] || event.target;
@@ -16657,16 +16731,16 @@ const getHandleBounds = (type, nodeElement, nodeBounds, zoom2, nodeId) => {
   if (!handles || !handles.length) {
     return null;
   }
-  return Array.from(handles).map((handle) => {
-    const handleBounds = handle.getBoundingClientRect();
+  return Array.from(handles).map((handle2) => {
+    const handleBounds = handle2.getBoundingClientRect();
     return {
-      id: handle.getAttribute("data-handleid"),
+      id: handle2.getAttribute("data-handleid"),
       type,
       nodeId,
-      position: handle.getAttribute("data-handlepos"),
+      position: handle2.getAttribute("data-handlepos"),
       x: (handleBounds.left - nodeBounds.left) / zoom2,
       y: (handleBounds.top - nodeBounds.top) / zoom2,
-      ...getDimensions(handle)
+      ...getDimensions(handle2)
     };
   });
 };
@@ -16930,7 +17004,7 @@ function getSmoothStepPath({ sourceX, sourceY, sourcePosition = Position.Bottom,
     offset,
     stepPosition
   });
-  const path = points.reduce((res, p, i) => {
+  const path2 = points.reduce((res, p, i) => {
     let segment = "";
     if (i > 0 && i < points.length - 1) {
       segment = getBend(points[i - 1], p, points[i + 1], borderRadius);
@@ -16940,10 +17014,10 @@ function getSmoothStepPath({ sourceX, sourceY, sourcePosition = Position.Bottom,
     res += segment;
     return res;
   }, "");
-  return [path, labelX, labelY, offsetX, offsetY];
+  return [path2, labelX, labelY, offsetX, offsetY];
 }
-function isNodeInitialized(node) {
-  return node && !!(node.internals.handleBounds || node.handles?.length) && !!(node.measured.width || node.width || node.initialWidth);
+function isNodeInitialized(node2) {
+  return node2 && !!(node2.internals.handleBounds || node2.handles?.length) && !!(node2.measured.width || node2.width || node2.initialWidth);
 }
 function getEdgePosition(params) {
   const { sourceNode, targetNode } = params;
@@ -16985,13 +17059,13 @@ function toHandleBounds(handles) {
   }
   const source = [];
   const target = [];
-  for (const handle of handles) {
-    handle.width = handle.width ?? 1;
-    handle.height = handle.height ?? 1;
-    if (handle.type === "source") {
-      source.push(handle);
-    } else if (handle.type === "target") {
-      target.push(handle);
+  for (const handle2 of handles) {
+    handle2.width = handle2.width ?? 1;
+    handle2.height = handle2.height ?? 1;
+    if (handle2.type === "source") {
+      source.push(handle2);
+    } else if (handle2.type === "target") {
+      target.push(handle2);
     }
   }
   return {
@@ -16999,15 +17073,15 @@ function toHandleBounds(handles) {
     target
   };
 }
-function getHandlePosition(node, handle, fallbackPosition = Position.Left, center = false) {
-  const x = (handle?.x ?? 0) + node.internals.positionAbsolute.x;
-  const y = (handle?.y ?? 0) + node.internals.positionAbsolute.y;
-  const { width, height } = handle ?? getNodeDimensions(node);
+function getHandlePosition(node2, handle2, fallbackPosition = Position.Left, center = false) {
+  const x = (handle2?.x ?? 0) + node2.internals.positionAbsolute.x;
+  const y = (handle2?.y ?? 0) + node2.internals.positionAbsolute.y;
+  const { width, height } = handle2 ?? getNodeDimensions(node2);
   if (center) {
     return { x: x + width / 2, y: y + height / 2 };
   }
-  const position = handle?.position ?? fallbackPosition;
-  switch (position) {
+  const position2 = handle2?.position ?? fallbackPosition;
+  switch (position2) {
     case Position.Top:
       return { x: x + width / 2, y };
     case Position.Right:
@@ -17073,14 +17147,14 @@ function mergeObjects(base, incoming) {
 }
 function updateAbsolutePositions(nodeLookup, parentLookup, options) {
   const _options = mergeObjects(defaultOptions, options);
-  for (const node of nodeLookup.values()) {
-    if (node.parentId) {
-      updateChildNode(node, nodeLookup, parentLookup, _options);
+  for (const node2 of nodeLookup.values()) {
+    if (node2.parentId) {
+      updateChildNode(node2, nodeLookup, parentLookup, _options);
     } else {
-      const positionWithOrigin = getNodePositionWithOrigin(node, _options.nodeOrigin);
-      const extent = isCoordinateExtent(node.extent) ? node.extent : _options.nodeExtent;
-      const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(node));
-      node.internals.positionAbsolute = clampedPosition;
+      const positionWithOrigin = getNodePositionWithOrigin(node2, _options.nodeOrigin);
+      const extent = isCoordinateExtent(node2.extent) ? node2.extent : _options.nodeExtent;
+      const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(node2));
+      node2.internals.positionAbsolute = clampedPosition;
     }
   }
 }
@@ -17090,20 +17164,20 @@ function parseHandles(userNode, internalNode) {
   }
   const source = [];
   const target = [];
-  for (const handle of userNode.handles) {
+  for (const handle2 of userNode.handles) {
     const handleBounds = {
-      id: handle.id,
-      width: handle.width ?? 1,
-      height: handle.height ?? 1,
+      id: handle2.id,
+      width: handle2.width ?? 1,
+      height: handle2.height ?? 1,
       nodeId: userNode.id,
-      x: handle.x,
-      y: handle.y,
-      position: handle.position,
-      type: handle.type
+      x: handle2.x,
+      y: handle2.y,
+      position: handle2.position,
+      type: handle2.type
     };
-    if (handle.type === "source") {
+    if (handle2.type === "source") {
       source.push(handleBounds);
-    } else if (handle.type === "target") {
+    } else if (handle2.type === "target") {
       target.push(handleBounds);
     }
   }
@@ -17157,26 +17231,26 @@ function adoptUserNodes(nodes, nodeLookup, parentLookup, options = {}) {
   }
   return nodesInitialized;
 }
-function updateParentLookup(node, parentLookup) {
-  if (!node.parentId) {
+function updateParentLookup(node2, parentLookup) {
+  if (!node2.parentId) {
     return;
   }
-  const childNodes = parentLookup.get(node.parentId);
+  const childNodes = parentLookup.get(node2.parentId);
   if (childNodes) {
-    childNodes.set(node.id, node);
+    childNodes.set(node2.id, node2);
   } else {
-    parentLookup.set(node.parentId, /* @__PURE__ */ new Map([[node.id, node]]));
+    parentLookup.set(node2.parentId, /* @__PURE__ */ new Map([[node2.id, node2]]));
   }
 }
-function updateChildNode(node, nodeLookup, parentLookup, options, rootParentIndex) {
+function updateChildNode(node2, nodeLookup, parentLookup, options, rootParentIndex) {
   const { elevateNodesOnSelect, nodeOrigin, nodeExtent, zIndexMode } = mergeObjects(defaultOptions, options);
-  const parentId = node.parentId;
+  const parentId = node2.parentId;
   const parentNode = nodeLookup.get(parentId);
   if (!parentNode) {
     console.warn(`Parent node ${parentId} not found. Please make sure that parent nodes are in front of their child nodes in the nodes array.`);
     return;
   }
-  updateParentLookup(node, parentLookup);
+  updateParentLookup(node2, parentLookup);
   if (rootParentIndex && !parentNode.parentId && parentNode.internals.rootParentIndex === void 0 && zIndexMode === "auto") {
     parentNode.internals.rootParentIndex = ++rootParentIndex.i;
     parentNode.internals.z = parentNode.internals.z + rootParentIndex.i * ROOT_PARENT_Z_INCREMENT;
@@ -17185,26 +17259,26 @@ function updateChildNode(node, nodeLookup, parentLookup, options, rootParentInde
     rootParentIndex.i = parentNode.internals.rootParentIndex;
   }
   const selectedNodeZ = elevateNodesOnSelect && !isManualZIndexMode(zIndexMode) ? SELECTED_NODE_Z : 0;
-  const { x, y, z } = calculateChildXYZ(node, parentNode, nodeOrigin, nodeExtent, selectedNodeZ, zIndexMode);
-  const { positionAbsolute } = node.internals;
+  const { x, y, z } = calculateChildXYZ(node2, parentNode, nodeOrigin, nodeExtent, selectedNodeZ, zIndexMode);
+  const { positionAbsolute } = node2.internals;
   const positionChanged = x !== positionAbsolute.x || y !== positionAbsolute.y;
-  if (positionChanged || z !== node.internals.z) {
-    nodeLookup.set(node.id, {
-      ...node,
+  if (positionChanged || z !== node2.internals.z) {
+    nodeLookup.set(node2.id, {
+      ...node2,
       internals: {
-        ...node.internals,
+        ...node2.internals,
         positionAbsolute: positionChanged ? { x, y } : positionAbsolute,
         z
       }
     });
   }
 }
-function calculateZ(node, selectedNodeZ, zIndexMode) {
-  const zIndex = isNumeric(node.zIndex) ? node.zIndex : 0;
+function calculateZ(node2, selectedNodeZ, zIndexMode) {
+  const zIndex = isNumeric(node2.zIndex) ? node2.zIndex : 0;
   if (isManualZIndexMode(zIndexMode)) {
     return zIndex;
   }
-  return zIndex + (node.selected ? selectedNodeZ : 0);
+  return zIndex + (node2.selected ? selectedNodeZ : 0);
 }
 function calculateChildXYZ(childNode, parentNode, nodeOrigin, nodeExtent, selectedNodeZ, zIndexMode) {
   const { x: parentX, y: parentY } = parentNode.internals.positionAbsolute;
@@ -17294,15 +17368,15 @@ function updateNodeInternals(updates, nodeLookup, parentLookup, domNode, nodeOri
   const { m22: zoom2 } = new window.DOMMatrixReadOnly(style2.transform);
   const parentExpandChildren = [];
   for (const update of updates.values()) {
-    const node = nodeLookup.get(update.id);
-    if (!node) {
+    const node2 = nodeLookup.get(update.id);
+    if (!node2) {
       continue;
     }
-    if (node.hidden) {
-      nodeLookup.set(node.id, {
-        ...node,
+    if (node2.hidden) {
+      nodeLookup.set(node2.id, {
+        ...node2,
         internals: {
-          ...node.internals,
+          ...node2.internals,
           handleBounds: void 0
         }
       });
@@ -17310,44 +17384,44 @@ function updateNodeInternals(updates, nodeLookup, parentLookup, domNode, nodeOri
       continue;
     }
     const dimensions = getDimensions(update.nodeElement);
-    const dimensionChanged = node.measured.width !== dimensions.width || node.measured.height !== dimensions.height;
-    const doUpdate = !!(dimensions.width && dimensions.height && (dimensionChanged || !node.internals.handleBounds || update.force));
+    const dimensionChanged = node2.measured.width !== dimensions.width || node2.measured.height !== dimensions.height;
+    const doUpdate = !!(dimensions.width && dimensions.height && (dimensionChanged || !node2.internals.handleBounds || update.force));
     if (doUpdate) {
       const nodeBounds = update.nodeElement.getBoundingClientRect();
-      const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
-      let { positionAbsolute } = node.internals;
-      if (node.parentId && node.extent === "parent") {
-        positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, nodeLookup.get(node.parentId));
+      const extent = isCoordinateExtent(node2.extent) ? node2.extent : nodeExtent;
+      let { positionAbsolute } = node2.internals;
+      if (node2.parentId && node2.extent === "parent") {
+        positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, nodeLookup.get(node2.parentId));
       } else if (extent) {
         positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
       }
       const newNode = {
-        ...node,
+        ...node2,
         measured: dimensions,
         internals: {
-          ...node.internals,
+          ...node2.internals,
           positionAbsolute,
           handleBounds: {
-            source: getHandleBounds("source", update.nodeElement, nodeBounds, zoom2, node.id),
-            target: getHandleBounds("target", update.nodeElement, nodeBounds, zoom2, node.id)
+            source: getHandleBounds("source", update.nodeElement, nodeBounds, zoom2, node2.id),
+            target: getHandleBounds("target", update.nodeElement, nodeBounds, zoom2, node2.id)
           }
         }
       };
-      nodeLookup.set(node.id, newNode);
-      if (node.parentId) {
+      nodeLookup.set(node2.id, newNode);
+      if (node2.parentId) {
         updateChildNode(newNode, nodeLookup, parentLookup, { nodeOrigin, zIndexMode });
       }
       updatedInternals = true;
       if (dimensionChanged) {
         changes.push({
-          id: node.id,
+          id: node2.id,
           type: "dimensions",
           dimensions
         });
-        if (node.expandParent && node.parentId) {
+        if (node2.expandParent && node2.parentId) {
           parentExpandChildren.push({
-            id: node.id,
-            parentId: node.parentId,
+            id: node2.id,
+            parentId: node2.parentId,
             rect: nodeToRect(newNode, nodeOrigin)
           });
         }
@@ -17401,11 +17475,11 @@ function updateConnectionLookup(connectionLookup, edgeLookup, edges) {
     edgeLookup.set(edge.id, edge);
   }
 }
-function isParentSelected(node, nodeLookup) {
-  if (!node.parentId) {
+function isParentSelected(node2, nodeLookup) {
+  if (!node2.parentId) {
     return false;
   }
-  const parentNode = nodeLookup.get(node.parentId);
+  const parentNode = nodeLookup.get(node2.parentId);
   if (!parentNode) {
     return false;
   }
@@ -17427,8 +17501,8 @@ function hasSelector(target, selector2, domNode) {
 }
 function getDragItems(nodeLookup, nodesDraggable, mousePos, nodeId) {
   const dragItems = /* @__PURE__ */ new Map();
-  for (const [id2, node] of nodeLookup) {
-    if ((node.selected || node.id === nodeId) && (!node.parentId || !isParentSelected(node, nodeLookup)) && (node.draggable || nodesDraggable && typeof node.draggable === "undefined")) {
+  for (const [id2, node2] of nodeLookup) {
+    if ((node2.selected || node2.id === nodeId) && (!node2.parentId || !isParentSelected(node2, nodeLookup)) && (node2.draggable || nodesDraggable && typeof node2.draggable === "undefined")) {
       const internalNode = nodeLookup.get(id2);
       if (internalNode) {
         dragItems.set(id2, {
@@ -17458,10 +17532,10 @@ function getDragItems(nodeLookup, nodesDraggable, mousePos, nodeId) {
 function getEventHandlerParams({ nodeId, dragItems, nodeLookup, dragging = true }) {
   const nodesFromDragItems = [];
   for (const [id2, dragItem] of dragItems) {
-    const node2 = nodeLookup.get(id2)?.internals.userNode;
-    if (node2) {
+    const node22 = nodeLookup.get(id2)?.internals.userNode;
+    if (node22) {
       nodesFromDragItems.push({
-        ...node2,
+        ...node22,
         position: dragItem.position,
         dragging
       });
@@ -17470,11 +17544,11 @@ function getEventHandlerParams({ nodeId, dragItems, nodeLookup, dragging = true 
   if (!nodeId) {
     return [nodesFromDragItems[0], nodesFromDragItems];
   }
-  const node = nodeLookup.get(nodeId)?.internals.userNode;
+  const node2 = nodeLookup.get(nodeId)?.internals.userNode;
   return [
-    !node ? nodesFromDragItems[0] : {
-      ...node,
-      position: dragItems.get(nodeId)?.position || node.position,
+    !node2 ? nodesFromDragItems[0] : {
+      ...node2,
+      position: dragItems.get(nodeId)?.position || node2.position,
       dragging
     },
     nodesFromDragItems
@@ -17544,7 +17618,7 @@ function XYDrag({ onNodeMouseDown, getStoreItems, onDragStart, onDrag, onDragSto
             [x2, y2]
           ];
         }
-        const { position, positionAbsolute } = calculateNodePosition({
+        const { position: position2, positionAbsolute } = calculateNodePosition({
           nodeId: id2,
           nextPosition,
           nodeLookup,
@@ -17552,8 +17626,8 @@ function XYDrag({ onNodeMouseDown, getStoreItems, onDragStart, onDrag, onDragSto
           nodeOrigin,
           onError
         });
-        hasChange = hasChange || dragItem.position.x !== position.x || dragItem.position.y !== position.y;
-        dragItem.position = position;
+        hasChange = hasChange || dragItem.position.x !== position2.x || dragItem.position.y !== position2.y;
+        dragItem.position = position2;
         dragItem.internals.positionAbsolute = positionAbsolute;
       }
       nodePositionsChanged = nodePositionsChanged || hasChange;
@@ -17703,42 +17777,42 @@ function XYDrag({ onNodeMouseDown, getStoreItems, onDragStart, onDrag, onDragSto
     destroy
   };
 }
-function getNodesWithinDistance(position, nodeLookup, distance2) {
+function getNodesWithinDistance(position2, nodeLookup, distance2) {
   const nodes = [];
   const rect = {
-    x: position.x - distance2,
-    y: position.y - distance2,
+    x: position2.x - distance2,
+    y: position2.y - distance2,
     width: distance2 * 2,
     height: distance2 * 2
   };
-  for (const node of nodeLookup.values()) {
-    if (getOverlappingArea(rect, nodeToRect(node)) > 0) {
-      nodes.push(node);
+  for (const node2 of nodeLookup.values()) {
+    if (getOverlappingArea(rect, nodeToRect(node2)) > 0) {
+      nodes.push(node2);
     }
   }
   return nodes;
 }
 const ADDITIONAL_DISTANCE = 250;
-function getClosestHandle(position, connectionRadius, nodeLookup, fromHandle) {
+function getClosestHandle(position2, connectionRadius, nodeLookup, fromHandle) {
   let closestHandles = [];
   let minDistance = Infinity;
-  const closeNodes = getNodesWithinDistance(position, nodeLookup, connectionRadius + ADDITIONAL_DISTANCE);
-  for (const node of closeNodes) {
-    const allHandles = [...node.internals.handleBounds?.source ?? [], ...node.internals.handleBounds?.target ?? []];
-    for (const handle of allHandles) {
-      if (fromHandle.nodeId === handle.nodeId && fromHandle.type === handle.type && fromHandle.id === handle.id) {
+  const closeNodes = getNodesWithinDistance(position2, nodeLookup, connectionRadius + ADDITIONAL_DISTANCE);
+  for (const node2 of closeNodes) {
+    const allHandles = [...node2.internals.handleBounds?.source ?? [], ...node2.internals.handleBounds?.target ?? []];
+    for (const handle2 of allHandles) {
+      if (fromHandle.nodeId === handle2.nodeId && fromHandle.type === handle2.type && fromHandle.id === handle2.id) {
         continue;
       }
-      const { x, y } = getHandlePosition(node, handle, handle.position, true);
-      const distance2 = Math.sqrt(Math.pow(x - position.x, 2) + Math.pow(y - position.y, 2));
+      const { x, y } = getHandlePosition(node2, handle2, handle2.position, true);
+      const distance2 = Math.sqrt(Math.pow(x - position2.x, 2) + Math.pow(y - position2.y, 2));
       if (distance2 > connectionRadius) {
         continue;
       }
       if (distance2 < minDistance) {
-        closestHandles = [{ ...handle, x, y }];
+        closestHandles = [{ ...handle2, x, y }];
         minDistance = distance2;
       } else if (distance2 === minDistance) {
-        closestHandles.push({ ...handle, x, y });
+        closestHandles.push({ ...handle2, x, y });
       }
     }
   }
@@ -17747,18 +17821,18 @@ function getClosestHandle(position, connectionRadius, nodeLookup, fromHandle) {
   }
   if (closestHandles.length > 1) {
     const oppositeHandleType = fromHandle.type === "source" ? "target" : "source";
-    return closestHandles.find((handle) => handle.type === oppositeHandleType) ?? closestHandles[0];
+    return closestHandles.find((handle2) => handle2.type === oppositeHandleType) ?? closestHandles[0];
   }
   return closestHandles[0];
 }
 function getHandle(nodeId, handleType, handleId, nodeLookup, connectionMode, withAbsolutePosition = false) {
-  const node = nodeLookup.get(nodeId);
-  if (!node) {
+  const node2 = nodeLookup.get(nodeId);
+  if (!node2) {
     return null;
   }
-  const handles = connectionMode === "strict" ? node.internals.handleBounds?.[handleType] : [...node.internals.handleBounds?.source ?? [], ...node.internals.handleBounds?.target ?? []];
-  const handle = (handleId ? handles?.find((h) => h.id === handleId) : handles?.[0]) ?? null;
-  return handle && withAbsolutePosition ? { ...handle, ...getHandlePosition(node, handle, handle.position, true) } : handle;
+  const handles = connectionMode === "strict" ? node2.internals.handleBounds?.[handleType] : [...node2.internals.handleBounds?.source ?? [], ...node2.internals.handleBounds?.target ?? []];
+  const handle2 = (handleId ? handles?.find((h) => h.id === handleId) : handles?.[0]) ?? null;
+  return handle2 && withAbsolutePosition ? { ...handle2, ...getHandlePosition(node2, handle2, handle2.position, true) } : handle2;
 }
 function getHandleType(edgeUpdaterType, handleDomNode) {
   if (edgeUpdaterType) {
@@ -17795,7 +17869,7 @@ function onPointerDown(event, { connectionMode, connectionRadius, handleId, node
   if (!fromHandleInternal) {
     return;
   }
-  let position = getEventPosition(event, containerBounds);
+  let position2 = getEventPosition(event, containerBounds);
   let autoPanStarted = false;
   let connection = null;
   let isValid = false;
@@ -17804,7 +17878,7 @@ function onPointerDown(event, { connectionMode, connectionRadius, handleId, node
     if (!autoPanOnConnect || !containerBounds) {
       return;
     }
-    const [x2, y2] = calcAutoPan(position, containerBounds, autoPanSpeed);
+    const [x2, y2] = calcAutoPan(position2, containerBounds, autoPanSpeed);
     panBy2({ x: x2, y: y2 });
     autoPanId = requestAnimationFrame(autoPan);
   }
@@ -17823,11 +17897,11 @@ function onPointerDown(event, { connectionMode, connectionRadius, handleId, node
     fromHandle,
     fromPosition: fromHandle.position,
     fromNode: fromInternalNode,
-    to: position,
+    to: position2,
     toHandle: null,
     toPosition: oppositePosition[fromHandle.position],
     toNode: null,
-    pointer: position
+    pointer: position2
   };
   function startConnection() {
     connectionStarted = true;
@@ -17853,8 +17927,8 @@ function onPointerDown(event, { connectionMode, connectionRadius, handleId, node
       return;
     }
     const transform2 = getTransform();
-    position = getEventPosition(event2, containerBounds);
-    closestHandle = getClosestHandle(pointToRendererPoint(position, transform2, false, [1, 1]), connectionRadius, nodeLookup, fromHandle);
+    position2 = getEventPosition(event2, containerBounds);
+    closestHandle = getClosestHandle(pointToRendererPoint(position2, transform2, false, [1, 1]), connectionRadius, nodeLookup, fromHandle);
     if (!autoPanStarted) {
       autoPan();
       autoPanStarted = true;
@@ -17880,11 +17954,11 @@ function onPointerDown(event, { connectionMode, connectionRadius, handleId, node
       ...previousConnection,
       from: from2,
       isValid,
-      to: result.toHandle && isValid ? rendererPointToPoint({ x: result.toHandle.x, y: result.toHandle.y }, transform2) : position,
+      to: result.toHandle && isValid ? rendererPointToPoint({ x: result.toHandle.x, y: result.toHandle.y }, transform2) : position2,
       toHandle: result.toHandle,
       toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
       toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId) : null,
-      pointer: position
+      pointer: position2
     };
     updateConnection(newConnection);
     previousConnection = newConnection;
@@ -17923,9 +17997,9 @@ function onPointerDown(event, { connectionMode, connectionRadius, handleId, node
   doc.addEventListener("touchmove", onPointerMove);
   doc.addEventListener("touchend", onPointerUp);
 }
-function isValidHandle(event, { handle, connectionMode, fromNodeId, fromHandleId, fromType, doc, lib, flowId, isValidConnection = alwaysValid, nodeLookup }) {
+function isValidHandle(event, { handle: handle2, connectionMode, fromNodeId, fromHandleId, fromType, doc, lib, flowId, isValidConnection = alwaysValid, nodeLookup }) {
   const isTarget = fromType === "target";
-  const handleDomNode = handle ? doc.querySelector(`.${lib}-flow__handle[data-id="${flowId}-${handle?.nodeId}-${handle?.id}-${handle?.type}"]`) : null;
+  const handleDomNode = handle2 ? doc.querySelector(`.${lib}-flow__handle[data-id="${flowId}-${handle2?.nodeId}-${handle2?.id}-${handle2?.type}"]`) : null;
   const { x, y } = getEventPosition(event);
   const handleBelow = doc.elementFromPoint(x, y);
   const handleToCheck = handleBelow?.classList.contains(`${lib}-flow__handle`) ? handleBelow : handleDomNode;
@@ -17996,7 +18070,7 @@ function XYMinimap({ domNode, panZoom, getTransform, getViewScale }) {
       const panDelta = [panCurrent[0] - panStart[0], panCurrent[1] - panStart[1]];
       panStart = panCurrent;
       const moveScale = getViewScale() * Math.max(transform2[2], Math.log(transform2[2])) * (inversePan ? -1 : 1);
-      const position = {
+      const position2 = {
         x: transform2[0] - panDelta[0] * moveScale,
         y: transform2[1] - panDelta[1] * moveScale
       };
@@ -18005,8 +18079,8 @@ function XYMinimap({ domNode, panZoom, getTransform, getViewScale }) {
         [width, height]
       ];
       panZoom.setViewportConstrained({
-        x: position.x,
-        y: position.y,
+        x: position2.x,
+        y: position2.y,
         zoom: transform2[2]
       }, extent, translateExtent);
     };
@@ -18055,10 +18129,10 @@ function createPanOnScrollHandler({ zoomPanValues, noWheelClassName, d3Selection
     event.stopImmediatePropagation();
     const currentZoom = d3Selection.property("__zoom").k || 1;
     if (event.ctrlKey && zoomOnPinch) {
-      const point = pointer(event);
+      const point2 = pointer(event);
       const pinchDelta = wheelDelta(event);
       const zoom2 = currentZoom * Math.pow(2, pinchDelta);
-      d3Zoom.scaleTo(d3Selection, zoom2, point, event);
+      d3Zoom.scaleTo(d3Selection, zoom2, point2, event);
       return;
     }
     const deltaNormalize = event.deltaMode === 1 ? 20 : 1;
@@ -18538,10 +18612,10 @@ const initStartValues = {
   pointerY: 0,
   aspectRatio: 1
 };
-function nodeToParentExtent(node) {
+function nodeToParentExtent(node2) {
   return [
     [0, 0],
-    [node.measured.width, node.measured.height]
+    [node2.measured.width, node2.measured.height]
   ];
 }
 function nodeToChildExtent(child, parent, nodeOrigin) {
@@ -18578,7 +18652,7 @@ function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }) {
       keepAspectRatio,
       controlDirection: getControlDirection(controlPosition)
     };
-    let node = void 0;
+    let node2 = void 0;
     let containerBounds = null;
     let childNodes = [];
     let parentNode = void 0;
@@ -18587,8 +18661,8 @@ function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }) {
     let resizeDetected = false;
     const dragHandler = drag().on("start", (event) => {
       const { nodeLookup, transform: transform2, snapGrid, snapToGrid, nodeOrigin, paneDomNode } = getStoreItems();
-      node = nodeLookup.get(nodeId);
-      if (!node) {
+      node2 = nodeLookup.get(nodeId);
+      if (!node2) {
         return;
       }
       containerBounds = paneDomNode?.getBoundingClientRect() ?? null;
@@ -18599,10 +18673,10 @@ function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }) {
         containerBounds
       });
       prevValues = {
-        width: node.measured.width ?? 0,
-        height: node.measured.height ?? 0,
-        x: node.position.x ?? 0,
-        y: node.position.y ?? 0
+        width: node2.measured.width ?? 0,
+        height: node2.measured.height ?? 0,
+        x: node2.position.x ?? 0,
+        y: node2.position.y ?? 0
       };
       startValues = {
         ...prevValues,
@@ -18611,9 +18685,9 @@ function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }) {
         aspectRatio: prevValues.width / prevValues.height
       };
       parentNode = void 0;
-      if (node.parentId && (node.extent === "parent" || node.expandParent)) {
-        parentNode = nodeLookup.get(node.parentId);
-        parentExtent = parentNode && node.extent === "parent" ? nodeToParentExtent(parentNode) : void 0;
+      if (node2.parentId && (node2.extent === "parent" || node2.expandParent)) {
+        parentNode = nodeLookup.get(node2.parentId);
+        parentExtent = parentNode && node2.extent === "parent" ? nodeToParentExtent(parentNode) : void 0;
       }
       childNodes = [];
       childExtent = void 0;
@@ -18625,7 +18699,7 @@ function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }) {
             extent: child.extent
           });
           if (child.extent === "parent" || child.expandParent) {
-            const extent = nodeToChildExtent(child, node, child.origin ?? nodeOrigin);
+            const extent = nodeToChildExtent(child, node2, child.origin ?? nodeOrigin);
             if (childExtent) {
               childExtent = [
                 [Math.min(extent[0][0], childExtent[0][0]), Math.min(extent[0][1], childExtent[0][1])],
@@ -18647,12 +18721,12 @@ function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }) {
         containerBounds
       });
       const childChanges = [];
-      if (!node) {
+      if (!node2) {
         return;
       }
       const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues;
       const change = {};
-      const nodeOrigin = node.origin ?? storeNodeOrigin;
+      const nodeOrigin = node2.origin ?? storeNodeOrigin;
       const { width, height, x, y } = getDimensionsAfterResize(startValues, params.controlDirection, pointerPosition, params.boundaries, params.keepAspectRatio, nodeOrigin, parentExtent, childExtent);
       const isWidthChange = width !== prevWidth;
       const isHeightChange = height !== prevHeight;
@@ -18684,7 +18758,7 @@ function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }) {
         prevValues.width = change.width;
         prevValues.height = change.height;
       }
-      if (parentNode && node.expandParent) {
+      if (parentNode && node2.expandParent) {
         const xLimit = nodeOrigin[0] * (change.width ?? 0);
         if (change.x && change.x < xLimit) {
           prevValues.x = xLimit;
@@ -18883,14 +18957,14 @@ function requireWithSelector() {
 var withSelectorExports = requireWithSelector();
 const useSyncExternalStoreExports = /* @__PURE__ */ getDefaultExportFromCjs(withSelectorExports);
 const __vite_import_meta_env__ = {};
-const createStoreImpl = (createState) => {
+const createStoreImpl = (createState2) => {
   let state;
   const listeners = /* @__PURE__ */ new Set();
-  const setState = (partial, replace) => {
+  const setState = (partial, replace2) => {
     const nextState = typeof partial === "function" ? partial(state) : partial;
     if (!Object.is(nextState, state)) {
       const previousState = state;
-      state = (replace != null ? replace : typeof nextState !== "object" || nextState === null) ? nextState : Object.assign({}, state, nextState);
+      state = (replace2 != null ? replace2 : typeof nextState !== "object" || nextState === null) ? nextState : Object.assign({}, state, nextState);
       listeners.forEach((listener) => listener(state, previousState));
     }
   };
@@ -18909,10 +18983,10 @@ const createStoreImpl = (createState) => {
     listeners.clear();
   };
   const api = { setState, getState, getInitialState: getInitialState2, subscribe, destroy };
-  const initialState = state = createState(setState, getState, api);
+  const initialState = state = createState2(setState, getState, api);
   return api;
 };
-const createStore$1 = (createState) => createState ? createStoreImpl(createState) : createStoreImpl;
+const createStore$1 = (createState2) => createState2 ? createStoreImpl(createState2) : createStoreImpl;
 const { useDebugValue } = React;
 const { useSyncExternalStoreWithSelector } = useSyncExternalStoreExports;
 const identity = (arg) => arg;
@@ -18927,13 +19001,13 @@ function useStoreWithEqualityFn(api, selector2 = identity, equalityFn) {
   useDebugValue(slice);
   return slice;
 }
-const createWithEqualityFnImpl = (createState, defaultEqualityFn) => {
-  const api = createStore$1(createState);
+const createWithEqualityFnImpl = (createState2, defaultEqualityFn) => {
+  const api = createStore$1(createState2);
   const useBoundStoreWithEqualityFn = (selector2, equalityFn = defaultEqualityFn) => useStoreWithEqualityFn(api, selector2, equalityFn);
   Object.assign(useBoundStoreWithEqualityFn, api);
   return useBoundStoreWithEqualityFn;
 };
-const createWithEqualityFn = (createState, defaultEqualityFn) => createState ? createWithEqualityFnImpl(createState, defaultEqualityFn) : createWithEqualityFnImpl;
+const createWithEqualityFn = (createState2, defaultEqualityFn) => createState2 ? createWithEqualityFnImpl(createState2, defaultEqualityFn) : createWithEqualityFnImpl;
 function shallow$1(objA, objB) {
   if (Object.is(objA, objB)) {
     return true;
@@ -19017,23 +19091,23 @@ function A11yDescriptions({ rfId, disableKeyboardA11y }) {
   const ariaLabelConfig = useStore(ariaLabelConfigSelector);
   return jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx("div", { id: `${ARIA_NODE_DESC_KEY}-${rfId}`, style, children: disableKeyboardA11y ? ariaLabelConfig["node.a11yDescription.default"] : ariaLabelConfig["node.a11yDescription.keyboardDisabled"] }), jsxRuntimeExports.jsx("div", { id: `${ARIA_EDGE_DESC_KEY}-${rfId}`, style, children: ariaLabelConfig["edge.a11yDescription.default"] }), !disableKeyboardA11y && jsxRuntimeExports.jsx(AriaLiveMessage, { rfId })] });
 }
-const Panel = reactExports.forwardRef(({ position = "top-left", children: children2, className, style: style2, ...rest }, ref) => {
-  const positionClasses = `${position}`.split("-");
+const Panel = reactExports.forwardRef(({ position: position2 = "top-left", children: children2, className, style: style2, ...rest }, ref) => {
+  const positionClasses = `${position2}`.split("-");
   return jsxRuntimeExports.jsx("div", { className: cc(["react-flow__panel", className, ...positionClasses]), style: style2, ref, ...rest, children: children2 });
 });
 Panel.displayName = "Panel";
-function Attribution({ proOptions, position = "bottom-right" }) {
+function Attribution({ proOptions, position: position2 = "bottom-right" }) {
   if (proOptions?.hideAttribution) {
     return null;
   }
-  return jsxRuntimeExports.jsx(Panel, { position, className: "react-flow__attribution", "data-message": "Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev", children: jsxRuntimeExports.jsx("a", { href: "https://reactflow.dev", target: "_blank", rel: "noopener noreferrer", "aria-label": "React Flow attribution", children: "React Flow" }) });
+  return jsxRuntimeExports.jsx(Panel, { position: position2, className: "react-flow__attribution", "data-message": "Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev", children: jsxRuntimeExports.jsx("a", { href: "https://reactflow.dev", target: "_blank", rel: "noopener noreferrer", "aria-label": "React Flow attribution", children: "React Flow" }) });
 }
 const selector$m = (s) => {
   const selectedNodes = [];
   const selectedEdges = [];
-  for (const [, node] of s.nodeLookup) {
-    if (node.selected) {
-      selectedNodes.push(node.internals.userNode);
+  for (const [, node2] of s.nodeLookup) {
+    if (node2.selected) {
+      selectedNodes.push(node2.internals.userNode);
     }
   }
   for (const [, edge] of s.edgeLookup) {
@@ -19231,9 +19305,9 @@ function useKeyPress(keyCode = null, options = { target: defaultDoc, actInsideIn
   const [keyCodes, keysToWatch] = reactExports.useMemo(() => {
     if (keyCode !== null) {
       const keyCodeArr = Array.isArray(keyCode) ? keyCode : [keyCode];
-      const keys = keyCodeArr.filter((kc) => typeof kc === "string").map((kc) => kc.replace("+", "\n").replace("\n\n", "\n+").split("\n"));
-      const keysFlat = keys.reduce((res, item) => res.concat(...item), []);
-      return [keys, keysFlat];
+      const keys2 = keyCodeArr.filter((kc) => typeof kc === "string").map((kc) => kc.replace("+", "\n").replace("\n\n", "\n+").split("\n"));
+      const keysFlat = keys2.reduce((res, item) => res.concat(...item), []);
+      return [keys2, keysFlat];
     }
     return [[], []];
   }, [keyCode]);
@@ -19290,7 +19364,7 @@ function useKeyPress(keyCode = null, options = { target: defaultDoc, actInsideIn
   return keyPressed;
 }
 function isMatchingKey(keyCodes, pressedKeys, isUp) {
-  return keyCodes.filter((keys) => isUp || keys.length === pressedKeys.size).some((keys) => keys.every((k) => pressedKeys.has(k)));
+  return keyCodes.filter((keys2) => isUp || keys2.length === pressedKeys.size).some((keys2) => keys2.every((k) => pressedKeys.has(k)));
 }
 function useKeyOrCode(eventCode, keysToWatch) {
   return keysToWatch.includes(eventCode) ? "code" : "key";
@@ -19392,10 +19466,10 @@ function applyChanges(changes, elements) {
       }
     }
   }
-  for (const element of elements) {
-    const changes2 = changesMap.get(element.id);
+  for (const element2 of elements) {
+    const changes2 = changesMap.get(element2.id);
     if (!changes2) {
-      updatedElements.push(element);
+      updatedElements.push(element2);
       continue;
     }
     if (changes2[0].type === "remove") {
@@ -19405,7 +19479,7 @@ function applyChanges(changes, elements) {
       updatedElements.push({ ...changes2[0].item });
       continue;
     }
-    const updatedElement = { ...element };
+    const updatedElement = { ...element2 };
     for (const change of changes2) {
       applyChange(change, updatedElement);
     }
@@ -19422,37 +19496,37 @@ function applyChanges(changes, elements) {
   }
   return updatedElements;
 }
-function applyChange(change, element) {
+function applyChange(change, element2) {
   switch (change.type) {
     case "select": {
-      element.selected = change.selected;
+      element2.selected = change.selected;
       break;
     }
     case "position": {
       if (typeof change.position !== "undefined") {
-        element.position = change.position;
+        element2.position = change.position;
       }
       if (typeof change.dragging !== "undefined") {
-        element.dragging = change.dragging;
+        element2.dragging = change.dragging;
       }
       break;
     }
     case "dimensions": {
       if (typeof change.dimensions !== "undefined") {
-        element.measured = {
+        element2.measured = {
           ...change.dimensions
         };
         if (change.setAttributes) {
           if (change.setAttributes === true || change.setAttributes === "width") {
-            element.width = change.dimensions.width;
+            element2.width = change.dimensions.width;
           }
           if (change.setAttributes === true || change.setAttributes === "height") {
-            element.height = change.dimensions.height;
+            element2.height = change.dimensions.height;
           }
         }
       }
       if (typeof change.resizing === "boolean") {
-        element.resizing = change.resizing;
+        element2.resizing = change.resizing;
       }
       break;
     }
@@ -19511,8 +19585,8 @@ function elementToRemoveChange(item) {
     type: "remove"
   };
 }
-const isNode = (element) => isNodeBase(element);
-const isEdge = (element) => isEdgeBase(element);
+const isNode = (element2) => isNodeBase(element2);
+const isEdge = (element2) => isEdgeBase(element2);
 function fixedForwardRef(render) {
   return reactExports.forwardRef(render);
 }
@@ -19613,25 +19687,25 @@ function useReactFlow() {
     const setEdges = (payload) => {
       batchContext.edgeQueue.push(payload);
     };
-    const getNodeRect = (node) => {
+    const getNodeRect = (node2) => {
       const { nodeLookup, nodeOrigin } = store.getState();
-      const nodeToUse = isNode(node) ? node : nodeLookup.get(node.id);
-      const position = nodeToUse.parentId ? evaluateAbsolutePosition(nodeToUse.position, nodeToUse.measured, nodeToUse.parentId, nodeLookup, nodeOrigin) : nodeToUse.position;
+      const nodeToUse = isNode(node2) ? node2 : nodeLookup.get(node2.id);
+      const position2 = nodeToUse.parentId ? evaluateAbsolutePosition(nodeToUse.position, nodeToUse.measured, nodeToUse.parentId, nodeLookup, nodeOrigin) : nodeToUse.position;
       const nodeWithPosition = {
         ...nodeToUse,
-        position,
+        position: position2,
         width: nodeToUse.measured?.width ?? nodeToUse.width,
         height: nodeToUse.measured?.height ?? nodeToUse.height
       };
       return nodeToRect(nodeWithPosition);
     };
     const updateNode = (id2, nodeUpdate, options = { replace: false }) => {
-      setNodes((prevNodes) => prevNodes.map((node) => {
-        if (node.id === id2) {
-          const nextNode = typeof nodeUpdate === "function" ? nodeUpdate(node) : nodeUpdate;
-          return options.replace && isNode(nextNode) ? nextNode : { ...node, ...nextNode };
+      setNodes((prevNodes) => prevNodes.map((node2) => {
+        if (node2.id === id2) {
+          const nextNode = typeof nodeUpdate === "function" ? nodeUpdate(node2) : nodeUpdate;
+          return options.replace && isNode(nextNode) ? nextNode : { ...node2, ...nextNode };
         }
-        return node;
+        return node2;
       }));
     };
     const updateEdge = (id2, edgeUpdate, options = { replace: false }) => {
@@ -19736,9 +19810,9 @@ function useReactFlow() {
       },
       updateNode,
       updateNodeData: (id2, dataUpdate, options = { replace: false }) => {
-        updateNode(id2, (node) => {
-          const nextData = typeof dataUpdate === "function" ? dataUpdate(node) : dataUpdate;
-          return options.replace ? { ...node, data: nextData } : { ...node, data: { ...node.data, ...nextData } };
+        updateNode(id2, (node2) => {
+          const nextData = typeof dataUpdate === "function" ? dataUpdate(node2) : dataUpdate;
+          return options.replace ? { ...node2, data: nextData } : { ...node2, data: { ...node2.data, ...nextData } };
         }, options);
       },
       updateEdge,
@@ -20037,7 +20111,7 @@ function Pane({ isSelecting, selectionKeyPressed, selectionMode = SelectionMode.
     };
     const prevSelectedNodeIds = selectedNodeIds.current;
     const prevSelectedEdgeIds = selectedEdgeIds.current;
-    selectedNodeIds.current = new Set(getNodesInside(nodeLookup, nextUserSelectRect, transform2, selectionMode === SelectionMode.Partial, true).map((node) => node.id));
+    selectedNodeIds.current = new Set(getNodesInside(nodeLookup, nextUserSelectRect, transform2, selectionMode === SelectionMode.Partial, true).map((node2) => node2.id));
     selectedEdgeIds.current = /* @__PURE__ */ new Set();
     const edgesSelectable = defaultEdgeOptions?.selectable ?? true;
     for (const nodeId of selectedNodeIds.current) {
@@ -20089,16 +20163,16 @@ function Pane({ isSelecting, selectionKeyPressed, selectionMode = SelectionMode.
 }
 function handleNodeClick({ id: id2, store, unselect = false, nodeRef }) {
   const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeLookup, onError } = store.getState();
-  const node = nodeLookup.get(id2);
-  if (!node) {
+  const node2 = nodeLookup.get(id2);
+  if (!node2) {
     onError?.("012", errorMessages["error012"](id2));
     return;
   }
   store.setState({ nodesSelectionActive: false });
-  if (!node.selected) {
+  if (!node2.selected) {
     addSelectedNodes([id2]);
-  } else if (unselect || node.selected && multiSelectionActive) {
-    unselectNodesAndEdges({ nodes: [node], edges: [] });
+  } else if (unselect || node2.selected && multiSelectionActive) {
+    unselectNodesAndEdges({ nodes: [node2], edges: [] });
     requestAnimationFrame(() => nodeRef?.current?.blur());
   }
 }
@@ -20154,28 +20228,28 @@ function useMoveSelectedNodes() {
     const yVelo = snapToGrid ? snapGrid[1] : 5;
     const xDiff = params.direction.x * xVelo * params.factor;
     const yDiff = params.direction.y * yVelo * params.factor;
-    for (const [, node] of nodeLookup) {
-      if (!isSelected(node)) {
+    for (const [, node2] of nodeLookup) {
+      if (!isSelected(node2)) {
         continue;
       }
       let nextPosition = {
-        x: node.internals.positionAbsolute.x + xDiff,
-        y: node.internals.positionAbsolute.y + yDiff
+        x: node2.internals.positionAbsolute.x + xDiff,
+        y: node2.internals.positionAbsolute.y + yDiff
       };
       if (snapToGrid) {
         nextPosition = snapPosition(nextPosition, snapGrid);
       }
-      const { position, positionAbsolute } = calculateNodePosition({
-        nodeId: node.id,
+      const { position: position2, positionAbsolute } = calculateNodePosition({
+        nodeId: node2.id,
         nextPosition,
         nodeLookup,
         nodeExtent,
         nodeOrigin,
         onError
       });
-      node.position = position;
-      node.internals.positionAbsolute = positionAbsolute;
-      nodeUpdates.set(node.id, node);
+      node2.position = position2;
+      node2.internals.positionAbsolute = positionAbsolute;
+      nodeUpdates.set(node2.id, node2);
     }
     updateNodePositions(nodeUpdates);
   }, []);
@@ -20207,13 +20281,13 @@ const connectingSelector = (nodeId, handleId, type) => (state) => {
     valid: connectingTo && isValid
   };
 };
-function HandleComponent({ type = "source", position = Position.Top, isValidConnection, isConnectable = true, isConnectableStart = true, isConnectableEnd = true, id: id2, onConnect, children: children2, className, onMouseDown, onTouchStart, ...rest }, ref) {
+function HandleComponent({ type = "source", position: position2 = Position.Top, isValidConnection, isConnectable = true, isConnectableStart = true, isConnectableEnd = true, id: id2, onConnect, children: children2, className, onMouseDown, onTouchStart, ...rest }, ref) {
   const handleId = id2 || null;
   const isTarget = type === "target";
   const store = useStoreApi();
   const nodeId = useNodeId();
   const { connectOnClick, noPanClassName, rfId } = useStore(selector$g, shallow$1);
-  const { connectingFrom, connectingTo, clickConnecting, isPossibleEndHandle, connectionInProcess, clickConnectionInProcess, valid } = useStore(connectingSelector(nodeId, handleId, type), shallow$1);
+  const { connectingFrom, connectingTo, clickConnecting, isPossibleEndHandle, connectionInProcess, clickConnectionInProcess, valid: valid2 } = useStore(connectingSelector(nodeId, handleId, type), shallow$1);
   if (!nodeId) {
     store.getState().onError?.("010", errorMessages["error010"]());
   }
@@ -20305,9 +20379,9 @@ function HandleComponent({ type = "source", position = Position.Top, isValidConn
     onClickConnectEnd?.(event, connectionClone);
     store.setState({ connectionClickStartHandle: null });
   };
-  return jsxRuntimeExports.jsx("div", { "data-handleid": handleId, "data-nodeid": nodeId, "data-handlepos": position, "data-id": `${rfId}-${nodeId}-${handleId}-${type}`, className: cc([
+  return jsxRuntimeExports.jsx("div", { "data-handleid": handleId, "data-nodeid": nodeId, "data-handlepos": position2, "data-id": `${rfId}-${nodeId}-${handleId}-${type}`, className: cc([
     "react-flow__handle",
-    `react-flow__handle-${position}`,
+    `react-flow__handle-${position2}`,
     "nodrag",
     noPanClassName,
     className,
@@ -20320,7 +20394,7 @@ function HandleComponent({ type = "source", position = Position.Top, isValidConn
       clickconnecting: clickConnecting,
       connectingfrom: connectingFrom,
       connectingto: connectingTo,
-      valid,
+      valid: valid2,
       /*
        * shows where you can start a connection from
        * and where you can end it while connecting
@@ -20354,21 +20428,21 @@ const builtinNodeTypes = {
   output: OutputNode,
   group: GroupNode
 };
-function getNodeInlineStyleDimensions(node) {
-  if (node.internals.handleBounds === void 0) {
+function getNodeInlineStyleDimensions(node2) {
+  if (node2.internals.handleBounds === void 0) {
     return {
-      width: node.width ?? node.initialWidth ?? node.style?.width,
-      height: node.height ?? node.initialHeight ?? node.style?.height
+      width: node2.width ?? node2.initialWidth ?? node2.style?.width,
+      height: node2.height ?? node2.initialHeight ?? node2.style?.height
     };
   }
   return {
-    width: node.width ?? node.style?.width,
-    height: node.height ?? node.style?.height
+    width: node2.width ?? node2.style?.width,
+    height: node2.height ?? node2.style?.height
   };
 }
 const selector$f = (s) => {
   const { width, height, x, y } = getInternalNodesBounds(s.nodeLookup, {
-    filter: (node) => !!node.selected
+    filter: (node2) => !!node2.selected
   });
   return {
     width: isNumeric(width) ? width : null,
@@ -20433,7 +20507,7 @@ function FlowRendererComponent({ children: children2, onPaneClick, onPaneMouseEn
 FlowRendererComponent.displayName = "FlowRenderer";
 const FlowRenderer = reactExports.memo(FlowRendererComponent);
 const selector$d = (onlyRenderVisible) => (s) => {
-  return onlyRenderVisible ? getNodesInside(s.nodeLookup, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true).map((node) => node.id) : Array.from(s.nodeLookup.keys());
+  return onlyRenderVisible ? getNodesInside(s.nodeLookup, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true).map((node2) => node2.id) : Array.from(s.nodeLookup.keys());
 };
 function useVisibleNodeIds(onlyRenderVisible) {
   const nodeIds = useStore(reactExports.useCallback(selector$d(onlyRenderVisible), [onlyRenderVisible]), shallow$1);
@@ -20466,23 +20540,23 @@ function useResizeObserver() {
   }, [resizeObserver]);
   return resizeObserver;
 }
-function useNodeObserver({ node, nodeType, hasDimensions, resizeObserver }) {
+function useNodeObserver({ node: node2, nodeType, hasDimensions, resizeObserver }) {
   const store = useStoreApi();
   const nodeRef = reactExports.useRef(null);
   const observedNode = reactExports.useRef(null);
-  const prevSourcePosition = reactExports.useRef(node.sourcePosition);
-  const prevTargetPosition = reactExports.useRef(node.targetPosition);
+  const prevSourcePosition = reactExports.useRef(node2.sourcePosition);
+  const prevTargetPosition = reactExports.useRef(node2.targetPosition);
   const prevType = reactExports.useRef(nodeType);
-  const isInitialized = hasDimensions && !!node.internals.handleBounds;
+  const isInitialized = hasDimensions && !!node2.internals.handleBounds;
   reactExports.useEffect(() => {
-    if (nodeRef.current && !node.hidden && (!isInitialized || observedNode.current !== nodeRef.current)) {
+    if (nodeRef.current && !node2.hidden && (!isInitialized || observedNode.current !== nodeRef.current)) {
       if (observedNode.current) {
         resizeObserver?.unobserve(observedNode.current);
       }
       resizeObserver?.observe(nodeRef.current);
       observedNode.current = nodeRef.current;
     }
-  }, [isInitialized, node.hidden]);
+  }, [isInitialized, node2.hidden]);
   reactExports.useEffect(() => {
     return () => {
       if (observedNode.current) {
@@ -20494,57 +20568,57 @@ function useNodeObserver({ node, nodeType, hasDimensions, resizeObserver }) {
   reactExports.useEffect(() => {
     if (nodeRef.current) {
       const typeChanged = prevType.current !== nodeType;
-      const sourcePosChanged = prevSourcePosition.current !== node.sourcePosition;
-      const targetPosChanged = prevTargetPosition.current !== node.targetPosition;
+      const sourcePosChanged = prevSourcePosition.current !== node2.sourcePosition;
+      const targetPosChanged = prevTargetPosition.current !== node2.targetPosition;
       if (typeChanged || sourcePosChanged || targetPosChanged) {
         prevType.current = nodeType;
-        prevSourcePosition.current = node.sourcePosition;
-        prevTargetPosition.current = node.targetPosition;
-        store.getState().updateNodeInternals(/* @__PURE__ */ new Map([[node.id, { id: node.id, nodeElement: nodeRef.current, force: true }]]));
+        prevSourcePosition.current = node2.sourcePosition;
+        prevTargetPosition.current = node2.targetPosition;
+        store.getState().updateNodeInternals(/* @__PURE__ */ new Map([[node2.id, { id: node2.id, nodeElement: nodeRef.current, force: true }]]));
       }
     }
-  }, [node.id, nodeType, node.sourcePosition, node.targetPosition]);
+  }, [node2.id, nodeType, node2.sourcePosition, node2.targetPosition]);
   return nodeRef;
 }
 function NodeWrapper({ id: id2, onClick, onMouseEnter, onMouseMove, onMouseLeave, onContextMenu, onDoubleClick, nodesDraggable, elementsSelectable, nodesConnectable, nodesFocusable, resizeObserver, noDragClassName, noPanClassName, disableKeyboardA11y, rfId, nodeTypes: nodeTypes2, nodeClickDistance, onError }) {
-  const { node, internals, isParent } = useStore((s) => {
-    const node2 = s.nodeLookup.get(id2);
+  const { node: node2, internals, isParent } = useStore((s) => {
+    const node22 = s.nodeLookup.get(id2);
     const isParent2 = s.parentLookup.has(id2);
     return {
-      node: node2,
-      internals: node2.internals,
+      node: node22,
+      internals: node22.internals,
       isParent: isParent2
     };
   }, shallow$1);
-  let nodeType = node.type || "default";
+  let nodeType = node2.type || "default";
   let NodeComponent = nodeTypes2?.[nodeType] || builtinNodeTypes[nodeType];
   if (NodeComponent === void 0) {
     onError?.("003", errorMessages["error003"](nodeType));
     nodeType = "default";
     NodeComponent = nodeTypes2?.["default"] || builtinNodeTypes.default;
   }
-  const isDraggable = !!(node.draggable || nodesDraggable && typeof node.draggable === "undefined");
-  const isSelectable = !!(node.selectable || elementsSelectable && typeof node.selectable === "undefined");
-  const isConnectable = !!(node.connectable || nodesConnectable && typeof node.connectable === "undefined");
-  const isFocusable = !!(node.focusable || nodesFocusable && typeof node.focusable === "undefined");
+  const isDraggable = !!(node2.draggable || nodesDraggable && typeof node2.draggable === "undefined");
+  const isSelectable = !!(node2.selectable || elementsSelectable && typeof node2.selectable === "undefined");
+  const isConnectable = !!(node2.connectable || nodesConnectable && typeof node2.connectable === "undefined");
+  const isFocusable = !!(node2.focusable || nodesFocusable && typeof node2.focusable === "undefined");
   const store = useStoreApi();
-  const hasDimensions = nodeHasDimensions(node);
-  const nodeRef = useNodeObserver({ node, nodeType, hasDimensions, resizeObserver });
+  const hasDimensions = nodeHasDimensions(node2);
+  const nodeRef = useNodeObserver({ node: node2, nodeType, hasDimensions, resizeObserver });
   const dragging = useDrag({
     nodeRef,
-    disabled: node.hidden || !isDraggable,
+    disabled: node2.hidden || !isDraggable,
     noDragClassName,
-    handleSelector: node.dragHandle,
+    handleSelector: node2.dragHandle,
     nodeId: id2,
     isSelectable,
     nodeClickDistance
   });
   const moveSelectedNodes = useMoveSelectedNodes();
-  if (node.hidden) {
+  if (node2.hidden) {
     return null;
   }
-  const nodeDimensions = getNodeDimensions(node);
-  const inlineDimensions = getNodeInlineStyleDimensions(node);
+  const nodeDimensions = getNodeDimensions(node2);
+  const inlineDimensions = getNodeInlineStyleDimensions(node2);
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
   const onMouseEnterHandler = onMouseEnter ? (event) => onMouseEnter(event, { ...internals.userNode }) : void 0;
   const onMouseMoveHandler = onMouseMove ? (event) => onMouseMove(event, { ...internals.userNode }) : void 0;
@@ -20576,7 +20650,7 @@ function NodeWrapper({ id: id2, onClick, onMouseEnter, onMouseMove, onMouseLeave
         unselect,
         nodeRef
       });
-    } else if (isDraggable && node.selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
+    } else if (isDraggable && node2.selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
       event.preventDefault();
       const { ariaLabelConfig } = store.getState();
       store.setState({
@@ -20600,9 +20674,9 @@ function NodeWrapper({ id: id2, onClick, onMouseEnter, onMouseMove, onMouseLeave
     if (!autoPanOnNodeFocus) {
       return;
     }
-    const withinViewport = getNodesInside(/* @__PURE__ */ new Map([[id2, node]]), { x: 0, y: 0, width, height }, transform2, true).length > 0;
+    const withinViewport = getNodesInside(/* @__PURE__ */ new Map([[id2, node2]]), { x: 0, y: 0, width, height }, transform2, true).length > 0;
     if (!withinViewport) {
-      setCenter(node.position.x + nodeDimensions.width / 2, node.position.y + nodeDimensions.height / 2, {
+      setCenter(node2.position.x + nodeDimensions.width / 2, node2.position.y + nodeDimensions.height / 2, {
         zoom: transform2[2]
       });
     }
@@ -20614,9 +20688,9 @@ function NodeWrapper({ id: id2, onClick, onMouseEnter, onMouseMove, onMouseLeave
       // this is overwritable by passing `nopan` as a class name
       [noPanClassName]: isDraggable
     },
-    node.className,
+    node2.className,
     {
-      selected: node.selected,
+      selected: node2.selected,
       selectable: isSelectable,
       parent: isParent,
       draggable: isDraggable,
@@ -20627,9 +20701,9 @@ function NodeWrapper({ id: id2, onClick, onMouseEnter, onMouseMove, onMouseLeave
     transform: `translate(${internals.positionAbsolute.x}px,${internals.positionAbsolute.y}px)`,
     pointerEvents: hasPointerEvents ? "all" : "none",
     visibility: hasDimensions ? "visible" : "hidden",
-    ...node.style,
+    ...node2.style,
     ...inlineDimensions
-  }, "data-id": id2, "data-testid": `rf__node-${id2}`, onMouseEnter: onMouseEnterHandler, onMouseMove: onMouseMoveHandler, onMouseLeave: onMouseLeaveHandler, onContextMenu: onContextMenuHandler, onClick: onSelectNodeHandler, onDoubleClick: onDoubleClickHandler, onKeyDown: isFocusable ? onKeyDown : void 0, tabIndex: isFocusable ? 0 : void 0, onFocus: isFocusable ? onFocus : void 0, role: node.ariaRole ?? (isFocusable ? "group" : void 0), "aria-roledescription": "node", "aria-describedby": disableKeyboardA11y ? void 0 : `${ARIA_NODE_DESC_KEY}-${rfId}`, "aria-label": node.ariaLabel, ...node.domAttributes, children: jsxRuntimeExports.jsx(Provider, { value: id2, children: jsxRuntimeExports.jsx(NodeComponent, { id: id2, data: node.data, type: nodeType, positionAbsoluteX: internals.positionAbsolute.x, positionAbsoluteY: internals.positionAbsolute.y, selected: node.selected ?? false, selectable: isSelectable, draggable: isDraggable, deletable: node.deletable ?? true, isConnectable, sourcePosition: node.sourcePosition, targetPosition: node.targetPosition, dragging, dragHandle: node.dragHandle, zIndex: internals.z, parentId: node.parentId, ...nodeDimensions }) }) });
+  }, "data-id": id2, "data-testid": `rf__node-${id2}`, onMouseEnter: onMouseEnterHandler, onMouseMove: onMouseMoveHandler, onMouseLeave: onMouseLeaveHandler, onContextMenu: onContextMenuHandler, onClick: onSelectNodeHandler, onDoubleClick: onDoubleClickHandler, onKeyDown: isFocusable ? onKeyDown : void 0, tabIndex: isFocusable ? 0 : void 0, onFocus: isFocusable ? onFocus : void 0, role: node2.ariaRole ?? (isFocusable ? "group" : void 0), "aria-roledescription": "node", "aria-describedby": disableKeyboardA11y ? void 0 : `${ARIA_NODE_DESC_KEY}-${rfId}`, "aria-label": node2.ariaLabel, ...node2.domAttributes, children: jsxRuntimeExports.jsx(Provider, { value: id2, children: jsxRuntimeExports.jsx(NodeComponent, { id: id2, data: node2.data, type: nodeType, positionAbsoluteX: internals.positionAbsolute.x, positionAbsoluteY: internals.positionAbsolute.y, selected: node2.selected ?? false, selectable: isSelectable, draggable: isDraggable, deletable: node2.deletable ?? true, isConnectable, sourcePosition: node2.sourcePosition, targetPosition: node2.targetPosition, dragging, dragHandle: node2.dragHandle, zIndex: internals.z, parentId: node2.parentId, ...nodeDimensions }) }) });
 }
 var NodeWrapper$1 = reactExports.memo(NodeWrapper);
 const selector$b = (s) => ({
@@ -20779,8 +20853,8 @@ function EdgeTextComponent({ x, y, label, labelStyle, labelShowBg = true, labelB
 }
 EdgeTextComponent.displayName = "EdgeText";
 const EdgeText = reactExports.memo(EdgeTextComponent);
-function BaseEdge({ path, labelX, labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, interactionWidth = 20, ...props }) {
-  return jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx("path", { ...props, d: path, fill: "none", className: cc(["react-flow__edge-path", props.className]) }), interactionWidth ? jsxRuntimeExports.jsx("path", { d: path, fill: "none", strokeOpacity: 0, strokeWidth: interactionWidth, className: "react-flow__edge-interaction" }) : null, label && isNumeric(labelX) && isNumeric(labelY) ? jsxRuntimeExports.jsx(EdgeText, { x: labelX, y: labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius }) : null] });
+function BaseEdge({ path: path2, labelX, labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, interactionWidth = 20, ...props }) {
+  return jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx("path", { ...props, d: path2, fill: "none", className: cc(["react-flow__edge-path", props.className]) }), interactionWidth ? jsxRuntimeExports.jsx("path", { d: path2, fill: "none", strokeOpacity: 0, strokeWidth: interactionWidth, className: "react-flow__edge-interaction" }) : null, label && isNumeric(labelX) && isNumeric(labelY) ? jsxRuntimeExports.jsx(EdgeText, { x: labelX, y: labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius }) : null] });
 }
 function getControl({ pos, x1, y1, x2, y2 }) {
   if (pos === Position.Left || pos === Position.Right) {
@@ -20823,7 +20897,7 @@ function getSimpleBezierPath({ sourceX, sourceY, sourcePosition = Position.Botto
 }
 function createSimpleBezierEdge(params) {
   return reactExports.memo(({ id: id2, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, markerEnd, markerStart, interactionWidth }) => {
-    const [path, labelX, labelY] = getSimpleBezierPath({
+    const [path2, labelX, labelY] = getSimpleBezierPath({
       sourceX,
       sourceY,
       sourcePosition,
@@ -20832,7 +20906,7 @@ function createSimpleBezierEdge(params) {
       targetPosition
     });
     const _id = params.isInternal ? void 0 : id2;
-    return jsxRuntimeExports.jsx(BaseEdge, { id: _id, path, labelX, labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, markerEnd, markerStart, interactionWidth });
+    return jsxRuntimeExports.jsx(BaseEdge, { id: _id, path: path2, labelX, labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, markerEnd, markerStart, interactionWidth });
   });
 }
 const SimpleBezierEdge = createSimpleBezierEdge({ isInternal: false });
@@ -20841,7 +20915,7 @@ SimpleBezierEdge.displayName = "SimpleBezierEdge";
 SimpleBezierEdgeInternal.displayName = "SimpleBezierEdgeInternal";
 function createSmoothStepEdge(params) {
   return reactExports.memo(({ id: id2, sourceX, sourceY, targetX, targetY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, sourcePosition = Position.Bottom, targetPosition = Position.Top, markerEnd, markerStart, pathOptions, interactionWidth }) => {
-    const [path, labelX, labelY] = getSmoothStepPath({
+    const [path2, labelX, labelY] = getSmoothStepPath({
       sourceX,
       sourceY,
       sourcePosition,
@@ -20853,7 +20927,7 @@ function createSmoothStepEdge(params) {
       stepPosition: pathOptions?.stepPosition
     });
     const _id = params.isInternal ? void 0 : id2;
-    return jsxRuntimeExports.jsx(BaseEdge, { id: _id, path, labelX, labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, markerEnd, markerStart, interactionWidth });
+    return jsxRuntimeExports.jsx(BaseEdge, { id: _id, path: path2, labelX, labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, markerEnd, markerStart, interactionWidth });
   });
 }
 const SmoothStepEdge = createSmoothStepEdge({ isInternal: false });
@@ -20872,9 +20946,9 @@ StepEdge.displayName = "StepEdge";
 StepEdgeInternal.displayName = "StepEdgeInternal";
 function createStraightEdge(params) {
   return reactExports.memo(({ id: id2, sourceX, sourceY, targetX, targetY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, markerEnd, markerStart, interactionWidth }) => {
-    const [path, labelX, labelY] = getStraightPath({ sourceX, sourceY, targetX, targetY });
+    const [path2, labelX, labelY] = getStraightPath({ sourceX, sourceY, targetX, targetY });
     const _id = params.isInternal ? void 0 : id2;
-    return jsxRuntimeExports.jsx(BaseEdge, { id: _id, path, labelX, labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, markerEnd, markerStart, interactionWidth });
+    return jsxRuntimeExports.jsx(BaseEdge, { id: _id, path: path2, labelX, labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, markerEnd, markerStart, interactionWidth });
   });
 }
 const StraightEdge = createStraightEdge({ isInternal: false });
@@ -20883,7 +20957,7 @@ StraightEdge.displayName = "StraightEdge";
 StraightEdgeInternal.displayName = "StraightEdgeInternal";
 function createBezierEdge(params) {
   return reactExports.memo(({ id: id2, sourceX, sourceY, targetX, targetY, sourcePosition = Position.Bottom, targetPosition = Position.Top, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, markerEnd, markerStart, pathOptions, interactionWidth }) => {
-    const [path, labelX, labelY] = getBezierPath({
+    const [path2, labelX, labelY] = getBezierPath({
       sourceX,
       sourceY,
       sourcePosition,
@@ -20893,7 +20967,7 @@ function createBezierEdge(params) {
       curvature: pathOptions?.curvature
     });
     const _id = params.isInternal ? void 0 : id2;
-    return jsxRuntimeExports.jsx(BaseEdge, { id: _id, path, labelX, labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, markerEnd, markerStart, interactionWidth });
+    return jsxRuntimeExports.jsx(BaseEdge, { id: _id, path: path2, labelX, labelY, label, labelStyle, labelShowBg, labelBgStyle, labelBgPadding, labelBgBorderRadius, style: style2, markerEnd, markerStart, interactionWidth });
   });
 }
 const BezierEdge = createBezierEdge({ isInternal: false });
@@ -20915,23 +20989,23 @@ const nullPosition = {
   sourcePosition: null,
   targetPosition: null
 };
-const shiftX = (x, shift, position) => {
-  if (position === Position.Left)
+const shiftX = (x, shift, position2) => {
+  if (position2 === Position.Left)
     return x - shift;
-  if (position === Position.Right)
+  if (position2 === Position.Right)
     return x + shift;
   return x;
 };
-const shiftY = (y, shift, position) => {
-  if (position === Position.Top)
+const shiftY = (y, shift, position2) => {
+  if (position2 === Position.Top)
     return y - shift;
-  if (position === Position.Bottom)
+  if (position2 === Position.Bottom)
     return y + shift;
   return y;
 };
 const EdgeUpdaterClassName = "react-flow__edgeupdater";
-function EdgeAnchor({ position, centerX, centerY, radius = 10, onMouseDown, onMouseEnter, onMouseOut, type }) {
-  return jsxRuntimeExports.jsx("circle", { onMouseDown, onMouseEnter, onMouseOut, className: cc([EdgeUpdaterClassName, `${EdgeUpdaterClassName}-${type}`]), cx: shiftX(centerX, radius, position), cy: shiftY(centerY, radius, position), r: radius, stroke: "transparent", fill: "transparent" });
+function EdgeAnchor({ position: position2, centerX, centerY, radius = 10, onMouseDown, onMouseEnter, onMouseOut, type }) {
+  return jsxRuntimeExports.jsx("circle", { onMouseDown, onMouseEnter, onMouseOut, className: cc([EdgeUpdaterClassName, `${EdgeUpdaterClassName}-${type}`]), cx: shiftX(centerX, radius, position2), cy: shiftY(centerY, radius, position2), r: radius, stroke: "transparent", fill: "transparent" });
 }
 function EdgeUpdateAnchors({ isReconnectable, reconnectRadius, edge, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, onReconnect, onReconnectStart, onReconnectEnd, setReconnecting, setUpdateHover }) {
   const store = useStoreApi();
@@ -21170,7 +21244,7 @@ const ConnectionLine = ({ style: style2, type = ConnectionLineType.Bezier, Custo
   if (CustomComponent) {
     return jsxRuntimeExports.jsx(CustomComponent, { connectionLineType: type, connectionLineStyle: style2, fromNode, fromHandle, fromX: from.x, fromY: from.y, toX: to.x, toY: to.y, fromPosition, toPosition, connectionStatus: getConnectionStatus(isValid), toNode, toHandle, pointer: pointer2 });
   }
-  let path = "";
+  let path2 = "";
   const pathParams = {
     sourceX: from.x,
     sourceY: from.y,
@@ -21181,24 +21255,24 @@ const ConnectionLine = ({ style: style2, type = ConnectionLineType.Bezier, Custo
   };
   switch (type) {
     case ConnectionLineType.Bezier:
-      [path] = getBezierPath(pathParams);
+      [path2] = getBezierPath(pathParams);
       break;
     case ConnectionLineType.SimpleBezier:
-      [path] = getSimpleBezierPath(pathParams);
+      [path2] = getSimpleBezierPath(pathParams);
       break;
     case ConnectionLineType.Step:
-      [path] = getSmoothStepPath({
+      [path2] = getSmoothStepPath({
         ...pathParams,
         borderRadius: 0
       });
       break;
     case ConnectionLineType.SmoothStep:
-      [path] = getSmoothStepPath(pathParams);
+      [path2] = getSmoothStepPath(pathParams);
       break;
     default:
-      [path] = getStraightPath(pathParams);
+      [path2] = getStraightPath(pathParams);
   }
-  return jsxRuntimeExports.jsx("path", { d: path, fill: "none", className: "react-flow__connection-path", style: style2 });
+  return jsxRuntimeExports.jsx("path", { d: path2, fill: "none", className: "react-flow__connection-path", style: style2 });
 };
 ConnectionLine.displayName = "ConnectionLine";
 const emptyTypes = {};
@@ -21242,7 +21316,7 @@ const getInitialState = ({ nodes, edges, defaultNodes, defaultEdges, width, heig
   let transform2 = [0, 0, 1];
   if (fitView && width && height) {
     const bounds = getInternalNodesBounds(nodeLookup, {
-      filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight))
+      filter: (node2) => !!((node2.width || node2.initialWidth) && (node2.height || node2.initialHeight))
     });
     const { x, y, zoom: zoom2 } = getViewportForBounds(bounds, width, height, minZoom, maxZoom, fitViewOptions?.padding ?? 0.1);
     transform2 = [x, y, zoom2];
@@ -21409,8 +21483,8 @@ const createStore = ({ nodes, edges, defaultNodes, defaultEdges, width, height, 
       let changes = [];
       const { nodeLookup, triggerNodeChanges, connection, updateConnection, onNodesChangeMiddlewareMap } = get2();
       for (const [id2, dragItem] of nodeDragItems) {
-        const node = nodeLookup.get(id2);
-        const expandParent = !!(node?.expandParent && node?.parentId && dragItem?.position);
+        const node2 = nodeLookup.get(id2);
+        const expandParent = !!(node2?.expandParent && node2?.parentId && dragItem?.position);
         const change = {
           id: id2,
           type: "position",
@@ -21420,14 +21494,14 @@ const createStore = ({ nodes, edges, defaultNodes, defaultEdges, width, height, 
           } : dragItem.position,
           dragging
         };
-        if (node && connection.inProgress && connection.fromNode.id === node.id) {
-          const updatedFrom = getHandlePosition(node, connection.fromHandle, Position.Left, true);
+        if (node2 && connection.inProgress && connection.fromNode.id === node2.id) {
+          const updatedFrom = getHandlePosition(node2, connection.fromHandle, Position.Left, true);
           updateConnection({ ...connection, from: updatedFrom });
         }
-        if (expandParent && node.parentId) {
+        if (expandParent && node2.parentId) {
           parentExpandChildren.push({
             id: id2,
-            parentId: node.parentId,
+            parentId: node2.parentId,
             rect: {
               ...dragItem.internals.positionAbsolute,
               width: dragItem.measured.width ?? 0,
@@ -21527,7 +21601,7 @@ const createStore = ({ nodes, edges, defaultNodes, defaultEdges, width, height, 
       if (!elementsSelectable) {
         return;
       }
-      const nodeChanges = nodes2.reduce((res, node) => node.selected ? [...res, createSelectionChange(node.id, false)] : res, []);
+      const nodeChanges = nodes2.reduce((res, node2) => node2.selected ? [...res, createSelectionChange(node2.id, false)] : res, []);
       const edgeChanges = edges2.reduce((res, edge) => edge.selected ? [...res, createSelectionChange(edge.id, false)] : res, []);
       triggerNodeChanges(nodeChanges);
       triggerEdgeChanges(edgeChanges);
@@ -21615,7 +21689,7 @@ function ReactFlow({ nodes, edges, defaultNodes, defaultEdges, className, nodeTy
   }, [onScroll]);
   return jsxRuntimeExports.jsx("div", { "data-testid": "rf__wrapper", ...rest, onScroll: wrapperOnScroll, style: { ...style2, ...wrapperStyle }, ref, className: cc(["react-flow", className, colorModeClassName]), id: id2, role: "application", children: jsxRuntimeExports.jsxs(Wrapper, { nodes, edges, width, height, fitView, fitViewOptions, minZoom, maxZoom, nodeOrigin, nodeExtent, zIndexMode, children: [jsxRuntimeExports.jsx(GraphView, { onInit, onNodeClick, onEdgeClick, onNodeMouseEnter, onNodeMouseMove, onNodeMouseLeave, onNodeContextMenu, onNodeDoubleClick, nodeTypes: nodeTypes2, edgeTypes, connectionLineType, connectionLineStyle, connectionLineComponent, connectionLineContainerStyle, selectionKeyCode, selectionOnDrag, selectionMode, deleteKeyCode, multiSelectionKeyCode, panActivationKeyCode, zoomActivationKeyCode, onlyRenderVisibleElements, defaultViewport: defaultViewport$1, translateExtent, minZoom, maxZoom, preventScrolling, zoomOnScroll, zoomOnPinch, zoomOnDoubleClick, panOnScroll, panOnScrollSpeed, panOnScrollMode, panOnDrag, onPaneClick, onPaneMouseEnter, onPaneMouseMove, onPaneMouseLeave, onPaneScroll, onPaneContextMenu, paneClickDistance, nodeClickDistance, onSelectionContextMenu, onSelectionStart, onSelectionEnd, onReconnect, onReconnectStart, onReconnectEnd, onEdgeContextMenu, onEdgeDoubleClick, onEdgeMouseEnter, onEdgeMouseMove, onEdgeMouseLeave, reconnectRadius, defaultMarkerColor, noDragClassName, noWheelClassName, noPanClassName, rfId, disableKeyboardA11y, nodeExtent, viewport, onViewportChange }), jsxRuntimeExports.jsx(StoreUpdater, { nodes, edges, defaultNodes, defaultEdges, onConnect, onConnectStart, onConnectEnd, onClickConnectStart, onClickConnectEnd, nodesDraggable, autoPanOnNodeFocus, nodesConnectable, nodesFocusable, edgesFocusable, edgesReconnectable, elementsSelectable, elevateNodesOnSelect, elevateEdgesOnSelect, minZoom, maxZoom, nodeExtent, onNodesChange, onEdgesChange, snapToGrid, snapGrid, connectionMode, translateExtent, connectOnClick, defaultEdgeOptions, fitView, fitViewOptions, onNodesDelete, onEdgesDelete, onDelete, onNodeDragStart, onNodeDrag, onNodeDragStop, onSelectionDrag, onSelectionDragStart, onSelectionDragStop, onMove, onMoveStart, onMoveEnd, noPanClassName, nodeOrigin, rfId, autoPanOnConnect, autoPanOnNodeDrag, autoPanSpeed, onError, connectionRadius, isValidConnection, selectNodesOnDrag, nodeDragThreshold, connectionDragThreshold, onBeforeDelete, debug, ariaLabelConfig, zIndexMode }), jsxRuntimeExports.jsx(SelectionListener, { onSelectionChange }), children2, jsxRuntimeExports.jsx(Attribution, { proOptions, position: attributionPosition }), jsxRuntimeExports.jsx(A11yDescriptions, { rfId, disableKeyboardA11y })] }) });
 }
-var index = fixedForwardRef(ReactFlow);
+var index$1 = fixedForwardRef(ReactFlow);
 function LinePattern({ dimensions, lineWidth, variant, className }) {
   return jsxRuntimeExports.jsx("path", { strokeWidth: lineWidth, d: `M${dimensions[0] / 2} 0 V${dimensions[1]} M0 ${dimensions[1] / 2} H${dimensions[0]}`, className: cc(["react-flow__background-pattern", variant, className]) });
 }
@@ -21697,7 +21771,7 @@ const selector$2 = (s) => ({
   maxZoomReached: s.transform[2] >= s.maxZoom,
   ariaLabelConfig: s.ariaLabelConfig
 });
-function ControlsComponent({ style: style2, showZoom = true, showFitView = true, showInteractive = true, fitViewOptions, onZoomIn, onZoomOut, onFitView, onInteractiveChange, className, children: children2, position = "bottom-left", orientation = "vertical", "aria-label": ariaLabel }) {
+function ControlsComponent({ style: style2, showZoom = true, showFitView = true, showInteractive = true, fitViewOptions, onZoomIn, onZoomOut, onFitView, onInteractiveChange, className, children: children2, position: position2 = "bottom-left", orientation = "vertical", "aria-label": ariaLabel }) {
   const store = useStoreApi();
   const { isInteractive, minZoomReached, maxZoomReached, ariaLabelConfig } = useStore(selector$2, shallow$1);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
@@ -21722,7 +21796,7 @@ function ControlsComponent({ style: style2, showZoom = true, showFitView = true,
     onInteractiveChange?.(!isInteractive);
   };
   const orientationClass = orientation === "horizontal" ? "horizontal" : "vertical";
-  return jsxRuntimeExports.jsxs(Panel, { className: cc(["react-flow__controls", orientationClass, className]), position, style: style2, "data-testid": "rf__controls", "aria-label": ariaLabel ?? ariaLabelConfig["controls.ariaLabel"], children: [showZoom && jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(ControlButton, { onClick: onZoomInHandler, className: "react-flow__controls-zoomin", title: ariaLabelConfig["controls.zoomIn.ariaLabel"], "aria-label": ariaLabelConfig["controls.zoomIn.ariaLabel"], disabled: maxZoomReached, children: jsxRuntimeExports.jsx(PlusIcon, {}) }), jsxRuntimeExports.jsx(ControlButton, { onClick: onZoomOutHandler, className: "react-flow__controls-zoomout", title: ariaLabelConfig["controls.zoomOut.ariaLabel"], "aria-label": ariaLabelConfig["controls.zoomOut.ariaLabel"], disabled: minZoomReached, children: jsxRuntimeExports.jsx(MinusIcon, {}) })] }), showFitView && jsxRuntimeExports.jsx(ControlButton, { className: "react-flow__controls-fitview", onClick: onFitViewHandler, title: ariaLabelConfig["controls.fitView.ariaLabel"], "aria-label": ariaLabelConfig["controls.fitView.ariaLabel"], children: jsxRuntimeExports.jsx(FitViewIcon, {}) }), showInteractive && jsxRuntimeExports.jsx(ControlButton, { className: "react-flow__controls-interactive", onClick: onToggleInteractivity, title: ariaLabelConfig["controls.interactive.ariaLabel"], "aria-label": ariaLabelConfig["controls.interactive.ariaLabel"], children: isInteractive ? jsxRuntimeExports.jsx(UnlockIcon, {}) : jsxRuntimeExports.jsx(LockIcon, {}) }), children2] });
+  return jsxRuntimeExports.jsxs(Panel, { className: cc(["react-flow__controls", orientationClass, className]), position: position2, style: style2, "data-testid": "rf__controls", "aria-label": ariaLabel ?? ariaLabelConfig["controls.ariaLabel"], children: [showZoom && jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(ControlButton, { onClick: onZoomInHandler, className: "react-flow__controls-zoomin", title: ariaLabelConfig["controls.zoomIn.ariaLabel"], "aria-label": ariaLabelConfig["controls.zoomIn.ariaLabel"], disabled: maxZoomReached, children: jsxRuntimeExports.jsx(PlusIcon, {}) }), jsxRuntimeExports.jsx(ControlButton, { onClick: onZoomOutHandler, className: "react-flow__controls-zoomout", title: ariaLabelConfig["controls.zoomOut.ariaLabel"], "aria-label": ariaLabelConfig["controls.zoomOut.ariaLabel"], disabled: minZoomReached, children: jsxRuntimeExports.jsx(MinusIcon, {}) })] }), showFitView && jsxRuntimeExports.jsx(ControlButton, { className: "react-flow__controls-fitview", onClick: onFitViewHandler, title: ariaLabelConfig["controls.fitView.ariaLabel"], "aria-label": ariaLabelConfig["controls.fitView.ariaLabel"], children: jsxRuntimeExports.jsx(FitViewIcon, {}) }), showInteractive && jsxRuntimeExports.jsx(ControlButton, { className: "react-flow__controls-interactive", onClick: onToggleInteractivity, title: ariaLabelConfig["controls.interactive.ariaLabel"], "aria-label": ariaLabelConfig["controls.interactive.ariaLabel"], children: isInteractive ? jsxRuntimeExports.jsx(UnlockIcon, {}) : jsxRuntimeExports.jsx(LockIcon, {}) }), children2] });
 }
 ControlsComponent.displayName = "Controls";
 const Controls = reactExports.memo(ControlsComponent);
@@ -21736,7 +21810,7 @@ function MiniMapNodeComponent({ id: id2, x, y, width, height, style: style2, col
   }, shapeRendering, onClick: onClick ? (event) => onClick(event, id2) : void 0 });
 }
 const MiniMapNode = reactExports.memo(MiniMapNodeComponent);
-const selectorNodeIds = (s) => s.nodes.map((node) => node.id);
+const selectorNodeIds = (s) => s.nodes.map((node2) => node2.id);
 const getAttrFunction = (func) => func instanceof Function ? func : () => func;
 function MiniMapNodes({
   nodeStrokeColor,
@@ -21768,29 +21842,29 @@ function MiniMapNodes({
   )) });
 }
 function NodeComponentWrapperInner({ id: id2, nodeColorFunc, nodeStrokeColorFunc, nodeClassNameFunc, nodeBorderRadius, nodeStrokeWidth, shapeRendering, NodeComponent, onClick }) {
-  const { node, x, y, width, height } = useStore((s) => {
+  const { node: node2, x, y, width, height } = useStore((s) => {
     const { internals } = s.nodeLookup.get(id2);
-    const node2 = internals.userNode;
+    const node22 = internals.userNode;
     const { x: x2, y: y2 } = internals.positionAbsolute;
-    const { width: width2, height: height2 } = getNodeDimensions(node2);
+    const { width: width2, height: height2 } = getNodeDimensions(node22);
     return {
-      node: node2,
+      node: node22,
       x: x2,
       y: y2,
       width: width2,
       height: height2
     };
   }, shallow$1);
-  if (!node || node.hidden || !nodeHasDimensions(node)) {
+  if (!node2 || node2.hidden || !nodeHasDimensions(node2)) {
     return null;
   }
-  return jsxRuntimeExports.jsx(NodeComponent, { x, y, width, height, style: node.style, selected: !!node.selected, className: nodeClassNameFunc(node), color: nodeColorFunc(node), borderRadius: nodeBorderRadius, strokeColor: nodeStrokeColorFunc(node), strokeWidth: nodeStrokeWidth, shapeRendering, onClick, id: node.id });
+  return jsxRuntimeExports.jsx(NodeComponent, { x, y, width, height, style: node2.style, selected: !!node2.selected, className: nodeClassNameFunc(node2), color: nodeColorFunc(node2), borderRadius: nodeBorderRadius, strokeColor: nodeStrokeColorFunc(node2), strokeWidth: nodeStrokeWidth, shapeRendering, onClick, id: node2.id });
 }
 const NodeComponentWrapper = reactExports.memo(NodeComponentWrapperInner);
 var MiniMapNodes$1 = reactExports.memo(MiniMapNodes);
 const defaultWidth = 200;
 const defaultHeight = 150;
-const filterHidden = (node) => !node.hidden;
+const filterHidden = (node2) => !node2.hidden;
 const selector$1 = (s) => {
   const viewBB = {
     x: -s.transform[0] / s.transform[2],
@@ -21827,7 +21901,7 @@ function MiniMapComponent({
   maskColor,
   maskStrokeColor,
   maskStrokeWidth,
-  position = "bottom-right",
+  position: position2 = "bottom-right",
   onClick,
   onNodeClick,
   pannable = false,
@@ -21838,7 +21912,7 @@ function MiniMapComponent({
   offsetScale = 5
 }) {
   const store = useStoreApi();
-  const svg = reactExports.useRef(null);
+  const svg2 = reactExports.useRef(null);
   const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useStore(selector$1, shallow$1);
   const elementWidth = style2?.width ?? defaultWidth;
   const elementHeight = style2?.height ?? defaultHeight;
@@ -21857,9 +21931,9 @@ function MiniMapComponent({
   const minimapInstance = reactExports.useRef();
   viewScaleRef.current = viewScale;
   reactExports.useEffect(() => {
-    if (svg.current && panZoom) {
+    if (svg2.current && panZoom) {
       minimapInstance.current = XYMinimap({
-        domNode: svg.current,
+        domNode: svg2.current,
         panZoom,
         getTransform: () => store.getState().transform,
         getViewScale: () => viewScaleRef.current
@@ -21885,11 +21959,11 @@ function MiniMapComponent({
     onClick(event, { x: x2, y: y2 });
   } : void 0;
   const onSvgNodeClick = onNodeClick ? reactExports.useCallback((event, nodeId) => {
-    const node = store.getState().nodeLookup.get(nodeId).internals.userNode;
-    onNodeClick(event, node);
+    const node2 = store.getState().nodeLookup.get(nodeId).internals.userNode;
+    onNodeClick(event, node2);
   }, []) : void 0;
   const _ariaLabel = ariaLabel ?? ariaLabelConfig["minimap.ariaLabel"];
-  return jsxRuntimeExports.jsx(Panel, { position, style: {
+  return jsxRuntimeExports.jsx(Panel, { position: position2, style: {
     ...style2,
     "--xy-minimap-background-color-props": typeof bgColor === "string" ? bgColor : void 0,
     "--xy-minimap-mask-background-color-props": typeof maskColor === "string" ? maskColor : void 0,
@@ -21898,7 +21972,7 @@ function MiniMapComponent({
     "--xy-minimap-node-background-color-props": typeof nodeColor === "string" ? nodeColor : void 0,
     "--xy-minimap-node-stroke-color-props": typeof nodeStrokeColor === "string" ? nodeStrokeColor : void 0,
     "--xy-minimap-node-stroke-width-props": typeof nodeStrokeWidth === "number" ? nodeStrokeWidth : void 0
-  }, className: cc(["react-flow__minimap", className]), "data-testid": "rf__minimap", children: jsxRuntimeExports.jsxs("svg", { width: elementWidth, height: elementHeight, viewBox: `${x} ${y} ${width} ${height}`, className: "react-flow__minimap-svg", role: "img", "aria-labelledby": labelledBy, ref: svg, onClick: onSvgClick, children: [_ariaLabel && jsxRuntimeExports.jsx("title", { id: labelledBy, children: _ariaLabel }), jsxRuntimeExports.jsx(MiniMapNodes$1, { onClick: onSvgNodeClick, nodeColor, nodeStrokeColor, nodeBorderRadius, nodeClassName, nodeStrokeWidth, nodeComponent }), jsxRuntimeExports.jsx("path", { className: "react-flow__minimap-mask", d: `M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
+  }, className: cc(["react-flow__minimap", className]), "data-testid": "rf__minimap", children: jsxRuntimeExports.jsxs("svg", { width: elementWidth, height: elementHeight, viewBox: `${x} ${y} ${width} ${height}`, className: "react-flow__minimap-svg", role: "img", "aria-labelledby": labelledBy, ref: svg2, onClick: onSvgClick, children: [_ariaLabel && jsxRuntimeExports.jsx("title", { id: labelledBy, children: _ariaLabel }), jsxRuntimeExports.jsx(MiniMapNodes$1, { onClick: onSvgNodeClick, nodeColor, nodeStrokeColor, nodeBorderRadius, nodeClassName, nodeStrokeWidth, nodeComponent }), jsxRuntimeExports.jsx("path", { className: "react-flow__minimap-mask", d: `M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
         M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`, fillRule: "evenodd", pointerEvents: "none" })] }) });
 }
 MiniMapComponent.displayName = "MiniMap";
@@ -21908,7 +21982,7 @@ const defaultPositions = {
   [ResizeControlVariant.Line]: "right",
   [ResizeControlVariant.Handle]: "bottom-right"
 };
-function ResizeControl({ nodeId, position, variant = ResizeControlVariant.Handle, className, style: style2 = void 0, children: children2, color: color2, minWidth = 10, minHeight = 10, maxWidth = Number.MAX_VALUE, maxHeight = Number.MAX_VALUE, keepAspectRatio = false, resizeDirection, autoScale = true, shouldResize, onResizeStart, onResize, onResizeEnd }) {
+function ResizeControl({ nodeId, position: position2, variant = ResizeControlVariant.Handle, className, style: style2 = void 0, children: children2, color: color2, minWidth = 10, minHeight = 10, maxWidth = Number.MAX_VALUE, maxHeight = Number.MAX_VALUE, keepAspectRatio = false, resizeDirection, autoScale = true, shouldResize, onResizeStart, onResize, onResizeEnd }) {
   const contextNodeId = useNodeId();
   const id2 = typeof nodeId === "string" ? nodeId : contextNodeId;
   const store = useStoreApi();
@@ -21916,7 +21990,7 @@ function ResizeControl({ nodeId, position, variant = ResizeControlVariant.Handle
   const isHandleControl = variant === ResizeControlVariant.Handle;
   const scale = useStore(reactExports.useCallback(scaleSelector(isHandleControl && autoScale), [isHandleControl, autoScale]), shallow$1);
   const resizer = reactExports.useRef(null);
-  const controlPosition = position ?? defaultPositions[variant];
+  const controlPosition = position2 ?? defaultPositions[variant];
   reactExports.useEffect(() => {
     if (!resizeControlRef.current || !id2) {
       return;
@@ -21940,21 +22014,21 @@ function ResizeControl({ nodeId, position, variant = ResizeControlVariant.Handle
           const { triggerNodeChanges, nodeLookup, parentLookup, nodeOrigin } = store.getState();
           const changes = [];
           const nextPosition = { x: change.x, y: change.y };
-          const node = nodeLookup.get(id2);
-          if (node && node.expandParent && node.parentId) {
-            const origin = node.origin ?? nodeOrigin;
-            const width = change.width ?? node.measured.width ?? 0;
-            const height = change.height ?? node.measured.height ?? 0;
+          const node2 = nodeLookup.get(id2);
+          if (node2 && node2.expandParent && node2.parentId) {
+            const origin = node2.origin ?? nodeOrigin;
+            const width = change.width ?? node2.measured.width ?? 0;
+            const height = change.height ?? node2.measured.height ?? 0;
             const child = {
-              id: node.id,
-              parentId: node.parentId,
+              id: node2.id,
+              parentId: node2.parentId,
               rect: {
                 width,
                 height,
                 ...evaluateAbsolutePosition({
-                  x: change.x ?? node.position.x,
-                  y: change.y ?? node.position.y
-                }, { width, height }, node.parentId, nodeLookup, origin)
+                  x: change.x ?? node2.position.x,
+                  y: change.y ?? node2.position.y
+                }, { width, height }, node2.parentId, nodeLookup, origin)
               }
             };
             const parentExpandChanges = handleExpandParent([child], nodeLookup, parentLookup, nodeOrigin);
@@ -22091,16 +22165,10 @@ const MessageNode = reactExports.memo(({ data, selected: selected2 }) => {
   const nodeData = data;
   const isUser = nodeData.role === "user";
   const [isHovered, setIsHovered] = reactExports.useState(false);
-  const { selectNode } = useBoardStore();
-  const handleNodeClick2 = (e) => {
-    e.stopPropagation();
-    selectNode(nodeData.id);
-  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
       className: `message-node ${selected2 ? "selected" : ""}`,
-      onClick: handleNodeClick2,
       onMouseEnter: () => setIsHovered(true),
       onMouseLeave: () => setIsHovered(false),
       style: {
@@ -22178,16 +22246,10 @@ const NoteNode = reactExports.memo(({ data, selected: selected2 }) => {
   const nodeData = data;
   const isPinned = nodeData.metadata?.pin;
   const [isHovered, setIsHovered] = reactExports.useState(false);
-  const { selectNode } = useBoardStore();
-  const handleNodeClick2 = (e) => {
-    e.stopPropagation();
-    selectNode(nodeData.id);
-  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
       className: `note-node ${selected2 ? "selected" : ""}`,
-      onClick: handleNodeClick2,
       onMouseEnter: () => setIsHovered(true),
       onMouseLeave: () => setIsHovered(false),
       style: {
@@ -22266,16 +22328,10 @@ const TopicNode = reactExports.memo(({ data, selected: selected2 }) => {
   const nodeData = data;
   const importance = nodeData.metadata?.importance || 3;
   const [isHovered, setIsHovered] = reactExports.useState(false);
-  const { selectNode } = useBoardStore();
-  const handleNodeClick2 = (e) => {
-    e.stopPropagation();
-    selectNode(nodeData.id);
-  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
       className: `topic-node ${selected2 ? "selected" : ""}`,
-      onClick: handleNodeClick2,
       onMouseEnter: () => setIsHovered(true),
       onMouseLeave: () => setIsHovered(false),
       style: {
@@ -22369,26 +22425,26 @@ const nodeTypes = {
   note: NoteNode,
   topic: TopicNode
 };
-function mindNodeToFlowNode(node) {
+function mindNodeToFlowNode(node2) {
   return {
-    id: node.id,
-    type: node.type,
-    position: node.position,
+    id: node2.id,
+    type: node2.type,
+    position: node2.position,
     data: {
-      ...node,
-      label: node.title || node.content.slice(0, 50)
+      ...node2,
+      label: node2.title || node2.content.slice(0, 50)
     },
     selected: false
   };
 }
 function createEdges(nodes) {
   const edges = [];
-  nodes.forEach((node) => {
-    node.parentIds.forEach((parentId, index2) => {
+  nodes.forEach((node2) => {
+    node2.parentIds.forEach((parentId, index2) => {
       edges.push({
-        id: `${parentId}-${node.id}`,
+        id: `${parentId}-${node2.id}`,
         source: parentId,
-        target: node.id,
+        target: node2.id,
         // メイン親（index 0）は太線、サブ親は細線
         style: {
           strokeWidth: index2 === 0 ? 2 : 1,
@@ -22411,9 +22467,9 @@ const MindMapCanvas = () => {
     connectToParent
   } = useBoardStore();
   const flowNodes = reactExports.useMemo(() => {
-    return mindNodes.map((node) => ({
-      ...mindNodeToFlowNode(node),
-      selected: node.id === selectedNodeId
+    return mindNodes.map((node2) => ({
+      ...mindNodeToFlowNode(node2),
+      selected: node2.id === selectedNodeId
     }));
   }, [mindNodes, selectedNodeId]);
   const flowEdges = reactExports.useMemo(() => createEdges(mindNodes), [mindNodes]);
@@ -22426,18 +22482,20 @@ const MindMapCanvas = () => {
           }
         }
         if (change.type === "select" && change.id) {
-          selectNode(change.selected ? change.id : null);
+          if (!isConnectingParent) {
+            selectNode(change.selected ? change.id : null);
+          }
         }
       });
     },
-    [updateNodePosition, selectNode]
+    [updateNodePosition, selectNode, isConnectingParent]
   );
   const onNodeClick = reactExports.useCallback(
-    (_, node) => {
+    (_, node2) => {
       if (isConnectingParent && connectingFromNodeId) {
-        connectToParent(connectingFromNodeId, node.id);
+        connectToParent(connectingFromNodeId, node2.id);
       } else {
-        selectNode(node.id);
+        selectNode(node2.id);
       }
     },
     [isConnectingParent, connectingFromNodeId, connectToParent, selectNode]
@@ -22462,7 +22520,7 @@ const MindMapCanvas = () => {
       pointerEvents: "none"
     }, children: "🔗 親ノードをクリックして接続してください" }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      index,
+      index$1,
       {
         nodes: flowNodes,
         edges: flowEdges,
@@ -22477,8 +22535,8 @@ const MindMapCanvas = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             MiniMap,
             {
-              nodeColor: (node) => {
-                switch (node.type) {
+              nodeColor: (node2) => {
+                switch (node2.type) {
                   case "root":
                     return "#6366f1";
                   case "message":
@@ -22499,20 +22557,13203 @@ const MindMapCanvas = () => {
     )
   ] });
 };
+function ok$1() {
+}
+function unreachable() {
+}
+function stringify$1(values, options) {
+  const settings = {};
+  const input = values[values.length - 1] === "" ? [...values, ""] : values;
+  return input.join(
+    (settings.padRight ? " " : "") + "," + (settings.padLeft === false ? "" : " ")
+  ).trim();
+}
+const nameRe = /^[$_\p{ID_Start}][$_\u{200C}\u{200D}\p{ID_Continue}]*$/u;
+const nameReJsx = /^[$_\p{ID_Start}][-$_\u{200C}\u{200D}\p{ID_Continue}]*$/u;
+const emptyOptions$3 = {};
+function name(name2, options) {
+  const settings = emptyOptions$3;
+  const re2 = settings.jsx ? nameReJsx : nameRe;
+  return re2.test(name2);
+}
+const re = /[ \t\n\f\r]/g;
+function whitespace(thing) {
+  return typeof thing === "object" ? thing.type === "text" ? empty$1(thing.value) : false : empty$1(thing);
+}
+function empty$1(value) {
+  return value.replace(re, "") === "";
+}
+class Schema {
+  /**
+   * @param {SchemaType['property']} property
+   *   Property.
+   * @param {SchemaType['normal']} normal
+   *   Normal.
+   * @param {Space | undefined} [space]
+   *   Space.
+   * @returns
+   *   Schema.
+   */
+  constructor(property, normal, space2) {
+    this.normal = normal;
+    this.property = property;
+    if (space2) {
+      this.space = space2;
+    }
+  }
+}
+Schema.prototype.normal = {};
+Schema.prototype.property = {};
+Schema.prototype.space = void 0;
+function merge(definitions, space2) {
+  const property = {};
+  const normal = {};
+  for (const definition2 of definitions) {
+    Object.assign(property, definition2.property);
+    Object.assign(normal, definition2.normal);
+  }
+  return new Schema(property, normal, space2);
+}
+function normalize$1(value) {
+  return value.toLowerCase();
+}
+class Info {
+  /**
+   * @param {string} property
+   *   Property.
+   * @param {string} attribute
+   *   Attribute.
+   * @returns
+   *   Info.
+   */
+  constructor(property, attribute) {
+    this.attribute = attribute;
+    this.property = property;
+  }
+}
+Info.prototype.attribute = "";
+Info.prototype.booleanish = false;
+Info.prototype.boolean = false;
+Info.prototype.commaOrSpaceSeparated = false;
+Info.prototype.commaSeparated = false;
+Info.prototype.defined = false;
+Info.prototype.mustUseProperty = false;
+Info.prototype.number = false;
+Info.prototype.overloadedBoolean = false;
+Info.prototype.property = "";
+Info.prototype.spaceSeparated = false;
+Info.prototype.space = void 0;
+let powers = 0;
+const boolean = increment();
+const booleanish = increment();
+const overloadedBoolean = increment();
+const number = increment();
+const spaceSeparated = increment();
+const commaSeparated = increment();
+const commaOrSpaceSeparated = increment();
+function increment() {
+  return 2 ** ++powers;
+}
+const types = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  boolean,
+  booleanish,
+  commaOrSpaceSeparated,
+  commaSeparated,
+  number,
+  overloadedBoolean,
+  spaceSeparated
+}, Symbol.toStringTag, { value: "Module" }));
+const checks = (
+  /** @type {ReadonlyArray<keyof typeof types>} */
+  Object.keys(types)
+);
+class DefinedInfo extends Info {
+  /**
+   * @constructor
+   * @param {string} property
+   *   Property.
+   * @param {string} attribute
+   *   Attribute.
+   * @param {number | null | undefined} [mask]
+   *   Mask.
+   * @param {Space | undefined} [space]
+   *   Space.
+   * @returns
+   *   Info.
+   */
+  constructor(property, attribute, mask, space2) {
+    let index2 = -1;
+    super(property, attribute);
+    mark(this, "space", space2);
+    if (typeof mask === "number") {
+      while (++index2 < checks.length) {
+        const check = checks[index2];
+        mark(this, checks[index2], (mask & types[check]) === types[check]);
+      }
+    }
+  }
+}
+DefinedInfo.prototype.defined = true;
+function mark(values, key, value) {
+  if (value) {
+    values[key] = value;
+  }
+}
+function create(definition2) {
+  const properties = {};
+  const normals = {};
+  for (const [property, value] of Object.entries(definition2.properties)) {
+    const info = new DefinedInfo(
+      property,
+      definition2.transform(definition2.attributes || {}, property),
+      value,
+      definition2.space
+    );
+    if (definition2.mustUseProperty && definition2.mustUseProperty.includes(property)) {
+      info.mustUseProperty = true;
+    }
+    properties[property] = info;
+    normals[normalize$1(property)] = property;
+    normals[normalize$1(info.attribute)] = property;
+  }
+  return new Schema(properties, normals, definition2.space);
+}
+const aria = create({
+  properties: {
+    ariaActiveDescendant: null,
+    ariaAtomic: booleanish,
+    ariaAutoComplete: null,
+    ariaBusy: booleanish,
+    ariaChecked: booleanish,
+    ariaColCount: number,
+    ariaColIndex: number,
+    ariaColSpan: number,
+    ariaControls: spaceSeparated,
+    ariaCurrent: null,
+    ariaDescribedBy: spaceSeparated,
+    ariaDetails: null,
+    ariaDisabled: booleanish,
+    ariaDropEffect: spaceSeparated,
+    ariaErrorMessage: null,
+    ariaExpanded: booleanish,
+    ariaFlowTo: spaceSeparated,
+    ariaGrabbed: booleanish,
+    ariaHasPopup: null,
+    ariaHidden: booleanish,
+    ariaInvalid: null,
+    ariaKeyShortcuts: null,
+    ariaLabel: null,
+    ariaLabelledBy: spaceSeparated,
+    ariaLevel: number,
+    ariaLive: null,
+    ariaModal: booleanish,
+    ariaMultiLine: booleanish,
+    ariaMultiSelectable: booleanish,
+    ariaOrientation: null,
+    ariaOwns: spaceSeparated,
+    ariaPlaceholder: null,
+    ariaPosInSet: number,
+    ariaPressed: booleanish,
+    ariaReadOnly: booleanish,
+    ariaRelevant: null,
+    ariaRequired: booleanish,
+    ariaRoleDescription: spaceSeparated,
+    ariaRowCount: number,
+    ariaRowIndex: number,
+    ariaRowSpan: number,
+    ariaSelected: booleanish,
+    ariaSetSize: number,
+    ariaSort: null,
+    ariaValueMax: number,
+    ariaValueMin: number,
+    ariaValueNow: number,
+    ariaValueText: null,
+    role: null
+  },
+  transform(_, property) {
+    return property === "role" ? property : "aria-" + property.slice(4).toLowerCase();
+  }
+});
+function caseSensitiveTransform(attributes, attribute) {
+  return attribute in attributes ? attributes[attribute] : attribute;
+}
+function caseInsensitiveTransform(attributes, property) {
+  return caseSensitiveTransform(attributes, property.toLowerCase());
+}
+const html$3 = create({
+  attributes: {
+    acceptcharset: "accept-charset",
+    classname: "class",
+    htmlfor: "for",
+    httpequiv: "http-equiv"
+  },
+  mustUseProperty: ["checked", "multiple", "muted", "selected"],
+  properties: {
+    // Standard Properties.
+    abbr: null,
+    accept: commaSeparated,
+    acceptCharset: spaceSeparated,
+    accessKey: spaceSeparated,
+    action: null,
+    allow: null,
+    allowFullScreen: boolean,
+    allowPaymentRequest: boolean,
+    allowUserMedia: boolean,
+    alt: null,
+    as: null,
+    async: boolean,
+    autoCapitalize: null,
+    autoComplete: spaceSeparated,
+    autoFocus: boolean,
+    autoPlay: boolean,
+    blocking: spaceSeparated,
+    capture: null,
+    charSet: null,
+    checked: boolean,
+    cite: null,
+    className: spaceSeparated,
+    cols: number,
+    colSpan: null,
+    content: null,
+    contentEditable: booleanish,
+    controls: boolean,
+    controlsList: spaceSeparated,
+    coords: number | commaSeparated,
+    crossOrigin: null,
+    data: null,
+    dateTime: null,
+    decoding: null,
+    default: boolean,
+    defer: boolean,
+    dir: null,
+    dirName: null,
+    disabled: boolean,
+    download: overloadedBoolean,
+    draggable: booleanish,
+    encType: null,
+    enterKeyHint: null,
+    fetchPriority: null,
+    form: null,
+    formAction: null,
+    formEncType: null,
+    formMethod: null,
+    formNoValidate: boolean,
+    formTarget: null,
+    headers: spaceSeparated,
+    height: number,
+    hidden: overloadedBoolean,
+    high: number,
+    href: null,
+    hrefLang: null,
+    htmlFor: spaceSeparated,
+    httpEquiv: spaceSeparated,
+    id: null,
+    imageSizes: null,
+    imageSrcSet: null,
+    inert: boolean,
+    inputMode: null,
+    integrity: null,
+    is: null,
+    isMap: boolean,
+    itemId: null,
+    itemProp: spaceSeparated,
+    itemRef: spaceSeparated,
+    itemScope: boolean,
+    itemType: spaceSeparated,
+    kind: null,
+    label: null,
+    lang: null,
+    language: null,
+    list: null,
+    loading: null,
+    loop: boolean,
+    low: number,
+    manifest: null,
+    max: null,
+    maxLength: number,
+    media: null,
+    method: null,
+    min: null,
+    minLength: number,
+    multiple: boolean,
+    muted: boolean,
+    name: null,
+    nonce: null,
+    noModule: boolean,
+    noValidate: boolean,
+    onAbort: null,
+    onAfterPrint: null,
+    onAuxClick: null,
+    onBeforeMatch: null,
+    onBeforePrint: null,
+    onBeforeToggle: null,
+    onBeforeUnload: null,
+    onBlur: null,
+    onCancel: null,
+    onCanPlay: null,
+    onCanPlayThrough: null,
+    onChange: null,
+    onClick: null,
+    onClose: null,
+    onContextLost: null,
+    onContextMenu: null,
+    onContextRestored: null,
+    onCopy: null,
+    onCueChange: null,
+    onCut: null,
+    onDblClick: null,
+    onDrag: null,
+    onDragEnd: null,
+    onDragEnter: null,
+    onDragExit: null,
+    onDragLeave: null,
+    onDragOver: null,
+    onDragStart: null,
+    onDrop: null,
+    onDurationChange: null,
+    onEmptied: null,
+    onEnded: null,
+    onError: null,
+    onFocus: null,
+    onFormData: null,
+    onHashChange: null,
+    onInput: null,
+    onInvalid: null,
+    onKeyDown: null,
+    onKeyPress: null,
+    onKeyUp: null,
+    onLanguageChange: null,
+    onLoad: null,
+    onLoadedData: null,
+    onLoadedMetadata: null,
+    onLoadEnd: null,
+    onLoadStart: null,
+    onMessage: null,
+    onMessageError: null,
+    onMouseDown: null,
+    onMouseEnter: null,
+    onMouseLeave: null,
+    onMouseMove: null,
+    onMouseOut: null,
+    onMouseOver: null,
+    onMouseUp: null,
+    onOffline: null,
+    onOnline: null,
+    onPageHide: null,
+    onPageShow: null,
+    onPaste: null,
+    onPause: null,
+    onPlay: null,
+    onPlaying: null,
+    onPopState: null,
+    onProgress: null,
+    onRateChange: null,
+    onRejectionHandled: null,
+    onReset: null,
+    onResize: null,
+    onScroll: null,
+    onScrollEnd: null,
+    onSecurityPolicyViolation: null,
+    onSeeked: null,
+    onSeeking: null,
+    onSelect: null,
+    onSlotChange: null,
+    onStalled: null,
+    onStorage: null,
+    onSubmit: null,
+    onSuspend: null,
+    onTimeUpdate: null,
+    onToggle: null,
+    onUnhandledRejection: null,
+    onUnload: null,
+    onVolumeChange: null,
+    onWaiting: null,
+    onWheel: null,
+    open: boolean,
+    optimum: number,
+    pattern: null,
+    ping: spaceSeparated,
+    placeholder: null,
+    playsInline: boolean,
+    popover: null,
+    popoverTarget: null,
+    popoverTargetAction: null,
+    poster: null,
+    preload: null,
+    readOnly: boolean,
+    referrerPolicy: null,
+    rel: spaceSeparated,
+    required: boolean,
+    reversed: boolean,
+    rows: number,
+    rowSpan: number,
+    sandbox: spaceSeparated,
+    scope: null,
+    scoped: boolean,
+    seamless: boolean,
+    selected: boolean,
+    shadowRootClonable: boolean,
+    shadowRootDelegatesFocus: boolean,
+    shadowRootMode: null,
+    shape: null,
+    size: number,
+    sizes: null,
+    slot: null,
+    span: number,
+    spellCheck: booleanish,
+    src: null,
+    srcDoc: null,
+    srcLang: null,
+    srcSet: null,
+    start: number,
+    step: null,
+    style: null,
+    tabIndex: number,
+    target: null,
+    title: null,
+    translate: null,
+    type: null,
+    typeMustMatch: boolean,
+    useMap: null,
+    value: booleanish,
+    width: number,
+    wrap: null,
+    writingSuggestions: null,
+    // Legacy.
+    // See: https://html.spec.whatwg.org/#other-elements,-attributes-and-apis
+    align: null,
+    // Several. Use CSS `text-align` instead,
+    aLink: null,
+    // `<body>`. Use CSS `a:active {color}` instead
+    archive: spaceSeparated,
+    // `<object>`. List of URIs to archives
+    axis: null,
+    // `<td>` and `<th>`. Use `scope` on `<th>`
+    background: null,
+    // `<body>`. Use CSS `background-image` instead
+    bgColor: null,
+    // `<body>` and table elements. Use CSS `background-color` instead
+    border: number,
+    // `<table>`. Use CSS `border-width` instead,
+    borderColor: null,
+    // `<table>`. Use CSS `border-color` instead,
+    bottomMargin: number,
+    // `<body>`
+    cellPadding: null,
+    // `<table>`
+    cellSpacing: null,
+    // `<table>`
+    char: null,
+    // Several table elements. When `align=char`, sets the character to align on
+    charOff: null,
+    // Several table elements. When `char`, offsets the alignment
+    classId: null,
+    // `<object>`
+    clear: null,
+    // `<br>`. Use CSS `clear` instead
+    code: null,
+    // `<object>`
+    codeBase: null,
+    // `<object>`
+    codeType: null,
+    // `<object>`
+    color: null,
+    // `<font>` and `<hr>`. Use CSS instead
+    compact: boolean,
+    // Lists. Use CSS to reduce space between items instead
+    declare: boolean,
+    // `<object>`
+    event: null,
+    // `<script>`
+    face: null,
+    // `<font>`. Use CSS instead
+    frame: null,
+    // `<table>`
+    frameBorder: null,
+    // `<iframe>`. Use CSS `border` instead
+    hSpace: number,
+    // `<img>` and `<object>`
+    leftMargin: number,
+    // `<body>`
+    link: null,
+    // `<body>`. Use CSS `a:link {color: *}` instead
+    longDesc: null,
+    // `<frame>`, `<iframe>`, and `<img>`. Use an `<a>`
+    lowSrc: null,
+    // `<img>`. Use a `<picture>`
+    marginHeight: number,
+    // `<body>`
+    marginWidth: number,
+    // `<body>`
+    noResize: boolean,
+    // `<frame>`
+    noHref: boolean,
+    // `<area>`. Use no href instead of an explicit `nohref`
+    noShade: boolean,
+    // `<hr>`. Use background-color and height instead of borders
+    noWrap: boolean,
+    // `<td>` and `<th>`
+    object: null,
+    // `<applet>`
+    profile: null,
+    // `<head>`
+    prompt: null,
+    // `<isindex>`
+    rev: null,
+    // `<link>`
+    rightMargin: number,
+    // `<body>`
+    rules: null,
+    // `<table>`
+    scheme: null,
+    // `<meta>`
+    scrolling: booleanish,
+    // `<frame>`. Use overflow in the child context
+    standby: null,
+    // `<object>`
+    summary: null,
+    // `<table>`
+    text: null,
+    // `<body>`. Use CSS `color` instead
+    topMargin: number,
+    // `<body>`
+    valueType: null,
+    // `<param>`
+    version: null,
+    // `<html>`. Use a doctype.
+    vAlign: null,
+    // Several. Use CSS `vertical-align` instead
+    vLink: null,
+    // `<body>`. Use CSS `a:visited {color}` instead
+    vSpace: number,
+    // `<img>` and `<object>`
+    // Non-standard Properties.
+    allowTransparency: null,
+    autoCorrect: null,
+    autoSave: null,
+    disablePictureInPicture: boolean,
+    disableRemotePlayback: boolean,
+    prefix: null,
+    property: null,
+    results: number,
+    security: null,
+    unselectable: null
+  },
+  space: "html",
+  transform: caseInsensitiveTransform
+});
+const svg$1 = create({
+  attributes: {
+    accentHeight: "accent-height",
+    alignmentBaseline: "alignment-baseline",
+    arabicForm: "arabic-form",
+    baselineShift: "baseline-shift",
+    capHeight: "cap-height",
+    className: "class",
+    clipPath: "clip-path",
+    clipRule: "clip-rule",
+    colorInterpolation: "color-interpolation",
+    colorInterpolationFilters: "color-interpolation-filters",
+    colorProfile: "color-profile",
+    colorRendering: "color-rendering",
+    crossOrigin: "crossorigin",
+    dataType: "datatype",
+    dominantBaseline: "dominant-baseline",
+    enableBackground: "enable-background",
+    fillOpacity: "fill-opacity",
+    fillRule: "fill-rule",
+    floodColor: "flood-color",
+    floodOpacity: "flood-opacity",
+    fontFamily: "font-family",
+    fontSize: "font-size",
+    fontSizeAdjust: "font-size-adjust",
+    fontStretch: "font-stretch",
+    fontStyle: "font-style",
+    fontVariant: "font-variant",
+    fontWeight: "font-weight",
+    glyphName: "glyph-name",
+    glyphOrientationHorizontal: "glyph-orientation-horizontal",
+    glyphOrientationVertical: "glyph-orientation-vertical",
+    hrefLang: "hreflang",
+    horizAdvX: "horiz-adv-x",
+    horizOriginX: "horiz-origin-x",
+    horizOriginY: "horiz-origin-y",
+    imageRendering: "image-rendering",
+    letterSpacing: "letter-spacing",
+    lightingColor: "lighting-color",
+    markerEnd: "marker-end",
+    markerMid: "marker-mid",
+    markerStart: "marker-start",
+    navDown: "nav-down",
+    navDownLeft: "nav-down-left",
+    navDownRight: "nav-down-right",
+    navLeft: "nav-left",
+    navNext: "nav-next",
+    navPrev: "nav-prev",
+    navRight: "nav-right",
+    navUp: "nav-up",
+    navUpLeft: "nav-up-left",
+    navUpRight: "nav-up-right",
+    onAbort: "onabort",
+    onActivate: "onactivate",
+    onAfterPrint: "onafterprint",
+    onBeforePrint: "onbeforeprint",
+    onBegin: "onbegin",
+    onCancel: "oncancel",
+    onCanPlay: "oncanplay",
+    onCanPlayThrough: "oncanplaythrough",
+    onChange: "onchange",
+    onClick: "onclick",
+    onClose: "onclose",
+    onCopy: "oncopy",
+    onCueChange: "oncuechange",
+    onCut: "oncut",
+    onDblClick: "ondblclick",
+    onDrag: "ondrag",
+    onDragEnd: "ondragend",
+    onDragEnter: "ondragenter",
+    onDragExit: "ondragexit",
+    onDragLeave: "ondragleave",
+    onDragOver: "ondragover",
+    onDragStart: "ondragstart",
+    onDrop: "ondrop",
+    onDurationChange: "ondurationchange",
+    onEmptied: "onemptied",
+    onEnd: "onend",
+    onEnded: "onended",
+    onError: "onerror",
+    onFocus: "onfocus",
+    onFocusIn: "onfocusin",
+    onFocusOut: "onfocusout",
+    onHashChange: "onhashchange",
+    onInput: "oninput",
+    onInvalid: "oninvalid",
+    onKeyDown: "onkeydown",
+    onKeyPress: "onkeypress",
+    onKeyUp: "onkeyup",
+    onLoad: "onload",
+    onLoadedData: "onloadeddata",
+    onLoadedMetadata: "onloadedmetadata",
+    onLoadStart: "onloadstart",
+    onMessage: "onmessage",
+    onMouseDown: "onmousedown",
+    onMouseEnter: "onmouseenter",
+    onMouseLeave: "onmouseleave",
+    onMouseMove: "onmousemove",
+    onMouseOut: "onmouseout",
+    onMouseOver: "onmouseover",
+    onMouseUp: "onmouseup",
+    onMouseWheel: "onmousewheel",
+    onOffline: "onoffline",
+    onOnline: "ononline",
+    onPageHide: "onpagehide",
+    onPageShow: "onpageshow",
+    onPaste: "onpaste",
+    onPause: "onpause",
+    onPlay: "onplay",
+    onPlaying: "onplaying",
+    onPopState: "onpopstate",
+    onProgress: "onprogress",
+    onRateChange: "onratechange",
+    onRepeat: "onrepeat",
+    onReset: "onreset",
+    onResize: "onresize",
+    onScroll: "onscroll",
+    onSeeked: "onseeked",
+    onSeeking: "onseeking",
+    onSelect: "onselect",
+    onShow: "onshow",
+    onStalled: "onstalled",
+    onStorage: "onstorage",
+    onSubmit: "onsubmit",
+    onSuspend: "onsuspend",
+    onTimeUpdate: "ontimeupdate",
+    onToggle: "ontoggle",
+    onUnload: "onunload",
+    onVolumeChange: "onvolumechange",
+    onWaiting: "onwaiting",
+    onZoom: "onzoom",
+    overlinePosition: "overline-position",
+    overlineThickness: "overline-thickness",
+    paintOrder: "paint-order",
+    panose1: "panose-1",
+    pointerEvents: "pointer-events",
+    referrerPolicy: "referrerpolicy",
+    renderingIntent: "rendering-intent",
+    shapeRendering: "shape-rendering",
+    stopColor: "stop-color",
+    stopOpacity: "stop-opacity",
+    strikethroughPosition: "strikethrough-position",
+    strikethroughThickness: "strikethrough-thickness",
+    strokeDashArray: "stroke-dasharray",
+    strokeDashOffset: "stroke-dashoffset",
+    strokeLineCap: "stroke-linecap",
+    strokeLineJoin: "stroke-linejoin",
+    strokeMiterLimit: "stroke-miterlimit",
+    strokeOpacity: "stroke-opacity",
+    strokeWidth: "stroke-width",
+    tabIndex: "tabindex",
+    textAnchor: "text-anchor",
+    textDecoration: "text-decoration",
+    textRendering: "text-rendering",
+    transformOrigin: "transform-origin",
+    typeOf: "typeof",
+    underlinePosition: "underline-position",
+    underlineThickness: "underline-thickness",
+    unicodeBidi: "unicode-bidi",
+    unicodeRange: "unicode-range",
+    unitsPerEm: "units-per-em",
+    vAlphabetic: "v-alphabetic",
+    vHanging: "v-hanging",
+    vIdeographic: "v-ideographic",
+    vMathematical: "v-mathematical",
+    vectorEffect: "vector-effect",
+    vertAdvY: "vert-adv-y",
+    vertOriginX: "vert-origin-x",
+    vertOriginY: "vert-origin-y",
+    wordSpacing: "word-spacing",
+    writingMode: "writing-mode",
+    xHeight: "x-height",
+    // These were camelcased in Tiny. Now lowercased in SVG 2
+    playbackOrder: "playbackorder",
+    timelineBegin: "timelinebegin"
+  },
+  properties: {
+    about: commaOrSpaceSeparated,
+    accentHeight: number,
+    accumulate: null,
+    additive: null,
+    alignmentBaseline: null,
+    alphabetic: number,
+    amplitude: number,
+    arabicForm: null,
+    ascent: number,
+    attributeName: null,
+    attributeType: null,
+    azimuth: number,
+    bandwidth: null,
+    baselineShift: null,
+    baseFrequency: null,
+    baseProfile: null,
+    bbox: null,
+    begin: null,
+    bias: number,
+    by: null,
+    calcMode: null,
+    capHeight: number,
+    className: spaceSeparated,
+    clip: null,
+    clipPath: null,
+    clipPathUnits: null,
+    clipRule: null,
+    color: null,
+    colorInterpolation: null,
+    colorInterpolationFilters: null,
+    colorProfile: null,
+    colorRendering: null,
+    content: null,
+    contentScriptType: null,
+    contentStyleType: null,
+    crossOrigin: null,
+    cursor: null,
+    cx: null,
+    cy: null,
+    d: null,
+    dataType: null,
+    defaultAction: null,
+    descent: number,
+    diffuseConstant: number,
+    direction: null,
+    display: null,
+    dur: null,
+    divisor: number,
+    dominantBaseline: null,
+    download: boolean,
+    dx: null,
+    dy: null,
+    edgeMode: null,
+    editable: null,
+    elevation: number,
+    enableBackground: null,
+    end: null,
+    event: null,
+    exponent: number,
+    externalResourcesRequired: null,
+    fill: null,
+    fillOpacity: number,
+    fillRule: null,
+    filter: null,
+    filterRes: null,
+    filterUnits: null,
+    floodColor: null,
+    floodOpacity: null,
+    focusable: null,
+    focusHighlight: null,
+    fontFamily: null,
+    fontSize: null,
+    fontSizeAdjust: null,
+    fontStretch: null,
+    fontStyle: null,
+    fontVariant: null,
+    fontWeight: null,
+    format: null,
+    fr: null,
+    from: null,
+    fx: null,
+    fy: null,
+    g1: commaSeparated,
+    g2: commaSeparated,
+    glyphName: commaSeparated,
+    glyphOrientationHorizontal: null,
+    glyphOrientationVertical: null,
+    glyphRef: null,
+    gradientTransform: null,
+    gradientUnits: null,
+    handler: null,
+    hanging: number,
+    hatchContentUnits: null,
+    hatchUnits: null,
+    height: null,
+    href: null,
+    hrefLang: null,
+    horizAdvX: number,
+    horizOriginX: number,
+    horizOriginY: number,
+    id: null,
+    ideographic: number,
+    imageRendering: null,
+    initialVisibility: null,
+    in: null,
+    in2: null,
+    intercept: number,
+    k: number,
+    k1: number,
+    k2: number,
+    k3: number,
+    k4: number,
+    kernelMatrix: commaOrSpaceSeparated,
+    kernelUnitLength: null,
+    keyPoints: null,
+    // SEMI_COLON_SEPARATED
+    keySplines: null,
+    // SEMI_COLON_SEPARATED
+    keyTimes: null,
+    // SEMI_COLON_SEPARATED
+    kerning: null,
+    lang: null,
+    lengthAdjust: null,
+    letterSpacing: null,
+    lightingColor: null,
+    limitingConeAngle: number,
+    local: null,
+    markerEnd: null,
+    markerMid: null,
+    markerStart: null,
+    markerHeight: null,
+    markerUnits: null,
+    markerWidth: null,
+    mask: null,
+    maskContentUnits: null,
+    maskUnits: null,
+    mathematical: null,
+    max: null,
+    media: null,
+    mediaCharacterEncoding: null,
+    mediaContentEncodings: null,
+    mediaSize: number,
+    mediaTime: null,
+    method: null,
+    min: null,
+    mode: null,
+    name: null,
+    navDown: null,
+    navDownLeft: null,
+    navDownRight: null,
+    navLeft: null,
+    navNext: null,
+    navPrev: null,
+    navRight: null,
+    navUp: null,
+    navUpLeft: null,
+    navUpRight: null,
+    numOctaves: null,
+    observer: null,
+    offset: null,
+    onAbort: null,
+    onActivate: null,
+    onAfterPrint: null,
+    onBeforePrint: null,
+    onBegin: null,
+    onCancel: null,
+    onCanPlay: null,
+    onCanPlayThrough: null,
+    onChange: null,
+    onClick: null,
+    onClose: null,
+    onCopy: null,
+    onCueChange: null,
+    onCut: null,
+    onDblClick: null,
+    onDrag: null,
+    onDragEnd: null,
+    onDragEnter: null,
+    onDragExit: null,
+    onDragLeave: null,
+    onDragOver: null,
+    onDragStart: null,
+    onDrop: null,
+    onDurationChange: null,
+    onEmptied: null,
+    onEnd: null,
+    onEnded: null,
+    onError: null,
+    onFocus: null,
+    onFocusIn: null,
+    onFocusOut: null,
+    onHashChange: null,
+    onInput: null,
+    onInvalid: null,
+    onKeyDown: null,
+    onKeyPress: null,
+    onKeyUp: null,
+    onLoad: null,
+    onLoadedData: null,
+    onLoadedMetadata: null,
+    onLoadStart: null,
+    onMessage: null,
+    onMouseDown: null,
+    onMouseEnter: null,
+    onMouseLeave: null,
+    onMouseMove: null,
+    onMouseOut: null,
+    onMouseOver: null,
+    onMouseUp: null,
+    onMouseWheel: null,
+    onOffline: null,
+    onOnline: null,
+    onPageHide: null,
+    onPageShow: null,
+    onPaste: null,
+    onPause: null,
+    onPlay: null,
+    onPlaying: null,
+    onPopState: null,
+    onProgress: null,
+    onRateChange: null,
+    onRepeat: null,
+    onReset: null,
+    onResize: null,
+    onScroll: null,
+    onSeeked: null,
+    onSeeking: null,
+    onSelect: null,
+    onShow: null,
+    onStalled: null,
+    onStorage: null,
+    onSubmit: null,
+    onSuspend: null,
+    onTimeUpdate: null,
+    onToggle: null,
+    onUnload: null,
+    onVolumeChange: null,
+    onWaiting: null,
+    onZoom: null,
+    opacity: null,
+    operator: null,
+    order: null,
+    orient: null,
+    orientation: null,
+    origin: null,
+    overflow: null,
+    overlay: null,
+    overlinePosition: number,
+    overlineThickness: number,
+    paintOrder: null,
+    panose1: null,
+    path: null,
+    pathLength: number,
+    patternContentUnits: null,
+    patternTransform: null,
+    patternUnits: null,
+    phase: null,
+    ping: spaceSeparated,
+    pitch: null,
+    playbackOrder: null,
+    pointerEvents: null,
+    points: null,
+    pointsAtX: number,
+    pointsAtY: number,
+    pointsAtZ: number,
+    preserveAlpha: null,
+    preserveAspectRatio: null,
+    primitiveUnits: null,
+    propagate: null,
+    property: commaOrSpaceSeparated,
+    r: null,
+    radius: null,
+    referrerPolicy: null,
+    refX: null,
+    refY: null,
+    rel: commaOrSpaceSeparated,
+    rev: commaOrSpaceSeparated,
+    renderingIntent: null,
+    repeatCount: null,
+    repeatDur: null,
+    requiredExtensions: commaOrSpaceSeparated,
+    requiredFeatures: commaOrSpaceSeparated,
+    requiredFonts: commaOrSpaceSeparated,
+    requiredFormats: commaOrSpaceSeparated,
+    resource: null,
+    restart: null,
+    result: null,
+    rotate: null,
+    rx: null,
+    ry: null,
+    scale: null,
+    seed: null,
+    shapeRendering: null,
+    side: null,
+    slope: null,
+    snapshotTime: null,
+    specularConstant: number,
+    specularExponent: number,
+    spreadMethod: null,
+    spacing: null,
+    startOffset: null,
+    stdDeviation: null,
+    stemh: null,
+    stemv: null,
+    stitchTiles: null,
+    stopColor: null,
+    stopOpacity: null,
+    strikethroughPosition: number,
+    strikethroughThickness: number,
+    string: null,
+    stroke: null,
+    strokeDashArray: commaOrSpaceSeparated,
+    strokeDashOffset: null,
+    strokeLineCap: null,
+    strokeLineJoin: null,
+    strokeMiterLimit: number,
+    strokeOpacity: number,
+    strokeWidth: null,
+    style: null,
+    surfaceScale: number,
+    syncBehavior: null,
+    syncBehaviorDefault: null,
+    syncMaster: null,
+    syncTolerance: null,
+    syncToleranceDefault: null,
+    systemLanguage: commaOrSpaceSeparated,
+    tabIndex: number,
+    tableValues: null,
+    target: null,
+    targetX: number,
+    targetY: number,
+    textAnchor: null,
+    textDecoration: null,
+    textRendering: null,
+    textLength: null,
+    timelineBegin: null,
+    title: null,
+    transformBehavior: null,
+    type: null,
+    typeOf: commaOrSpaceSeparated,
+    to: null,
+    transform: null,
+    transformOrigin: null,
+    u1: null,
+    u2: null,
+    underlinePosition: number,
+    underlineThickness: number,
+    unicode: null,
+    unicodeBidi: null,
+    unicodeRange: null,
+    unitsPerEm: number,
+    values: null,
+    vAlphabetic: number,
+    vMathematical: number,
+    vectorEffect: null,
+    vHanging: number,
+    vIdeographic: number,
+    version: null,
+    vertAdvY: number,
+    vertOriginX: number,
+    vertOriginY: number,
+    viewBox: null,
+    viewTarget: null,
+    visibility: null,
+    width: null,
+    widths: null,
+    wordSpacing: null,
+    writingMode: null,
+    x: null,
+    x1: null,
+    x2: null,
+    xChannelSelector: null,
+    xHeight: number,
+    y: null,
+    y1: null,
+    y2: null,
+    yChannelSelector: null,
+    z: null,
+    zoomAndPan: null
+  },
+  space: "svg",
+  transform: caseSensitiveTransform
+});
+const xlink = create({
+  properties: {
+    xLinkActuate: null,
+    xLinkArcRole: null,
+    xLinkHref: null,
+    xLinkRole: null,
+    xLinkShow: null,
+    xLinkTitle: null,
+    xLinkType: null
+  },
+  space: "xlink",
+  transform(_, property) {
+    return "xlink:" + property.slice(5).toLowerCase();
+  }
+});
+const xmlns = create({
+  attributes: { xmlnsxlink: "xmlns:xlink" },
+  properties: { xmlnsXLink: null, xmlns: null },
+  space: "xmlns",
+  transform: caseInsensitiveTransform
+});
+const xml = create({
+  properties: { xmlBase: null, xmlLang: null, xmlSpace: null },
+  space: "xml",
+  transform(_, property) {
+    return "xml:" + property.slice(3).toLowerCase();
+  }
+});
+const hastToReact = {
+  classId: "classID",
+  dataType: "datatype",
+  itemId: "itemID",
+  strokeDashArray: "strokeDasharray",
+  strokeDashOffset: "strokeDashoffset",
+  strokeLineCap: "strokeLinecap",
+  strokeLineJoin: "strokeLinejoin",
+  strokeMiterLimit: "strokeMiterlimit",
+  typeOf: "typeof",
+  xLinkActuate: "xlinkActuate",
+  xLinkArcRole: "xlinkArcrole",
+  xLinkHref: "xlinkHref",
+  xLinkRole: "xlinkRole",
+  xLinkShow: "xlinkShow",
+  xLinkTitle: "xlinkTitle",
+  xLinkType: "xlinkType",
+  xmlnsXLink: "xmlnsXlink"
+};
+const cap$1 = /[A-Z]/g;
+const dash = /-[a-z]/g;
+const valid = /^data[-\w.:]+$/i;
+function find(schema, value) {
+  const normal = normalize$1(value);
+  let property = value;
+  let Type = Info;
+  if (normal in schema.normal) {
+    return schema.property[schema.normal[normal]];
+  }
+  if (normal.length > 4 && normal.slice(0, 4) === "data" && valid.test(value)) {
+    if (value.charAt(4) === "-") {
+      const rest = value.slice(5).replace(dash, camelcase);
+      property = "data" + rest.charAt(0).toUpperCase() + rest.slice(1);
+    } else {
+      const rest = value.slice(4);
+      if (!dash.test(rest)) {
+        let dashes = rest.replace(cap$1, kebab);
+        if (dashes.charAt(0) !== "-") {
+          dashes = "-" + dashes;
+        }
+        value = "data" + dashes;
+      }
+    }
+    Type = DefinedInfo;
+  }
+  return new Type(property, value);
+}
+function kebab($0) {
+  return "-" + $0.toLowerCase();
+}
+function camelcase($0) {
+  return $0.charAt(1).toUpperCase();
+}
+const html$2 = merge([aria, html$3, xlink, xmlns, xml], "html");
+const svg = merge([aria, svg$1, xlink, xmlns, xml], "svg");
+function stringify(values) {
+  return values.join(" ").trim();
+}
+var cjs$2 = {};
+var cjs$1;
+var hasRequiredCjs$2;
+function requireCjs$2() {
+  if (hasRequiredCjs$2) return cjs$1;
+  hasRequiredCjs$2 = 1;
+  var COMMENT_REGEX = /\/\*[^*]*\*+([^/*][^*]*\*+)*\//g;
+  var NEWLINE_REGEX = /\n/g;
+  var WHITESPACE_REGEX = /^\s*/;
+  var PROPERTY_REGEX = /^(\*?[-#/*\\\w]+(\[[0-9a-z_-]+\])?)\s*/;
+  var COLON_REGEX = /^:\s*/;
+  var VALUE_REGEX = /^((?:'(?:\\'|.)*?'|"(?:\\"|.)*?"|\([^)]*?\)|[^};])+)/;
+  var SEMICOLON_REGEX = /^[;\s]*/;
+  var TRIM_REGEX = /^\s+|\s+$/g;
+  var NEWLINE = "\n";
+  var FORWARD_SLASH = "/";
+  var ASTERISK = "*";
+  var EMPTY_STRING = "";
+  var TYPE_COMMENT = "comment";
+  var TYPE_DECLARATION = "declaration";
+  function index2(style2, options) {
+    if (typeof style2 !== "string") {
+      throw new TypeError("First argument must be a string");
+    }
+    if (!style2) return [];
+    options = options || {};
+    var lineno = 1;
+    var column = 1;
+    function updatePosition(str) {
+      var lines = str.match(NEWLINE_REGEX);
+      if (lines) lineno += lines.length;
+      var i = str.lastIndexOf(NEWLINE);
+      column = ~i ? str.length - i : column + str.length;
+    }
+    function position2() {
+      var start2 = { line: lineno, column };
+      return function(node2) {
+        node2.position = new Position2(start2);
+        whitespace2();
+        return node2;
+      };
+    }
+    function Position2(start2) {
+      this.start = start2;
+      this.end = { line: lineno, column };
+      this.source = options.source;
+    }
+    Position2.prototype.content = style2;
+    function error(msg) {
+      var err = new Error(
+        options.source + ":" + lineno + ":" + column + ": " + msg
+      );
+      err.reason = msg;
+      err.filename = options.source;
+      err.line = lineno;
+      err.column = column;
+      err.source = style2;
+      if (options.silent) ;
+      else {
+        throw err;
+      }
+    }
+    function match(re2) {
+      var m = re2.exec(style2);
+      if (!m) return;
+      var str = m[0];
+      updatePosition(str);
+      style2 = style2.slice(str.length);
+      return m;
+    }
+    function whitespace2() {
+      match(WHITESPACE_REGEX);
+    }
+    function comments(rules) {
+      var c;
+      rules = rules || [];
+      while (c = comment()) {
+        if (c !== false) {
+          rules.push(c);
+        }
+      }
+      return rules;
+    }
+    function comment() {
+      var pos = position2();
+      if (FORWARD_SLASH != style2.charAt(0) || ASTERISK != style2.charAt(1)) return;
+      var i = 2;
+      while (EMPTY_STRING != style2.charAt(i) && (ASTERISK != style2.charAt(i) || FORWARD_SLASH != style2.charAt(i + 1))) {
+        ++i;
+      }
+      i += 2;
+      if (EMPTY_STRING === style2.charAt(i - 1)) {
+        return error("End of comment missing");
+      }
+      var str = style2.slice(2, i - 2);
+      column += 2;
+      updatePosition(str);
+      style2 = style2.slice(i);
+      column += 2;
+      return pos({
+        type: TYPE_COMMENT,
+        comment: str
+      });
+    }
+    function declaration() {
+      var pos = position2();
+      var prop = match(PROPERTY_REGEX);
+      if (!prop) return;
+      comment();
+      if (!match(COLON_REGEX)) return error("property missing ':'");
+      var val = match(VALUE_REGEX);
+      var ret = pos({
+        type: TYPE_DECLARATION,
+        property: trim(prop[0].replace(COMMENT_REGEX, EMPTY_STRING)),
+        value: val ? trim(val[0].replace(COMMENT_REGEX, EMPTY_STRING)) : EMPTY_STRING
+      });
+      match(SEMICOLON_REGEX);
+      return ret;
+    }
+    function declarations() {
+      var decls = [];
+      comments(decls);
+      var decl;
+      while (decl = declaration()) {
+        if (decl !== false) {
+          decls.push(decl);
+          comments(decls);
+        }
+      }
+      return decls;
+    }
+    whitespace2();
+    return declarations();
+  }
+  function trim(str) {
+    return str ? str.replace(TRIM_REGEX, EMPTY_STRING) : EMPTY_STRING;
+  }
+  cjs$1 = index2;
+  return cjs$1;
+}
+var hasRequiredCjs$1;
+function requireCjs$1() {
+  if (hasRequiredCjs$1) return cjs$2;
+  hasRequiredCjs$1 = 1;
+  var __importDefault = cjs$2 && cjs$2.__importDefault || function(mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+  };
+  Object.defineProperty(cjs$2, "__esModule", { value: true });
+  cjs$2.default = StyleToObject;
+  const inline_style_parser_1 = __importDefault(requireCjs$2());
+  function StyleToObject(style2, iterator) {
+    let styleObject = null;
+    if (!style2 || typeof style2 !== "string") {
+      return styleObject;
+    }
+    const declarations = (0, inline_style_parser_1.default)(style2);
+    const hasIterator = typeof iterator === "function";
+    declarations.forEach((declaration) => {
+      if (declaration.type !== "declaration") {
+        return;
+      }
+      const { property, value } = declaration;
+      if (hasIterator) {
+        iterator(property, value, declaration);
+      } else if (value) {
+        styleObject = styleObject || {};
+        styleObject[property] = value;
+      }
+    });
+    return styleObject;
+  }
+  return cjs$2;
+}
+var utilities = {};
+var hasRequiredUtilities;
+function requireUtilities() {
+  if (hasRequiredUtilities) return utilities;
+  hasRequiredUtilities = 1;
+  Object.defineProperty(utilities, "__esModule", { value: true });
+  utilities.camelCase = void 0;
+  var CUSTOM_PROPERTY_REGEX = /^--[a-zA-Z0-9_-]+$/;
+  var HYPHEN_REGEX = /-([a-z])/g;
+  var NO_HYPHEN_REGEX = /^[^-]+$/;
+  var VENDOR_PREFIX_REGEX = /^-(webkit|moz|ms|o|khtml)-/;
+  var MS_VENDOR_PREFIX_REGEX = /^-(ms)-/;
+  var skipCamelCase = function(property) {
+    return !property || NO_HYPHEN_REGEX.test(property) || CUSTOM_PROPERTY_REGEX.test(property);
+  };
+  var capitalize = function(match, character) {
+    return character.toUpperCase();
+  };
+  var trimHyphen = function(match, prefix) {
+    return "".concat(prefix, "-");
+  };
+  var camelCase = function(property, options) {
+    if (options === void 0) {
+      options = {};
+    }
+    if (skipCamelCase(property)) {
+      return property;
+    }
+    property = property.toLowerCase();
+    if (options.reactCompat) {
+      property = property.replace(MS_VENDOR_PREFIX_REGEX, trimHyphen);
+    } else {
+      property = property.replace(VENDOR_PREFIX_REGEX, trimHyphen);
+    }
+    return property.replace(HYPHEN_REGEX, capitalize);
+  };
+  utilities.camelCase = camelCase;
+  return utilities;
+}
+var cjs;
+var hasRequiredCjs;
+function requireCjs() {
+  if (hasRequiredCjs) return cjs;
+  hasRequiredCjs = 1;
+  var __importDefault = cjs && cjs.__importDefault || function(mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+  };
+  var style_to_object_1 = __importDefault(requireCjs$1());
+  var utilities_1 = requireUtilities();
+  function StyleToJS(style2, options) {
+    var output = {};
+    if (!style2 || typeof style2 !== "string") {
+      return output;
+    }
+    (0, style_to_object_1.default)(style2, function(property, value) {
+      if (property && value) {
+        output[(0, utilities_1.camelCase)(property, options)] = value;
+      }
+    });
+    return output;
+  }
+  StyleToJS.default = StyleToJS;
+  cjs = StyleToJS;
+  return cjs;
+}
+var cjsExports = requireCjs();
+const styleToJs = /* @__PURE__ */ getDefaultExportFromCjs(cjsExports);
+const pointEnd = point$2("end");
+const pointStart = point$2("start");
+function point$2(type) {
+  return point2;
+  function point2(node2) {
+    const point3 = node2 && node2.position && node2.position[type] || {};
+    if (typeof point3.line === "number" && point3.line > 0 && typeof point3.column === "number" && point3.column > 0) {
+      return {
+        line: point3.line,
+        column: point3.column,
+        offset: typeof point3.offset === "number" && point3.offset > -1 ? point3.offset : void 0
+      };
+    }
+  }
+}
+function position$1(node2) {
+  const start2 = pointStart(node2);
+  const end = pointEnd(node2);
+  if (start2 && end) {
+    return { start: start2, end };
+  }
+}
+function stringifyPosition(value) {
+  if (!value || typeof value !== "object") {
+    return "";
+  }
+  if ("position" in value || "type" in value) {
+    return position(value.position);
+  }
+  if ("start" in value || "end" in value) {
+    return position(value);
+  }
+  if ("line" in value || "column" in value) {
+    return point$1(value);
+  }
+  return "";
+}
+function point$1(point2) {
+  return index(point2 && point2.line) + ":" + index(point2 && point2.column);
+}
+function position(pos) {
+  return point$1(pos && pos.start) + "-" + point$1(pos && pos.end);
+}
+function index(value) {
+  return value && typeof value === "number" ? value : 1;
+}
+class VFileMessage extends Error {
+  /**
+   * Create a message for `reason`.
+   *
+   * > 🪦 **Note**: also has obsolete signatures.
+   *
+   * @overload
+   * @param {string} reason
+   * @param {Options | null | undefined} [options]
+   * @returns
+   *
+   * @overload
+   * @param {string} reason
+   * @param {Node | NodeLike | null | undefined} parent
+   * @param {string | null | undefined} [origin]
+   * @returns
+   *
+   * @overload
+   * @param {string} reason
+   * @param {Point | Position | null | undefined} place
+   * @param {string | null | undefined} [origin]
+   * @returns
+   *
+   * @overload
+   * @param {string} reason
+   * @param {string | null | undefined} [origin]
+   * @returns
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {Node | NodeLike | null | undefined} parent
+   * @param {string | null | undefined} [origin]
+   * @returns
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {Point | Position | null | undefined} place
+   * @param {string | null | undefined} [origin]
+   * @returns
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {string | null | undefined} [origin]
+   * @returns
+   *
+   * @param {Error | VFileMessage | string} causeOrReason
+   *   Reason for message, should use markdown.
+   * @param {Node | NodeLike | Options | Point | Position | string | null | undefined} [optionsOrParentOrPlace]
+   *   Configuration (optional).
+   * @param {string | null | undefined} [origin]
+   *   Place in code where the message originates (example:
+   *   `'my-package:my-rule'` or `'my-rule'`).
+   * @returns
+   *   Instance of `VFileMessage`.
+   */
+  // eslint-disable-next-line complexity
+  constructor(causeOrReason, optionsOrParentOrPlace, origin) {
+    super();
+    if (typeof optionsOrParentOrPlace === "string") {
+      origin = optionsOrParentOrPlace;
+      optionsOrParentOrPlace = void 0;
+    }
+    let reason = "";
+    let options = {};
+    let legacyCause = false;
+    if (optionsOrParentOrPlace) {
+      if ("line" in optionsOrParentOrPlace && "column" in optionsOrParentOrPlace) {
+        options = { place: optionsOrParentOrPlace };
+      } else if ("start" in optionsOrParentOrPlace && "end" in optionsOrParentOrPlace) {
+        options = { place: optionsOrParentOrPlace };
+      } else if ("type" in optionsOrParentOrPlace) {
+        options = {
+          ancestors: [optionsOrParentOrPlace],
+          place: optionsOrParentOrPlace.position
+        };
+      } else {
+        options = { ...optionsOrParentOrPlace };
+      }
+    }
+    if (typeof causeOrReason === "string") {
+      reason = causeOrReason;
+    } else if (!options.cause && causeOrReason) {
+      legacyCause = true;
+      reason = causeOrReason.message;
+      options.cause = causeOrReason;
+    }
+    if (!options.ruleId && !options.source && typeof origin === "string") {
+      const index2 = origin.indexOf(":");
+      if (index2 === -1) {
+        options.ruleId = origin;
+      } else {
+        options.source = origin.slice(0, index2);
+        options.ruleId = origin.slice(index2 + 1);
+      }
+    }
+    if (!options.place && options.ancestors && options.ancestors) {
+      const parent = options.ancestors[options.ancestors.length - 1];
+      if (parent) {
+        options.place = parent.position;
+      }
+    }
+    const start2 = options.place && "start" in options.place ? options.place.start : options.place;
+    this.ancestors = options.ancestors || void 0;
+    this.cause = options.cause || void 0;
+    this.column = start2 ? start2.column : void 0;
+    this.fatal = void 0;
+    this.file = "";
+    this.message = reason;
+    this.line = start2 ? start2.line : void 0;
+    this.name = stringifyPosition(options.place) || "1:1";
+    this.place = options.place || void 0;
+    this.reason = this.message;
+    this.ruleId = options.ruleId || void 0;
+    this.source = options.source || void 0;
+    this.stack = legacyCause && options.cause && typeof options.cause.stack === "string" ? options.cause.stack : "";
+    this.actual = void 0;
+    this.expected = void 0;
+    this.note = void 0;
+    this.url = void 0;
+  }
+}
+VFileMessage.prototype.file = "";
+VFileMessage.prototype.name = "";
+VFileMessage.prototype.reason = "";
+VFileMessage.prototype.message = "";
+VFileMessage.prototype.stack = "";
+VFileMessage.prototype.column = void 0;
+VFileMessage.prototype.line = void 0;
+VFileMessage.prototype.ancestors = void 0;
+VFileMessage.prototype.cause = void 0;
+VFileMessage.prototype.fatal = void 0;
+VFileMessage.prototype.place = void 0;
+VFileMessage.prototype.ruleId = void 0;
+VFileMessage.prototype.source = void 0;
+const own$3 = {}.hasOwnProperty;
+const emptyMap = /* @__PURE__ */ new Map();
+const cap = /[A-Z]/g;
+const tableElements = /* @__PURE__ */ new Set(["table", "tbody", "thead", "tfoot", "tr"]);
+const tableCellElement = /* @__PURE__ */ new Set(["td", "th"]);
+const docs = "https://github.com/syntax-tree/hast-util-to-jsx-runtime";
+function toJsxRuntime(tree, options) {
+  if (!options || options.Fragment === void 0) {
+    throw new TypeError("Expected `Fragment` in options");
+  }
+  const filePath = options.filePath || void 0;
+  let create2;
+  if (options.development) {
+    if (typeof options.jsxDEV !== "function") {
+      throw new TypeError(
+        "Expected `jsxDEV` in options when `development: true`"
+      );
+    }
+    create2 = developmentCreate(filePath, options.jsxDEV);
+  } else {
+    if (typeof options.jsx !== "function") {
+      throw new TypeError("Expected `jsx` in production options");
+    }
+    if (typeof options.jsxs !== "function") {
+      throw new TypeError("Expected `jsxs` in production options");
+    }
+    create2 = productionCreate(filePath, options.jsx, options.jsxs);
+  }
+  const state = {
+    Fragment: options.Fragment,
+    ancestors: [],
+    components: options.components || {},
+    create: create2,
+    elementAttributeNameCase: options.elementAttributeNameCase || "react",
+    evaluater: options.createEvaluater ? options.createEvaluater() : void 0,
+    filePath,
+    ignoreInvalidStyle: options.ignoreInvalidStyle || false,
+    passKeys: options.passKeys !== false,
+    passNode: options.passNode || false,
+    schema: options.space === "svg" ? svg : html$2,
+    stylePropertyNameCase: options.stylePropertyNameCase || "dom",
+    tableCellAlignToStyle: options.tableCellAlignToStyle !== false
+  };
+  const result = one$1(state, tree, void 0);
+  if (result && typeof result !== "string") {
+    return result;
+  }
+  return state.create(
+    tree,
+    state.Fragment,
+    { children: result || void 0 },
+    void 0
+  );
+}
+function one$1(state, node2, key) {
+  if (node2.type === "element") {
+    return element$1(state, node2, key);
+  }
+  if (node2.type === "mdxFlowExpression" || node2.type === "mdxTextExpression") {
+    return mdxExpression(state, node2);
+  }
+  if (node2.type === "mdxJsxFlowElement" || node2.type === "mdxJsxTextElement") {
+    return mdxJsxElement(state, node2, key);
+  }
+  if (node2.type === "mdxjsEsm") {
+    return mdxEsm(state, node2);
+  }
+  if (node2.type === "root") {
+    return root$2(state, node2, key);
+  }
+  if (node2.type === "text") {
+    return text$5(state, node2);
+  }
+}
+function element$1(state, node2, key) {
+  const parentSchema = state.schema;
+  let schema = parentSchema;
+  if (node2.tagName.toLowerCase() === "svg" && parentSchema.space === "html") {
+    schema = svg;
+    state.schema = schema;
+  }
+  state.ancestors.push(node2);
+  const type = findComponentFromName(state, node2.tagName, false);
+  const props = createElementProps(state, node2);
+  let children2 = createChildren(state, node2);
+  if (tableElements.has(node2.tagName)) {
+    children2 = children2.filter(function(child) {
+      return typeof child === "string" ? !whitespace(child) : true;
+    });
+  }
+  addNode(state, props, type, node2);
+  addChildren(props, children2);
+  state.ancestors.pop();
+  state.schema = parentSchema;
+  return state.create(node2, type, props, key);
+}
+function mdxExpression(state, node2) {
+  if (node2.data && node2.data.estree && state.evaluater) {
+    const program = node2.data.estree;
+    const expression = program.body[0];
+    ok$1(expression.type === "ExpressionStatement");
+    return (
+      /** @type {Child | undefined} */
+      state.evaluater.evaluateExpression(expression.expression)
+    );
+  }
+  crashEstree(state, node2.position);
+}
+function mdxEsm(state, node2) {
+  if (node2.data && node2.data.estree && state.evaluater) {
+    return (
+      /** @type {Child | undefined} */
+      state.evaluater.evaluateProgram(node2.data.estree)
+    );
+  }
+  crashEstree(state, node2.position);
+}
+function mdxJsxElement(state, node2, key) {
+  const parentSchema = state.schema;
+  let schema = parentSchema;
+  if (node2.name === "svg" && parentSchema.space === "html") {
+    schema = svg;
+    state.schema = schema;
+  }
+  state.ancestors.push(node2);
+  const type = node2.name === null ? state.Fragment : findComponentFromName(state, node2.name, true);
+  const props = createJsxElementProps(state, node2);
+  const children2 = createChildren(state, node2);
+  addNode(state, props, type, node2);
+  addChildren(props, children2);
+  state.ancestors.pop();
+  state.schema = parentSchema;
+  return state.create(node2, type, props, key);
+}
+function root$2(state, node2, key) {
+  const props = {};
+  addChildren(props, createChildren(state, node2));
+  return state.create(node2, state.Fragment, props, key);
+}
+function text$5(_, node2) {
+  return node2.value;
+}
+function addNode(state, props, type, node2) {
+  if (typeof type !== "string" && type !== state.Fragment && state.passNode) {
+    props.node = node2;
+  }
+}
+function addChildren(props, children2) {
+  if (children2.length > 0) {
+    const value = children2.length > 1 ? children2 : children2[0];
+    if (value) {
+      props.children = value;
+    }
+  }
+}
+function productionCreate(_, jsx, jsxs) {
+  return create2;
+  function create2(_2, type, props, key) {
+    const isStaticChildren = Array.isArray(props.children);
+    const fn = isStaticChildren ? jsxs : jsx;
+    return key ? fn(type, props, key) : fn(type, props);
+  }
+}
+function developmentCreate(filePath, jsxDEV) {
+  return create2;
+  function create2(node2, type, props, key) {
+    const isStaticChildren = Array.isArray(props.children);
+    const point2 = pointStart(node2);
+    return jsxDEV(
+      type,
+      props,
+      key,
+      isStaticChildren,
+      {
+        columnNumber: point2 ? point2.column - 1 : void 0,
+        fileName: filePath,
+        lineNumber: point2 ? point2.line : void 0
+      },
+      void 0
+    );
+  }
+}
+function createElementProps(state, node2) {
+  const props = {};
+  let alignValue;
+  let prop;
+  for (prop in node2.properties) {
+    if (prop !== "children" && own$3.call(node2.properties, prop)) {
+      const result = createProperty(state, prop, node2.properties[prop]);
+      if (result) {
+        const [key, value] = result;
+        if (state.tableCellAlignToStyle && key === "align" && typeof value === "string" && tableCellElement.has(node2.tagName)) {
+          alignValue = value;
+        } else {
+          props[key] = value;
+        }
+      }
+    }
+  }
+  if (alignValue) {
+    const style2 = (
+      /** @type {Style} */
+      props.style || (props.style = {})
+    );
+    style2[state.stylePropertyNameCase === "css" ? "text-align" : "textAlign"] = alignValue;
+  }
+  return props;
+}
+function createJsxElementProps(state, node2) {
+  const props = {};
+  for (const attribute of node2.attributes) {
+    if (attribute.type === "mdxJsxExpressionAttribute") {
+      if (attribute.data && attribute.data.estree && state.evaluater) {
+        const program = attribute.data.estree;
+        const expression = program.body[0];
+        ok$1(expression.type === "ExpressionStatement");
+        const objectExpression = expression.expression;
+        ok$1(objectExpression.type === "ObjectExpression");
+        const property = objectExpression.properties[0];
+        ok$1(property.type === "SpreadElement");
+        Object.assign(
+          props,
+          state.evaluater.evaluateExpression(property.argument)
+        );
+      } else {
+        crashEstree(state, node2.position);
+      }
+    } else {
+      const name2 = attribute.name;
+      let value;
+      if (attribute.value && typeof attribute.value === "object") {
+        if (attribute.value.data && attribute.value.data.estree && state.evaluater) {
+          const program = attribute.value.data.estree;
+          const expression = program.body[0];
+          ok$1(expression.type === "ExpressionStatement");
+          value = state.evaluater.evaluateExpression(expression.expression);
+        } else {
+          crashEstree(state, node2.position);
+        }
+      } else {
+        value = attribute.value === null ? true : attribute.value;
+      }
+      props[name2] = /** @type {Props[keyof Props]} */
+      value;
+    }
+  }
+  return props;
+}
+function createChildren(state, node2) {
+  const children2 = [];
+  let index2 = -1;
+  const countsByName = state.passKeys ? /* @__PURE__ */ new Map() : emptyMap;
+  while (++index2 < node2.children.length) {
+    const child = node2.children[index2];
+    let key;
+    if (state.passKeys) {
+      const name2 = child.type === "element" ? child.tagName : child.type === "mdxJsxFlowElement" || child.type === "mdxJsxTextElement" ? child.name : void 0;
+      if (name2) {
+        const count = countsByName.get(name2) || 0;
+        key = name2 + "-" + count;
+        countsByName.set(name2, count + 1);
+      }
+    }
+    const result = one$1(state, child, key);
+    if (result !== void 0) children2.push(result);
+  }
+  return children2;
+}
+function createProperty(state, prop, value) {
+  const info = find(state.schema, prop);
+  if (value === null || value === void 0 || typeof value === "number" && Number.isNaN(value)) {
+    return;
+  }
+  if (Array.isArray(value)) {
+    value = info.commaSeparated ? stringify$1(value) : stringify(value);
+  }
+  if (info.property === "style") {
+    let styleObject = typeof value === "object" ? value : parseStyle(state, String(value));
+    if (state.stylePropertyNameCase === "css") {
+      styleObject = transformStylesToCssCasing(styleObject);
+    }
+    return ["style", styleObject];
+  }
+  return [
+    state.elementAttributeNameCase === "react" && info.space ? hastToReact[info.property] || info.property : info.attribute,
+    value
+  ];
+}
+function parseStyle(state, value) {
+  try {
+    return styleToJs(value, { reactCompat: true });
+  } catch (error) {
+    if (state.ignoreInvalidStyle) {
+      return {};
+    }
+    const cause = (
+      /** @type {Error} */
+      error
+    );
+    const message = new VFileMessage("Cannot parse `style` attribute", {
+      ancestors: state.ancestors,
+      cause,
+      ruleId: "style",
+      source: "hast-util-to-jsx-runtime"
+    });
+    message.file = state.filePath || void 0;
+    message.url = docs + "#cannot-parse-style-attribute";
+    throw message;
+  }
+}
+function findComponentFromName(state, name$1, allowExpression) {
+  let result;
+  if (!allowExpression) {
+    result = { type: "Literal", value: name$1 };
+  } else if (name$1.includes(".")) {
+    const identifiers = name$1.split(".");
+    let index2 = -1;
+    let node2;
+    while (++index2 < identifiers.length) {
+      const prop = name(identifiers[index2]) ? { type: "Identifier", name: identifiers[index2] } : { type: "Literal", value: identifiers[index2] };
+      node2 = node2 ? {
+        type: "MemberExpression",
+        object: node2,
+        property: prop,
+        computed: Boolean(index2 && prop.type === "Literal"),
+        optional: false
+      } : prop;
+    }
+    result = node2;
+  } else {
+    result = name(name$1) && !/^[a-z]/.test(name$1) ? { type: "Identifier", name: name$1 } : { type: "Literal", value: name$1 };
+  }
+  if (result.type === "Literal") {
+    const name2 = (
+      /** @type {string | number} */
+      result.value
+    );
+    return own$3.call(state.components, name2) ? state.components[name2] : name2;
+  }
+  if (state.evaluater) {
+    return state.evaluater.evaluateExpression(result);
+  }
+  crashEstree(state);
+}
+function crashEstree(state, place) {
+  const message = new VFileMessage(
+    "Cannot handle MDX estrees without `createEvaluater`",
+    {
+      ancestors: state.ancestors,
+      place,
+      ruleId: "mdx-estree",
+      source: "hast-util-to-jsx-runtime"
+    }
+  );
+  message.file = state.filePath || void 0;
+  message.url = docs + "#cannot-handle-mdx-estrees-without-createevaluater";
+  throw message;
+}
+function transformStylesToCssCasing(domCasing) {
+  const cssCasing = {};
+  let from;
+  for (from in domCasing) {
+    if (own$3.call(domCasing, from)) {
+      cssCasing[transformStyleToCssCasing(from)] = domCasing[from];
+    }
+  }
+  return cssCasing;
+}
+function transformStyleToCssCasing(from) {
+  let to = from.replace(cap, toDash);
+  if (to.slice(0, 3) === "ms-") to = "-" + to;
+  return to;
+}
+function toDash($0) {
+  return "-" + $0.toLowerCase();
+}
+const urlAttributes = {
+  action: ["form"],
+  cite: ["blockquote", "del", "ins", "q"],
+  data: ["object"],
+  formAction: ["button", "input"],
+  href: ["a", "area", "base", "link"],
+  icon: ["menuitem"],
+  itemId: null,
+  manifest: ["html"],
+  ping: ["a", "area"],
+  poster: ["video"],
+  src: [
+    "audio",
+    "embed",
+    "iframe",
+    "img",
+    "input",
+    "script",
+    "source",
+    "track",
+    "video"
+  ]
+};
+const emptyOptions$2 = {};
+function toString$1(value, options) {
+  const settings = emptyOptions$2;
+  const includeImageAlt = typeof settings.includeImageAlt === "boolean" ? settings.includeImageAlt : true;
+  const includeHtml = typeof settings.includeHtml === "boolean" ? settings.includeHtml : true;
+  return one(value, includeImageAlt, includeHtml);
+}
+function one(value, includeImageAlt, includeHtml) {
+  if (node(value)) {
+    if ("value" in value) {
+      return value.type === "html" && !includeHtml ? "" : value.value;
+    }
+    if (includeImageAlt && "alt" in value && value.alt) {
+      return value.alt;
+    }
+    if ("children" in value) {
+      return all(value.children, includeImageAlt, includeHtml);
+    }
+  }
+  if (Array.isArray(value)) {
+    return all(value, includeImageAlt, includeHtml);
+  }
+  return "";
+}
+function all(values, includeImageAlt, includeHtml) {
+  const result = [];
+  let index2 = -1;
+  while (++index2 < values.length) {
+    result[index2] = one(values[index2], includeImageAlt, includeHtml);
+  }
+  return result.join("");
+}
+function node(value) {
+  return Boolean(value && typeof value === "object");
+}
+const element = document.createElement("i");
+function decodeNamedCharacterReference(value) {
+  const characterReference2 = "&" + value + ";";
+  element.innerHTML = characterReference2;
+  const character = element.textContent;
+  if (character.charCodeAt(character.length - 1) === 59 && value !== "semi") {
+    return false;
+  }
+  return character === characterReference2 ? false : character;
+}
+function splice(list2, start2, remove2, items) {
+  const end = list2.length;
+  let chunkStart = 0;
+  let parameters;
+  if (start2 < 0) {
+    start2 = -start2 > end ? 0 : end + start2;
+  } else {
+    start2 = start2 > end ? end : start2;
+  }
+  remove2 = remove2 > 0 ? remove2 : 0;
+  if (items.length < 1e4) {
+    parameters = Array.from(items);
+    parameters.unshift(start2, remove2);
+    list2.splice(...parameters);
+  } else {
+    if (remove2) list2.splice(start2, remove2);
+    while (chunkStart < items.length) {
+      parameters = items.slice(chunkStart, chunkStart + 1e4);
+      parameters.unshift(start2, 0);
+      list2.splice(...parameters);
+      chunkStart += 1e4;
+      start2 += 1e4;
+    }
+  }
+}
+function push(list2, items) {
+  if (list2.length > 0) {
+    splice(list2, list2.length, 0, items);
+    return list2;
+  }
+  return items;
+}
+const hasOwnProperty = {}.hasOwnProperty;
+function combineExtensions(extensions) {
+  const all2 = {};
+  let index2 = -1;
+  while (++index2 < extensions.length) {
+    syntaxExtension(all2, extensions[index2]);
+  }
+  return all2;
+}
+function syntaxExtension(all2, extension2) {
+  let hook;
+  for (hook in extension2) {
+    const maybe = hasOwnProperty.call(all2, hook) ? all2[hook] : void 0;
+    const left = maybe || (all2[hook] = {});
+    const right = extension2[hook];
+    let code2;
+    if (right) {
+      for (code2 in right) {
+        if (!hasOwnProperty.call(left, code2)) left[code2] = [];
+        const value = right[code2];
+        constructs(
+          // @ts-expect-error Looks like a list.
+          left[code2],
+          Array.isArray(value) ? value : value ? [value] : []
+        );
+      }
+    }
+  }
+}
+function constructs(existing, list2) {
+  let index2 = -1;
+  const before = [];
+  while (++index2 < list2.length) {
+    (list2[index2].add === "after" ? existing : before).push(list2[index2]);
+  }
+  splice(existing, 0, 0, before);
+}
+function decodeNumericCharacterReference(value, base) {
+  const code2 = Number.parseInt(value, base);
+  if (
+    // C0 except for HT, LF, FF, CR, space.
+    code2 < 9 || code2 === 11 || code2 > 13 && code2 < 32 || // Control character (DEL) of C0, and C1 controls.
+    code2 > 126 && code2 < 160 || // Lone high surrogates and low surrogates.
+    code2 > 55295 && code2 < 57344 || // Noncharacters.
+    code2 > 64975 && code2 < 65008 || /* eslint-disable no-bitwise */
+    (code2 & 65535) === 65535 || (code2 & 65535) === 65534 || /* eslint-enable no-bitwise */
+    // Out of range
+    code2 > 1114111
+  ) {
+    return "�";
+  }
+  return String.fromCodePoint(code2);
+}
+function normalizeIdentifier(value) {
+  return value.replace(/[\t\n\r ]+/g, " ").replace(/^ | $/g, "").toLowerCase().toUpperCase();
+}
+const asciiAlpha = regexCheck(/[A-Za-z]/);
+const asciiAlphanumeric = regexCheck(/[\dA-Za-z]/);
+const asciiAtext = regexCheck(/[#-'*+\--9=?A-Z^-~]/);
+function asciiControl(code2) {
+  return (
+    // Special whitespace codes (which have negative values), C0 and Control
+    // character DEL
+    code2 !== null && (code2 < 32 || code2 === 127)
+  );
+}
+const asciiDigit = regexCheck(/\d/);
+const asciiHexDigit = regexCheck(/[\dA-Fa-f]/);
+const asciiPunctuation = regexCheck(/[!-/:-@[-`{-~]/);
+function markdownLineEnding(code2) {
+  return code2 !== null && code2 < -2;
+}
+function markdownLineEndingOrSpace(code2) {
+  return code2 !== null && (code2 < 0 || code2 === 32);
+}
+function markdownSpace(code2) {
+  return code2 === -2 || code2 === -1 || code2 === 32;
+}
+const unicodePunctuation = regexCheck(new RegExp("\\p{P}|\\p{S}", "u"));
+const unicodeWhitespace = regexCheck(/\s/);
+function regexCheck(regex) {
+  return check;
+  function check(code2) {
+    return code2 !== null && code2 > -1 && regex.test(String.fromCharCode(code2));
+  }
+}
+function normalizeUri(value) {
+  const result = [];
+  let index2 = -1;
+  let start2 = 0;
+  let skip = 0;
+  while (++index2 < value.length) {
+    const code2 = value.charCodeAt(index2);
+    let replace2 = "";
+    if (code2 === 37 && asciiAlphanumeric(value.charCodeAt(index2 + 1)) && asciiAlphanumeric(value.charCodeAt(index2 + 2))) {
+      skip = 2;
+    } else if (code2 < 128) {
+      if (!/[!#$&-;=?-Z_a-z~]/.test(String.fromCharCode(code2))) {
+        replace2 = String.fromCharCode(code2);
+      }
+    } else if (code2 > 55295 && code2 < 57344) {
+      const next = value.charCodeAt(index2 + 1);
+      if (code2 < 56320 && next > 56319 && next < 57344) {
+        replace2 = String.fromCharCode(code2, next);
+        skip = 1;
+      } else {
+        replace2 = "�";
+      }
+    } else {
+      replace2 = String.fromCharCode(code2);
+    }
+    if (replace2) {
+      result.push(value.slice(start2, index2), encodeURIComponent(replace2));
+      start2 = index2 + skip + 1;
+      replace2 = "";
+    }
+    if (skip) {
+      index2 += skip;
+      skip = 0;
+    }
+  }
+  return result.join("") + value.slice(start2);
+}
+function factorySpace(effects, ok2, type, max) {
+  const limit = max ? max - 1 : Number.POSITIVE_INFINITY;
+  let size = 0;
+  return start2;
+  function start2(code2) {
+    if (markdownSpace(code2)) {
+      effects.enter(type);
+      return prefix(code2);
+    }
+    return ok2(code2);
+  }
+  function prefix(code2) {
+    if (markdownSpace(code2) && size++ < limit) {
+      effects.consume(code2);
+      return prefix;
+    }
+    effects.exit(type);
+    return ok2(code2);
+  }
+}
+const content$1 = {
+  tokenize: initializeContent
+};
+function initializeContent(effects) {
+  const contentStart = effects.attempt(this.parser.constructs.contentInitial, afterContentStartConstruct, paragraphInitial);
+  let previous2;
+  return contentStart;
+  function afterContentStartConstruct(code2) {
+    if (code2 === null) {
+      effects.consume(code2);
+      return;
+    }
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return factorySpace(effects, contentStart, "linePrefix");
+  }
+  function paragraphInitial(code2) {
+    effects.enter("paragraph");
+    return lineStart(code2);
+  }
+  function lineStart(code2) {
+    const token = effects.enter("chunkText", {
+      contentType: "text",
+      previous: previous2
+    });
+    if (previous2) {
+      previous2.next = token;
+    }
+    previous2 = token;
+    return data(code2);
+  }
+  function data(code2) {
+    if (code2 === null) {
+      effects.exit("chunkText");
+      effects.exit("paragraph");
+      effects.consume(code2);
+      return;
+    }
+    if (markdownLineEnding(code2)) {
+      effects.consume(code2);
+      effects.exit("chunkText");
+      return lineStart;
+    }
+    effects.consume(code2);
+    return data;
+  }
+}
+const document$2 = {
+  tokenize: initializeDocument
+};
+const containerConstruct = {
+  tokenize: tokenizeContainer
+};
+function initializeDocument(effects) {
+  const self2 = this;
+  const stack = [];
+  let continued = 0;
+  let childFlow;
+  let childToken;
+  let lineStartOffset;
+  return start2;
+  function start2(code2) {
+    if (continued < stack.length) {
+      const item = stack[continued];
+      self2.containerState = item[1];
+      return effects.attempt(item[0].continuation, documentContinue, checkNewContainers)(code2);
+    }
+    return checkNewContainers(code2);
+  }
+  function documentContinue(code2) {
+    continued++;
+    if (self2.containerState._closeFlow) {
+      self2.containerState._closeFlow = void 0;
+      if (childFlow) {
+        closeFlow();
+      }
+      const indexBeforeExits = self2.events.length;
+      let indexBeforeFlow = indexBeforeExits;
+      let point2;
+      while (indexBeforeFlow--) {
+        if (self2.events[indexBeforeFlow][0] === "exit" && self2.events[indexBeforeFlow][1].type === "chunkFlow") {
+          point2 = self2.events[indexBeforeFlow][1].end;
+          break;
+        }
+      }
+      exitContainers(continued);
+      let index2 = indexBeforeExits;
+      while (index2 < self2.events.length) {
+        self2.events[index2][1].end = {
+          ...point2
+        };
+        index2++;
+      }
+      splice(self2.events, indexBeforeFlow + 1, 0, self2.events.slice(indexBeforeExits));
+      self2.events.length = index2;
+      return checkNewContainers(code2);
+    }
+    return start2(code2);
+  }
+  function checkNewContainers(code2) {
+    if (continued === stack.length) {
+      if (!childFlow) {
+        return documentContinued(code2);
+      }
+      if (childFlow.currentConstruct && childFlow.currentConstruct.concrete) {
+        return flowStart(code2);
+      }
+      self2.interrupt = Boolean(childFlow.currentConstruct && !childFlow._gfmTableDynamicInterruptHack);
+    }
+    self2.containerState = {};
+    return effects.check(containerConstruct, thereIsANewContainer, thereIsNoNewContainer)(code2);
+  }
+  function thereIsANewContainer(code2) {
+    if (childFlow) closeFlow();
+    exitContainers(continued);
+    return documentContinued(code2);
+  }
+  function thereIsNoNewContainer(code2) {
+    self2.parser.lazy[self2.now().line] = continued !== stack.length;
+    lineStartOffset = self2.now().offset;
+    return flowStart(code2);
+  }
+  function documentContinued(code2) {
+    self2.containerState = {};
+    return effects.attempt(containerConstruct, containerContinue, flowStart)(code2);
+  }
+  function containerContinue(code2) {
+    continued++;
+    stack.push([self2.currentConstruct, self2.containerState]);
+    return documentContinued(code2);
+  }
+  function flowStart(code2) {
+    if (code2 === null) {
+      if (childFlow) closeFlow();
+      exitContainers(0);
+      effects.consume(code2);
+      return;
+    }
+    childFlow = childFlow || self2.parser.flow(self2.now());
+    effects.enter("chunkFlow", {
+      _tokenizer: childFlow,
+      contentType: "flow",
+      previous: childToken
+    });
+    return flowContinue(code2);
+  }
+  function flowContinue(code2) {
+    if (code2 === null) {
+      writeToChild(effects.exit("chunkFlow"), true);
+      exitContainers(0);
+      effects.consume(code2);
+      return;
+    }
+    if (markdownLineEnding(code2)) {
+      effects.consume(code2);
+      writeToChild(effects.exit("chunkFlow"));
+      continued = 0;
+      self2.interrupt = void 0;
+      return start2;
+    }
+    effects.consume(code2);
+    return flowContinue;
+  }
+  function writeToChild(token, endOfFile) {
+    const stream = self2.sliceStream(token);
+    if (endOfFile) stream.push(null);
+    token.previous = childToken;
+    if (childToken) childToken.next = token;
+    childToken = token;
+    childFlow.defineSkip(token.start);
+    childFlow.write(stream);
+    if (self2.parser.lazy[token.start.line]) {
+      let index2 = childFlow.events.length;
+      while (index2--) {
+        if (
+          // The token starts before the line ending…
+          childFlow.events[index2][1].start.offset < lineStartOffset && // …and either is not ended yet…
+          (!childFlow.events[index2][1].end || // …or ends after it.
+          childFlow.events[index2][1].end.offset > lineStartOffset)
+        ) {
+          return;
+        }
+      }
+      const indexBeforeExits = self2.events.length;
+      let indexBeforeFlow = indexBeforeExits;
+      let seen;
+      let point2;
+      while (indexBeforeFlow--) {
+        if (self2.events[indexBeforeFlow][0] === "exit" && self2.events[indexBeforeFlow][1].type === "chunkFlow") {
+          if (seen) {
+            point2 = self2.events[indexBeforeFlow][1].end;
+            break;
+          }
+          seen = true;
+        }
+      }
+      exitContainers(continued);
+      index2 = indexBeforeExits;
+      while (index2 < self2.events.length) {
+        self2.events[index2][1].end = {
+          ...point2
+        };
+        index2++;
+      }
+      splice(self2.events, indexBeforeFlow + 1, 0, self2.events.slice(indexBeforeExits));
+      self2.events.length = index2;
+    }
+  }
+  function exitContainers(size) {
+    let index2 = stack.length;
+    while (index2-- > size) {
+      const entry = stack[index2];
+      self2.containerState = entry[1];
+      entry[0].exit.call(self2, effects);
+    }
+    stack.length = size;
+  }
+  function closeFlow() {
+    childFlow.write([null]);
+    childToken = void 0;
+    childFlow = void 0;
+    self2.containerState._closeFlow = void 0;
+  }
+}
+function tokenizeContainer(effects, ok2, nok) {
+  return factorySpace(effects, effects.attempt(this.parser.constructs.document, ok2, nok), "linePrefix", this.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4);
+}
+function classifyCharacter(code2) {
+  if (code2 === null || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2)) {
+    return 1;
+  }
+  if (unicodePunctuation(code2)) {
+    return 2;
+  }
+}
+function resolveAll(constructs2, events, context) {
+  const called = [];
+  let index2 = -1;
+  while (++index2 < constructs2.length) {
+    const resolve = constructs2[index2].resolveAll;
+    if (resolve && !called.includes(resolve)) {
+      events = resolve(events, context);
+      called.push(resolve);
+    }
+  }
+  return events;
+}
+const attention = {
+  name: "attention",
+  resolveAll: resolveAllAttention,
+  tokenize: tokenizeAttention
+};
+function resolveAllAttention(events, context) {
+  let index2 = -1;
+  let open;
+  let group;
+  let text2;
+  let openingSequence;
+  let closingSequence;
+  let use;
+  let nextEvents;
+  let offset;
+  while (++index2 < events.length) {
+    if (events[index2][0] === "enter" && events[index2][1].type === "attentionSequence" && events[index2][1]._close) {
+      open = index2;
+      while (open--) {
+        if (events[open][0] === "exit" && events[open][1].type === "attentionSequence" && events[open][1]._open && // If the markers are the same:
+        context.sliceSerialize(events[open][1]).charCodeAt(0) === context.sliceSerialize(events[index2][1]).charCodeAt(0)) {
+          if ((events[open][1]._close || events[index2][1]._open) && (events[index2][1].end.offset - events[index2][1].start.offset) % 3 && !((events[open][1].end.offset - events[open][1].start.offset + events[index2][1].end.offset - events[index2][1].start.offset) % 3)) {
+            continue;
+          }
+          use = events[open][1].end.offset - events[open][1].start.offset > 1 && events[index2][1].end.offset - events[index2][1].start.offset > 1 ? 2 : 1;
+          const start2 = {
+            ...events[open][1].end
+          };
+          const end = {
+            ...events[index2][1].start
+          };
+          movePoint(start2, -use);
+          movePoint(end, use);
+          openingSequence = {
+            type: use > 1 ? "strongSequence" : "emphasisSequence",
+            start: start2,
+            end: {
+              ...events[open][1].end
+            }
+          };
+          closingSequence = {
+            type: use > 1 ? "strongSequence" : "emphasisSequence",
+            start: {
+              ...events[index2][1].start
+            },
+            end
+          };
+          text2 = {
+            type: use > 1 ? "strongText" : "emphasisText",
+            start: {
+              ...events[open][1].end
+            },
+            end: {
+              ...events[index2][1].start
+            }
+          };
+          group = {
+            type: use > 1 ? "strong" : "emphasis",
+            start: {
+              ...openingSequence.start
+            },
+            end: {
+              ...closingSequence.end
+            }
+          };
+          events[open][1].end = {
+            ...openingSequence.start
+          };
+          events[index2][1].start = {
+            ...closingSequence.end
+          };
+          nextEvents = [];
+          if (events[open][1].end.offset - events[open][1].start.offset) {
+            nextEvents = push(nextEvents, [["enter", events[open][1], context], ["exit", events[open][1], context]]);
+          }
+          nextEvents = push(nextEvents, [["enter", group, context], ["enter", openingSequence, context], ["exit", openingSequence, context], ["enter", text2, context]]);
+          nextEvents = push(nextEvents, resolveAll(context.parser.constructs.insideSpan.null, events.slice(open + 1, index2), context));
+          nextEvents = push(nextEvents, [["exit", text2, context], ["enter", closingSequence, context], ["exit", closingSequence, context], ["exit", group, context]]);
+          if (events[index2][1].end.offset - events[index2][1].start.offset) {
+            offset = 2;
+            nextEvents = push(nextEvents, [["enter", events[index2][1], context], ["exit", events[index2][1], context]]);
+          } else {
+            offset = 0;
+          }
+          splice(events, open - 1, index2 - open + 3, nextEvents);
+          index2 = open + nextEvents.length - offset - 2;
+          break;
+        }
+      }
+    }
+  }
+  index2 = -1;
+  while (++index2 < events.length) {
+    if (events[index2][1].type === "attentionSequence") {
+      events[index2][1].type = "data";
+    }
+  }
+  return events;
+}
+function tokenizeAttention(effects, ok2) {
+  const attentionMarkers2 = this.parser.constructs.attentionMarkers.null;
+  const previous2 = this.previous;
+  const before = classifyCharacter(previous2);
+  let marker;
+  return start2;
+  function start2(code2) {
+    marker = code2;
+    effects.enter("attentionSequence");
+    return inside(code2);
+  }
+  function inside(code2) {
+    if (code2 === marker) {
+      effects.consume(code2);
+      return inside;
+    }
+    const token = effects.exit("attentionSequence");
+    const after = classifyCharacter(code2);
+    const open = !after || after === 2 && before || attentionMarkers2.includes(code2);
+    const close = !before || before === 2 && after || attentionMarkers2.includes(previous2);
+    token._open = Boolean(marker === 42 ? open : open && (before || !close));
+    token._close = Boolean(marker === 42 ? close : close && (after || !open));
+    return ok2(code2);
+  }
+}
+function movePoint(point2, offset) {
+  point2.column += offset;
+  point2.offset += offset;
+  point2._bufferIndex += offset;
+}
+const autolink = {
+  name: "autolink",
+  tokenize: tokenizeAutolink
+};
+function tokenizeAutolink(effects, ok2, nok) {
+  let size = 0;
+  return start2;
+  function start2(code2) {
+    effects.enter("autolink");
+    effects.enter("autolinkMarker");
+    effects.consume(code2);
+    effects.exit("autolinkMarker");
+    effects.enter("autolinkProtocol");
+    return open;
+  }
+  function open(code2) {
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      return schemeOrEmailAtext;
+    }
+    if (code2 === 64) {
+      return nok(code2);
+    }
+    return emailAtext(code2);
+  }
+  function schemeOrEmailAtext(code2) {
+    if (code2 === 43 || code2 === 45 || code2 === 46 || asciiAlphanumeric(code2)) {
+      size = 1;
+      return schemeInsideOrEmailAtext(code2);
+    }
+    return emailAtext(code2);
+  }
+  function schemeInsideOrEmailAtext(code2) {
+    if (code2 === 58) {
+      effects.consume(code2);
+      size = 0;
+      return urlInside;
+    }
+    if ((code2 === 43 || code2 === 45 || code2 === 46 || asciiAlphanumeric(code2)) && size++ < 32) {
+      effects.consume(code2);
+      return schemeInsideOrEmailAtext;
+    }
+    size = 0;
+    return emailAtext(code2);
+  }
+  function urlInside(code2) {
+    if (code2 === 62) {
+      effects.exit("autolinkProtocol");
+      effects.enter("autolinkMarker");
+      effects.consume(code2);
+      effects.exit("autolinkMarker");
+      effects.exit("autolink");
+      return ok2;
+    }
+    if (code2 === null || code2 === 32 || code2 === 60 || asciiControl(code2)) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return urlInside;
+  }
+  function emailAtext(code2) {
+    if (code2 === 64) {
+      effects.consume(code2);
+      return emailAtSignOrDot;
+    }
+    if (asciiAtext(code2)) {
+      effects.consume(code2);
+      return emailAtext;
+    }
+    return nok(code2);
+  }
+  function emailAtSignOrDot(code2) {
+    return asciiAlphanumeric(code2) ? emailLabel(code2) : nok(code2);
+  }
+  function emailLabel(code2) {
+    if (code2 === 46) {
+      effects.consume(code2);
+      size = 0;
+      return emailAtSignOrDot;
+    }
+    if (code2 === 62) {
+      effects.exit("autolinkProtocol").type = "autolinkEmail";
+      effects.enter("autolinkMarker");
+      effects.consume(code2);
+      effects.exit("autolinkMarker");
+      effects.exit("autolink");
+      return ok2;
+    }
+    return emailValue(code2);
+  }
+  function emailValue(code2) {
+    if ((code2 === 45 || asciiAlphanumeric(code2)) && size++ < 63) {
+      const next = code2 === 45 ? emailValue : emailLabel;
+      effects.consume(code2);
+      return next;
+    }
+    return nok(code2);
+  }
+}
+const blankLine = {
+  partial: true,
+  tokenize: tokenizeBlankLine
+};
+function tokenizeBlankLine(effects, ok2, nok) {
+  return start2;
+  function start2(code2) {
+    return markdownSpace(code2) ? factorySpace(effects, after, "linePrefix")(code2) : after(code2);
+  }
+  function after(code2) {
+    return code2 === null || markdownLineEnding(code2) ? ok2(code2) : nok(code2);
+  }
+}
+const blockQuote = {
+  continuation: {
+    tokenize: tokenizeBlockQuoteContinuation
+  },
+  exit: exit$1,
+  name: "blockQuote",
+  tokenize: tokenizeBlockQuoteStart
+};
+function tokenizeBlockQuoteStart(effects, ok2, nok) {
+  const self2 = this;
+  return start2;
+  function start2(code2) {
+    if (code2 === 62) {
+      const state = self2.containerState;
+      if (!state.open) {
+        effects.enter("blockQuote", {
+          _container: true
+        });
+        state.open = true;
+      }
+      effects.enter("blockQuotePrefix");
+      effects.enter("blockQuoteMarker");
+      effects.consume(code2);
+      effects.exit("blockQuoteMarker");
+      return after;
+    }
+    return nok(code2);
+  }
+  function after(code2) {
+    if (markdownSpace(code2)) {
+      effects.enter("blockQuotePrefixWhitespace");
+      effects.consume(code2);
+      effects.exit("blockQuotePrefixWhitespace");
+      effects.exit("blockQuotePrefix");
+      return ok2;
+    }
+    effects.exit("blockQuotePrefix");
+    return ok2(code2);
+  }
+}
+function tokenizeBlockQuoteContinuation(effects, ok2, nok) {
+  const self2 = this;
+  return contStart;
+  function contStart(code2) {
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, contBefore, "linePrefix", self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4)(code2);
+    }
+    return contBefore(code2);
+  }
+  function contBefore(code2) {
+    return effects.attempt(blockQuote, ok2, nok)(code2);
+  }
+}
+function exit$1(effects) {
+  effects.exit("blockQuote");
+}
+const characterEscape = {
+  name: "characterEscape",
+  tokenize: tokenizeCharacterEscape
+};
+function tokenizeCharacterEscape(effects, ok2, nok) {
+  return start2;
+  function start2(code2) {
+    effects.enter("characterEscape");
+    effects.enter("escapeMarker");
+    effects.consume(code2);
+    effects.exit("escapeMarker");
+    return inside;
+  }
+  function inside(code2) {
+    if (asciiPunctuation(code2)) {
+      effects.enter("characterEscapeValue");
+      effects.consume(code2);
+      effects.exit("characterEscapeValue");
+      effects.exit("characterEscape");
+      return ok2;
+    }
+    return nok(code2);
+  }
+}
+const characterReference = {
+  name: "characterReference",
+  tokenize: tokenizeCharacterReference
+};
+function tokenizeCharacterReference(effects, ok2, nok) {
+  const self2 = this;
+  let size = 0;
+  let max;
+  let test;
+  return start2;
+  function start2(code2) {
+    effects.enter("characterReference");
+    effects.enter("characterReferenceMarker");
+    effects.consume(code2);
+    effects.exit("characterReferenceMarker");
+    return open;
+  }
+  function open(code2) {
+    if (code2 === 35) {
+      effects.enter("characterReferenceMarkerNumeric");
+      effects.consume(code2);
+      effects.exit("characterReferenceMarkerNumeric");
+      return numeric;
+    }
+    effects.enter("characterReferenceValue");
+    max = 31;
+    test = asciiAlphanumeric;
+    return value(code2);
+  }
+  function numeric(code2) {
+    if (code2 === 88 || code2 === 120) {
+      effects.enter("characterReferenceMarkerHexadecimal");
+      effects.consume(code2);
+      effects.exit("characterReferenceMarkerHexadecimal");
+      effects.enter("characterReferenceValue");
+      max = 6;
+      test = asciiHexDigit;
+      return value;
+    }
+    effects.enter("characterReferenceValue");
+    max = 7;
+    test = asciiDigit;
+    return value(code2);
+  }
+  function value(code2) {
+    if (code2 === 59 && size) {
+      const token = effects.exit("characterReferenceValue");
+      if (test === asciiAlphanumeric && !decodeNamedCharacterReference(self2.sliceSerialize(token))) {
+        return nok(code2);
+      }
+      effects.enter("characterReferenceMarker");
+      effects.consume(code2);
+      effects.exit("characterReferenceMarker");
+      effects.exit("characterReference");
+      return ok2;
+    }
+    if (test(code2) && size++ < max) {
+      effects.consume(code2);
+      return value;
+    }
+    return nok(code2);
+  }
+}
+const nonLazyContinuation = {
+  partial: true,
+  tokenize: tokenizeNonLazyContinuation
+};
+const codeFenced = {
+  concrete: true,
+  name: "codeFenced",
+  tokenize: tokenizeCodeFenced
+};
+function tokenizeCodeFenced(effects, ok2, nok) {
+  const self2 = this;
+  const closeStart = {
+    partial: true,
+    tokenize: tokenizeCloseStart
+  };
+  let initialPrefix = 0;
+  let sizeOpen = 0;
+  let marker;
+  return start2;
+  function start2(code2) {
+    return beforeSequenceOpen(code2);
+  }
+  function beforeSequenceOpen(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    initialPrefix = tail && tail[1].type === "linePrefix" ? tail[2].sliceSerialize(tail[1], true).length : 0;
+    marker = code2;
+    effects.enter("codeFenced");
+    effects.enter("codeFencedFence");
+    effects.enter("codeFencedFenceSequence");
+    return sequenceOpen(code2);
+  }
+  function sequenceOpen(code2) {
+    if (code2 === marker) {
+      sizeOpen++;
+      effects.consume(code2);
+      return sequenceOpen;
+    }
+    if (sizeOpen < 3) {
+      return nok(code2);
+    }
+    effects.exit("codeFencedFenceSequence");
+    return markdownSpace(code2) ? factorySpace(effects, infoBefore, "whitespace")(code2) : infoBefore(code2);
+  }
+  function infoBefore(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("codeFencedFence");
+      return self2.interrupt ? ok2(code2) : effects.check(nonLazyContinuation, atNonLazyBreak, after)(code2);
+    }
+    effects.enter("codeFencedFenceInfo");
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return info(code2);
+  }
+  function info(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("chunkString");
+      effects.exit("codeFencedFenceInfo");
+      return infoBefore(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.exit("chunkString");
+      effects.exit("codeFencedFenceInfo");
+      return factorySpace(effects, metaBefore, "whitespace")(code2);
+    }
+    if (code2 === 96 && code2 === marker) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return info;
+  }
+  function metaBefore(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      return infoBefore(code2);
+    }
+    effects.enter("codeFencedFenceMeta");
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return meta(code2);
+  }
+  function meta(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("chunkString");
+      effects.exit("codeFencedFenceMeta");
+      return infoBefore(code2);
+    }
+    if (code2 === 96 && code2 === marker) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return meta;
+  }
+  function atNonLazyBreak(code2) {
+    return effects.attempt(closeStart, after, contentBefore)(code2);
+  }
+  function contentBefore(code2) {
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return contentStart;
+  }
+  function contentStart(code2) {
+    return initialPrefix > 0 && markdownSpace(code2) ? factorySpace(effects, beforeContentChunk, "linePrefix", initialPrefix + 1)(code2) : beforeContentChunk(code2);
+  }
+  function beforeContentChunk(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      return effects.check(nonLazyContinuation, atNonLazyBreak, after)(code2);
+    }
+    effects.enter("codeFlowValue");
+    return contentChunk(code2);
+  }
+  function contentChunk(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("codeFlowValue");
+      return beforeContentChunk(code2);
+    }
+    effects.consume(code2);
+    return contentChunk;
+  }
+  function after(code2) {
+    effects.exit("codeFenced");
+    return ok2(code2);
+  }
+  function tokenizeCloseStart(effects2, ok3, nok2) {
+    let size = 0;
+    return startBefore;
+    function startBefore(code2) {
+      effects2.enter("lineEnding");
+      effects2.consume(code2);
+      effects2.exit("lineEnding");
+      return start3;
+    }
+    function start3(code2) {
+      effects2.enter("codeFencedFence");
+      return markdownSpace(code2) ? factorySpace(effects2, beforeSequenceClose, "linePrefix", self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4)(code2) : beforeSequenceClose(code2);
+    }
+    function beforeSequenceClose(code2) {
+      if (code2 === marker) {
+        effects2.enter("codeFencedFenceSequence");
+        return sequenceClose(code2);
+      }
+      return nok2(code2);
+    }
+    function sequenceClose(code2) {
+      if (code2 === marker) {
+        size++;
+        effects2.consume(code2);
+        return sequenceClose;
+      }
+      if (size >= sizeOpen) {
+        effects2.exit("codeFencedFenceSequence");
+        return markdownSpace(code2) ? factorySpace(effects2, sequenceCloseAfter, "whitespace")(code2) : sequenceCloseAfter(code2);
+      }
+      return nok2(code2);
+    }
+    function sequenceCloseAfter(code2) {
+      if (code2 === null || markdownLineEnding(code2)) {
+        effects2.exit("codeFencedFence");
+        return ok3(code2);
+      }
+      return nok2(code2);
+    }
+  }
+}
+function tokenizeNonLazyContinuation(effects, ok2, nok) {
+  const self2 = this;
+  return start2;
+  function start2(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return lineStart;
+  }
+  function lineStart(code2) {
+    return self2.parser.lazy[self2.now().line] ? nok(code2) : ok2(code2);
+  }
+}
+const codeIndented = {
+  name: "codeIndented",
+  tokenize: tokenizeCodeIndented
+};
+const furtherStart = {
+  partial: true,
+  tokenize: tokenizeFurtherStart
+};
+function tokenizeCodeIndented(effects, ok2, nok) {
+  const self2 = this;
+  return start2;
+  function start2(code2) {
+    effects.enter("codeIndented");
+    return factorySpace(effects, afterPrefix, "linePrefix", 4 + 1)(code2);
+  }
+  function afterPrefix(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    return tail && tail[1].type === "linePrefix" && tail[2].sliceSerialize(tail[1], true).length >= 4 ? atBreak(code2) : nok(code2);
+  }
+  function atBreak(code2) {
+    if (code2 === null) {
+      return after(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      return effects.attempt(furtherStart, atBreak, after)(code2);
+    }
+    effects.enter("codeFlowValue");
+    return inside(code2);
+  }
+  function inside(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("codeFlowValue");
+      return atBreak(code2);
+    }
+    effects.consume(code2);
+    return inside;
+  }
+  function after(code2) {
+    effects.exit("codeIndented");
+    return ok2(code2);
+  }
+}
+function tokenizeFurtherStart(effects, ok2, nok) {
+  const self2 = this;
+  return furtherStart2;
+  function furtherStart2(code2) {
+    if (self2.parser.lazy[self2.now().line]) {
+      return nok(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      return furtherStart2;
+    }
+    return factorySpace(effects, afterPrefix, "linePrefix", 4 + 1)(code2);
+  }
+  function afterPrefix(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    return tail && tail[1].type === "linePrefix" && tail[2].sliceSerialize(tail[1], true).length >= 4 ? ok2(code2) : markdownLineEnding(code2) ? furtherStart2(code2) : nok(code2);
+  }
+}
+const codeText = {
+  name: "codeText",
+  previous: previous$1,
+  resolve: resolveCodeText,
+  tokenize: tokenizeCodeText
+};
+function resolveCodeText(events) {
+  let tailExitIndex = events.length - 4;
+  let headEnterIndex = 3;
+  let index2;
+  let enter;
+  if ((events[headEnterIndex][1].type === "lineEnding" || events[headEnterIndex][1].type === "space") && (events[tailExitIndex][1].type === "lineEnding" || events[tailExitIndex][1].type === "space")) {
+    index2 = headEnterIndex;
+    while (++index2 < tailExitIndex) {
+      if (events[index2][1].type === "codeTextData") {
+        events[headEnterIndex][1].type = "codeTextPadding";
+        events[tailExitIndex][1].type = "codeTextPadding";
+        headEnterIndex += 2;
+        tailExitIndex -= 2;
+        break;
+      }
+    }
+  }
+  index2 = headEnterIndex - 1;
+  tailExitIndex++;
+  while (++index2 <= tailExitIndex) {
+    if (enter === void 0) {
+      if (index2 !== tailExitIndex && events[index2][1].type !== "lineEnding") {
+        enter = index2;
+      }
+    } else if (index2 === tailExitIndex || events[index2][1].type === "lineEnding") {
+      events[enter][1].type = "codeTextData";
+      if (index2 !== enter + 2) {
+        events[enter][1].end = events[index2 - 1][1].end;
+        events.splice(enter + 2, index2 - enter - 2);
+        tailExitIndex -= index2 - enter - 2;
+        index2 = enter + 2;
+      }
+      enter = void 0;
+    }
+  }
+  return events;
+}
+function previous$1(code2) {
+  return code2 !== 96 || this.events[this.events.length - 1][1].type === "characterEscape";
+}
+function tokenizeCodeText(effects, ok2, nok) {
+  let sizeOpen = 0;
+  let size;
+  let token;
+  return start2;
+  function start2(code2) {
+    effects.enter("codeText");
+    effects.enter("codeTextSequence");
+    return sequenceOpen(code2);
+  }
+  function sequenceOpen(code2) {
+    if (code2 === 96) {
+      effects.consume(code2);
+      sizeOpen++;
+      return sequenceOpen;
+    }
+    effects.exit("codeTextSequence");
+    return between(code2);
+  }
+  function between(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (code2 === 32) {
+      effects.enter("space");
+      effects.consume(code2);
+      effects.exit("space");
+      return between;
+    }
+    if (code2 === 96) {
+      token = effects.enter("codeTextSequence");
+      size = 0;
+      return sequenceClose(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      return between;
+    }
+    effects.enter("codeTextData");
+    return data(code2);
+  }
+  function data(code2) {
+    if (code2 === null || code2 === 32 || code2 === 96 || markdownLineEnding(code2)) {
+      effects.exit("codeTextData");
+      return between(code2);
+    }
+    effects.consume(code2);
+    return data;
+  }
+  function sequenceClose(code2) {
+    if (code2 === 96) {
+      effects.consume(code2);
+      size++;
+      return sequenceClose;
+    }
+    if (size === sizeOpen) {
+      effects.exit("codeTextSequence");
+      effects.exit("codeText");
+      return ok2(code2);
+    }
+    token.type = "codeTextData";
+    return data(code2);
+  }
+}
+class SpliceBuffer {
+  /**
+   * @param {ReadonlyArray<T> | null | undefined} [initial]
+   *   Initial items (optional).
+   * @returns
+   *   Splice buffer.
+   */
+  constructor(initial) {
+    this.left = initial ? [...initial] : [];
+    this.right = [];
+  }
+  /**
+   * Array access;
+   * does not move the cursor.
+   *
+   * @param {number} index
+   *   Index.
+   * @return {T}
+   *   Item.
+   */
+  get(index2) {
+    if (index2 < 0 || index2 >= this.left.length + this.right.length) {
+      throw new RangeError("Cannot access index `" + index2 + "` in a splice buffer of size `" + (this.left.length + this.right.length) + "`");
+    }
+    if (index2 < this.left.length) return this.left[index2];
+    return this.right[this.right.length - index2 + this.left.length - 1];
+  }
+  /**
+   * The length of the splice buffer, one greater than the largest index in the
+   * array.
+   */
+  get length() {
+    return this.left.length + this.right.length;
+  }
+  /**
+   * Remove and return `list[0]`;
+   * moves the cursor to `0`.
+   *
+   * @returns {T | undefined}
+   *   Item, optional.
+   */
+  shift() {
+    this.setCursor(0);
+    return this.right.pop();
+  }
+  /**
+   * Slice the buffer to get an array;
+   * does not move the cursor.
+   *
+   * @param {number} start
+   *   Start.
+   * @param {number | null | undefined} [end]
+   *   End (optional).
+   * @returns {Array<T>}
+   *   Array of items.
+   */
+  slice(start2, end) {
+    const stop = end === null || end === void 0 ? Number.POSITIVE_INFINITY : end;
+    if (stop < this.left.length) {
+      return this.left.slice(start2, stop);
+    }
+    if (start2 > this.left.length) {
+      return this.right.slice(this.right.length - stop + this.left.length, this.right.length - start2 + this.left.length).reverse();
+    }
+    return this.left.slice(start2).concat(this.right.slice(this.right.length - stop + this.left.length).reverse());
+  }
+  /**
+   * Mimics the behavior of Array.prototype.splice() except for the change of
+   * interface necessary to avoid segfaults when patching in very large arrays.
+   *
+   * This operation moves cursor is moved to `start` and results in the cursor
+   * placed after any inserted items.
+   *
+   * @param {number} start
+   *   Start;
+   *   zero-based index at which to start changing the array;
+   *   negative numbers count backwards from the end of the array and values
+   *   that are out-of bounds are clamped to the appropriate end of the array.
+   * @param {number | null | undefined} [deleteCount=0]
+   *   Delete count (default: `0`);
+   *   maximum number of elements to delete, starting from start.
+   * @param {Array<T> | null | undefined} [items=[]]
+   *   Items to include in place of the deleted items (default: `[]`).
+   * @return {Array<T>}
+   *   Any removed items.
+   */
+  splice(start2, deleteCount, items) {
+    const count = deleteCount || 0;
+    this.setCursor(Math.trunc(start2));
+    const removed = this.right.splice(this.right.length - count, Number.POSITIVE_INFINITY);
+    if (items) chunkedPush(this.left, items);
+    return removed.reverse();
+  }
+  /**
+   * Remove and return the highest-numbered item in the array, so
+   * `list[list.length - 1]`;
+   * Moves the cursor to `length`.
+   *
+   * @returns {T | undefined}
+   *   Item, optional.
+   */
+  pop() {
+    this.setCursor(Number.POSITIVE_INFINITY);
+    return this.left.pop();
+  }
+  /**
+   * Inserts a single item to the high-numbered side of the array;
+   * moves the cursor to `length`.
+   *
+   * @param {T} item
+   *   Item.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  push(item) {
+    this.setCursor(Number.POSITIVE_INFINITY);
+    this.left.push(item);
+  }
+  /**
+   * Inserts many items to the high-numbered side of the array.
+   * Moves the cursor to `length`.
+   *
+   * @param {Array<T>} items
+   *   Items.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  pushMany(items) {
+    this.setCursor(Number.POSITIVE_INFINITY);
+    chunkedPush(this.left, items);
+  }
+  /**
+   * Inserts a single item to the low-numbered side of the array;
+   * Moves the cursor to `0`.
+   *
+   * @param {T} item
+   *   Item.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  unshift(item) {
+    this.setCursor(0);
+    this.right.push(item);
+  }
+  /**
+   * Inserts many items to the low-numbered side of the array;
+   * moves the cursor to `0`.
+   *
+   * @param {Array<T>} items
+   *   Items.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  unshiftMany(items) {
+    this.setCursor(0);
+    chunkedPush(this.right, items.reverse());
+  }
+  /**
+   * Move the cursor to a specific position in the array. Requires
+   * time proportional to the distance moved.
+   *
+   * If `n < 0`, the cursor will end up at the beginning.
+   * If `n > length`, the cursor will end up at the end.
+   *
+   * @param {number} n
+   *   Position.
+   * @return {undefined}
+   *   Nothing.
+   */
+  setCursor(n) {
+    if (n === this.left.length || n > this.left.length && this.right.length === 0 || n < 0 && this.left.length === 0) return;
+    if (n < this.left.length) {
+      const removed = this.left.splice(n, Number.POSITIVE_INFINITY);
+      chunkedPush(this.right, removed.reverse());
+    } else {
+      const removed = this.right.splice(this.left.length + this.right.length - n, Number.POSITIVE_INFINITY);
+      chunkedPush(this.left, removed.reverse());
+    }
+  }
+}
+function chunkedPush(list2, right) {
+  let chunkStart = 0;
+  if (right.length < 1e4) {
+    list2.push(...right);
+  } else {
+    while (chunkStart < right.length) {
+      list2.push(...right.slice(chunkStart, chunkStart + 1e4));
+      chunkStart += 1e4;
+    }
+  }
+}
+function subtokenize(eventsArray) {
+  const jumps = {};
+  let index2 = -1;
+  let event;
+  let lineIndex;
+  let otherIndex;
+  let otherEvent;
+  let parameters;
+  let subevents;
+  let more;
+  const events = new SpliceBuffer(eventsArray);
+  while (++index2 < events.length) {
+    while (index2 in jumps) {
+      index2 = jumps[index2];
+    }
+    event = events.get(index2);
+    if (index2 && event[1].type === "chunkFlow" && events.get(index2 - 1)[1].type === "listItemPrefix") {
+      subevents = event[1]._tokenizer.events;
+      otherIndex = 0;
+      if (otherIndex < subevents.length && subevents[otherIndex][1].type === "lineEndingBlank") {
+        otherIndex += 2;
+      }
+      if (otherIndex < subevents.length && subevents[otherIndex][1].type === "content") {
+        while (++otherIndex < subevents.length) {
+          if (subevents[otherIndex][1].type === "content") {
+            break;
+          }
+          if (subevents[otherIndex][1].type === "chunkText") {
+            subevents[otherIndex][1]._isInFirstContentOfListItem = true;
+            otherIndex++;
+          }
+        }
+      }
+    }
+    if (event[0] === "enter") {
+      if (event[1].contentType) {
+        Object.assign(jumps, subcontent(events, index2));
+        index2 = jumps[index2];
+        more = true;
+      }
+    } else if (event[1]._container) {
+      otherIndex = index2;
+      lineIndex = void 0;
+      while (otherIndex--) {
+        otherEvent = events.get(otherIndex);
+        if (otherEvent[1].type === "lineEnding" || otherEvent[1].type === "lineEndingBlank") {
+          if (otherEvent[0] === "enter") {
+            if (lineIndex) {
+              events.get(lineIndex)[1].type = "lineEndingBlank";
+            }
+            otherEvent[1].type = "lineEnding";
+            lineIndex = otherIndex;
+          }
+        } else if (otherEvent[1].type === "linePrefix" || otherEvent[1].type === "listItemIndent") ;
+        else {
+          break;
+        }
+      }
+      if (lineIndex) {
+        event[1].end = {
+          ...events.get(lineIndex)[1].start
+        };
+        parameters = events.slice(lineIndex, index2);
+        parameters.unshift(event);
+        events.splice(lineIndex, index2 - lineIndex + 1, parameters);
+      }
+    }
+  }
+  splice(eventsArray, 0, Number.POSITIVE_INFINITY, events.slice(0));
+  return !more;
+}
+function subcontent(events, eventIndex) {
+  const token = events.get(eventIndex)[1];
+  const context = events.get(eventIndex)[2];
+  let startPosition = eventIndex - 1;
+  const startPositions = [];
+  let tokenizer = token._tokenizer;
+  if (!tokenizer) {
+    tokenizer = context.parser[token.contentType](token.start);
+    if (token._contentTypeTextTrailing) {
+      tokenizer._contentTypeTextTrailing = true;
+    }
+  }
+  const childEvents = tokenizer.events;
+  const jumps = [];
+  const gaps = {};
+  let stream;
+  let previous2;
+  let index2 = -1;
+  let current = token;
+  let adjust = 0;
+  let start2 = 0;
+  const breaks = [start2];
+  while (current) {
+    while (events.get(++startPosition)[1] !== current) {
+    }
+    startPositions.push(startPosition);
+    if (!current._tokenizer) {
+      stream = context.sliceStream(current);
+      if (!current.next) {
+        stream.push(null);
+      }
+      if (previous2) {
+        tokenizer.defineSkip(current.start);
+      }
+      if (current._isInFirstContentOfListItem) {
+        tokenizer._gfmTasklistFirstContentOfListItem = true;
+      }
+      tokenizer.write(stream);
+      if (current._isInFirstContentOfListItem) {
+        tokenizer._gfmTasklistFirstContentOfListItem = void 0;
+      }
+    }
+    previous2 = current;
+    current = current.next;
+  }
+  current = token;
+  while (++index2 < childEvents.length) {
+    if (
+      // Find a void token that includes a break.
+      childEvents[index2][0] === "exit" && childEvents[index2 - 1][0] === "enter" && childEvents[index2][1].type === childEvents[index2 - 1][1].type && childEvents[index2][1].start.line !== childEvents[index2][1].end.line
+    ) {
+      start2 = index2 + 1;
+      breaks.push(start2);
+      current._tokenizer = void 0;
+      current.previous = void 0;
+      current = current.next;
+    }
+  }
+  tokenizer.events = [];
+  if (current) {
+    current._tokenizer = void 0;
+    current.previous = void 0;
+  } else {
+    breaks.pop();
+  }
+  index2 = breaks.length;
+  while (index2--) {
+    const slice = childEvents.slice(breaks[index2], breaks[index2 + 1]);
+    const start3 = startPositions.pop();
+    jumps.push([start3, start3 + slice.length - 1]);
+    events.splice(start3, 2, slice);
+  }
+  jumps.reverse();
+  index2 = -1;
+  while (++index2 < jumps.length) {
+    gaps[adjust + jumps[index2][0]] = adjust + jumps[index2][1];
+    adjust += jumps[index2][1] - jumps[index2][0] - 1;
+  }
+  return gaps;
+}
+const content = {
+  resolve: resolveContent,
+  tokenize: tokenizeContent
+};
+const continuationConstruct = {
+  partial: true,
+  tokenize: tokenizeContinuation
+};
+function resolveContent(events) {
+  subtokenize(events);
+  return events;
+}
+function tokenizeContent(effects, ok2) {
+  let previous2;
+  return chunkStart;
+  function chunkStart(code2) {
+    effects.enter("content");
+    previous2 = effects.enter("chunkContent", {
+      contentType: "content"
+    });
+    return chunkInside(code2);
+  }
+  function chunkInside(code2) {
+    if (code2 === null) {
+      return contentEnd(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      return effects.check(continuationConstruct, contentContinue, contentEnd)(code2);
+    }
+    effects.consume(code2);
+    return chunkInside;
+  }
+  function contentEnd(code2) {
+    effects.exit("chunkContent");
+    effects.exit("content");
+    return ok2(code2);
+  }
+  function contentContinue(code2) {
+    effects.consume(code2);
+    effects.exit("chunkContent");
+    previous2.next = effects.enter("chunkContent", {
+      contentType: "content",
+      previous: previous2
+    });
+    previous2 = previous2.next;
+    return chunkInside;
+  }
+}
+function tokenizeContinuation(effects, ok2, nok) {
+  const self2 = this;
+  return startLookahead;
+  function startLookahead(code2) {
+    effects.exit("chunkContent");
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return factorySpace(effects, prefixed, "linePrefix");
+  }
+  function prefixed(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      return nok(code2);
+    }
+    const tail = self2.events[self2.events.length - 1];
+    if (!self2.parser.constructs.disable.null.includes("codeIndented") && tail && tail[1].type === "linePrefix" && tail[2].sliceSerialize(tail[1], true).length >= 4) {
+      return ok2(code2);
+    }
+    return effects.interrupt(self2.parser.constructs.flow, nok, ok2)(code2);
+  }
+}
+function factoryDestination(effects, ok2, nok, type, literalType, literalMarkerType, rawType, stringType, max) {
+  const limit = max || Number.POSITIVE_INFINITY;
+  let balance = 0;
+  return start2;
+  function start2(code2) {
+    if (code2 === 60) {
+      effects.enter(type);
+      effects.enter(literalType);
+      effects.enter(literalMarkerType);
+      effects.consume(code2);
+      effects.exit(literalMarkerType);
+      return enclosedBefore;
+    }
+    if (code2 === null || code2 === 32 || code2 === 41 || asciiControl(code2)) {
+      return nok(code2);
+    }
+    effects.enter(type);
+    effects.enter(rawType);
+    effects.enter(stringType);
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return raw(code2);
+  }
+  function enclosedBefore(code2) {
+    if (code2 === 62) {
+      effects.enter(literalMarkerType);
+      effects.consume(code2);
+      effects.exit(literalMarkerType);
+      effects.exit(literalType);
+      effects.exit(type);
+      return ok2;
+    }
+    effects.enter(stringType);
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return enclosed(code2);
+  }
+  function enclosed(code2) {
+    if (code2 === 62) {
+      effects.exit("chunkString");
+      effects.exit(stringType);
+      return enclosedBefore(code2);
+    }
+    if (code2 === null || code2 === 60 || markdownLineEnding(code2)) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return code2 === 92 ? enclosedEscape : enclosed;
+  }
+  function enclosedEscape(code2) {
+    if (code2 === 60 || code2 === 62 || code2 === 92) {
+      effects.consume(code2);
+      return enclosed;
+    }
+    return enclosed(code2);
+  }
+  function raw(code2) {
+    if (!balance && (code2 === null || code2 === 41 || markdownLineEndingOrSpace(code2))) {
+      effects.exit("chunkString");
+      effects.exit(stringType);
+      effects.exit(rawType);
+      effects.exit(type);
+      return ok2(code2);
+    }
+    if (balance < limit && code2 === 40) {
+      effects.consume(code2);
+      balance++;
+      return raw;
+    }
+    if (code2 === 41) {
+      effects.consume(code2);
+      balance--;
+      return raw;
+    }
+    if (code2 === null || code2 === 32 || code2 === 40 || asciiControl(code2)) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return code2 === 92 ? rawEscape : raw;
+  }
+  function rawEscape(code2) {
+    if (code2 === 40 || code2 === 41 || code2 === 92) {
+      effects.consume(code2);
+      return raw;
+    }
+    return raw(code2);
+  }
+}
+function factoryLabel(effects, ok2, nok, type, markerType, stringType) {
+  const self2 = this;
+  let size = 0;
+  let seen;
+  return start2;
+  function start2(code2) {
+    effects.enter(type);
+    effects.enter(markerType);
+    effects.consume(code2);
+    effects.exit(markerType);
+    effects.enter(stringType);
+    return atBreak;
+  }
+  function atBreak(code2) {
+    if (size > 999 || code2 === null || code2 === 91 || code2 === 93 && !seen || // To do: remove in the future once we’ve switched from
+    // `micromark-extension-footnote` to `micromark-extension-gfm-footnote`,
+    // which doesn’t need this.
+    // Hidden footnotes hook.
+    /* c8 ignore next 3 */
+    code2 === 94 && !size && "_hiddenFootnoteSupport" in self2.parser.constructs) {
+      return nok(code2);
+    }
+    if (code2 === 93) {
+      effects.exit(stringType);
+      effects.enter(markerType);
+      effects.consume(code2);
+      effects.exit(markerType);
+      effects.exit(type);
+      return ok2;
+    }
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      return atBreak;
+    }
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return labelInside(code2);
+  }
+  function labelInside(code2) {
+    if (code2 === null || code2 === 91 || code2 === 93 || markdownLineEnding(code2) || size++ > 999) {
+      effects.exit("chunkString");
+      return atBreak(code2);
+    }
+    effects.consume(code2);
+    if (!seen) seen = !markdownSpace(code2);
+    return code2 === 92 ? labelEscape : labelInside;
+  }
+  function labelEscape(code2) {
+    if (code2 === 91 || code2 === 92 || code2 === 93) {
+      effects.consume(code2);
+      size++;
+      return labelInside;
+    }
+    return labelInside(code2);
+  }
+}
+function factoryTitle(effects, ok2, nok, type, markerType, stringType) {
+  let marker;
+  return start2;
+  function start2(code2) {
+    if (code2 === 34 || code2 === 39 || code2 === 40) {
+      effects.enter(type);
+      effects.enter(markerType);
+      effects.consume(code2);
+      effects.exit(markerType);
+      marker = code2 === 40 ? 41 : code2;
+      return begin;
+    }
+    return nok(code2);
+  }
+  function begin(code2) {
+    if (code2 === marker) {
+      effects.enter(markerType);
+      effects.consume(code2);
+      effects.exit(markerType);
+      effects.exit(type);
+      return ok2;
+    }
+    effects.enter(stringType);
+    return atBreak(code2);
+  }
+  function atBreak(code2) {
+    if (code2 === marker) {
+      effects.exit(stringType);
+      return begin(marker);
+    }
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      return factorySpace(effects, atBreak, "linePrefix");
+    }
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return inside(code2);
+  }
+  function inside(code2) {
+    if (code2 === marker || code2 === null || markdownLineEnding(code2)) {
+      effects.exit("chunkString");
+      return atBreak(code2);
+    }
+    effects.consume(code2);
+    return code2 === 92 ? escape : inside;
+  }
+  function escape(code2) {
+    if (code2 === marker || code2 === 92) {
+      effects.consume(code2);
+      return inside;
+    }
+    return inside(code2);
+  }
+}
+function factoryWhitespace(effects, ok2) {
+  let seen;
+  return start2;
+  function start2(code2) {
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      seen = true;
+      return start2;
+    }
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, start2, seen ? "linePrefix" : "lineSuffix")(code2);
+    }
+    return ok2(code2);
+  }
+}
+const definition$1 = {
+  name: "definition",
+  tokenize: tokenizeDefinition
+};
+const titleBefore = {
+  partial: true,
+  tokenize: tokenizeTitleBefore
+};
+function tokenizeDefinition(effects, ok2, nok) {
+  const self2 = this;
+  let identifier;
+  return start2;
+  function start2(code2) {
+    effects.enter("definition");
+    return before(code2);
+  }
+  function before(code2) {
+    return factoryLabel.call(
+      self2,
+      effects,
+      labelAfter,
+      // Note: we don’t need to reset the way `markdown-rs` does.
+      nok,
+      "definitionLabel",
+      "definitionLabelMarker",
+      "definitionLabelString"
+    )(code2);
+  }
+  function labelAfter(code2) {
+    identifier = normalizeIdentifier(self2.sliceSerialize(self2.events[self2.events.length - 1][1]).slice(1, -1));
+    if (code2 === 58) {
+      effects.enter("definitionMarker");
+      effects.consume(code2);
+      effects.exit("definitionMarker");
+      return markerAfter;
+    }
+    return nok(code2);
+  }
+  function markerAfter(code2) {
+    return markdownLineEndingOrSpace(code2) ? factoryWhitespace(effects, destinationBefore)(code2) : destinationBefore(code2);
+  }
+  function destinationBefore(code2) {
+    return factoryDestination(
+      effects,
+      destinationAfter,
+      // Note: we don’t need to reset the way `markdown-rs` does.
+      nok,
+      "definitionDestination",
+      "definitionDestinationLiteral",
+      "definitionDestinationLiteralMarker",
+      "definitionDestinationRaw",
+      "definitionDestinationString"
+    )(code2);
+  }
+  function destinationAfter(code2) {
+    return effects.attempt(titleBefore, after, after)(code2);
+  }
+  function after(code2) {
+    return markdownSpace(code2) ? factorySpace(effects, afterWhitespace, "whitespace")(code2) : afterWhitespace(code2);
+  }
+  function afterWhitespace(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("definition");
+      self2.parser.defined.push(identifier);
+      return ok2(code2);
+    }
+    return nok(code2);
+  }
+}
+function tokenizeTitleBefore(effects, ok2, nok) {
+  return titleBefore2;
+  function titleBefore2(code2) {
+    return markdownLineEndingOrSpace(code2) ? factoryWhitespace(effects, beforeMarker)(code2) : nok(code2);
+  }
+  function beforeMarker(code2) {
+    return factoryTitle(effects, titleAfter, nok, "definitionTitle", "definitionTitleMarker", "definitionTitleString")(code2);
+  }
+  function titleAfter(code2) {
+    return markdownSpace(code2) ? factorySpace(effects, titleAfterOptionalWhitespace, "whitespace")(code2) : titleAfterOptionalWhitespace(code2);
+  }
+  function titleAfterOptionalWhitespace(code2) {
+    return code2 === null || markdownLineEnding(code2) ? ok2(code2) : nok(code2);
+  }
+}
+const hardBreakEscape = {
+  name: "hardBreakEscape",
+  tokenize: tokenizeHardBreakEscape
+};
+function tokenizeHardBreakEscape(effects, ok2, nok) {
+  return start2;
+  function start2(code2) {
+    effects.enter("hardBreakEscape");
+    effects.consume(code2);
+    return after;
+  }
+  function after(code2) {
+    if (markdownLineEnding(code2)) {
+      effects.exit("hardBreakEscape");
+      return ok2(code2);
+    }
+    return nok(code2);
+  }
+}
+const headingAtx = {
+  name: "headingAtx",
+  resolve: resolveHeadingAtx,
+  tokenize: tokenizeHeadingAtx
+};
+function resolveHeadingAtx(events, context) {
+  let contentEnd = events.length - 2;
+  let contentStart = 3;
+  let content2;
+  let text2;
+  if (events[contentStart][1].type === "whitespace") {
+    contentStart += 2;
+  }
+  if (contentEnd - 2 > contentStart && events[contentEnd][1].type === "whitespace") {
+    contentEnd -= 2;
+  }
+  if (events[contentEnd][1].type === "atxHeadingSequence" && (contentStart === contentEnd - 1 || contentEnd - 4 > contentStart && events[contentEnd - 2][1].type === "whitespace")) {
+    contentEnd -= contentStart + 1 === contentEnd ? 2 : 4;
+  }
+  if (contentEnd > contentStart) {
+    content2 = {
+      type: "atxHeadingText",
+      start: events[contentStart][1].start,
+      end: events[contentEnd][1].end
+    };
+    text2 = {
+      type: "chunkText",
+      start: events[contentStart][1].start,
+      end: events[contentEnd][1].end,
+      contentType: "text"
+    };
+    splice(events, contentStart, contentEnd - contentStart + 1, [["enter", content2, context], ["enter", text2, context], ["exit", text2, context], ["exit", content2, context]]);
+  }
+  return events;
+}
+function tokenizeHeadingAtx(effects, ok2, nok) {
+  let size = 0;
+  return start2;
+  function start2(code2) {
+    effects.enter("atxHeading");
+    return before(code2);
+  }
+  function before(code2) {
+    effects.enter("atxHeadingSequence");
+    return sequenceOpen(code2);
+  }
+  function sequenceOpen(code2) {
+    if (code2 === 35 && size++ < 6) {
+      effects.consume(code2);
+      return sequenceOpen;
+    }
+    if (code2 === null || markdownLineEndingOrSpace(code2)) {
+      effects.exit("atxHeadingSequence");
+      return atBreak(code2);
+    }
+    return nok(code2);
+  }
+  function atBreak(code2) {
+    if (code2 === 35) {
+      effects.enter("atxHeadingSequence");
+      return sequenceFurther(code2);
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("atxHeading");
+      return ok2(code2);
+    }
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, atBreak, "whitespace")(code2);
+    }
+    effects.enter("atxHeadingText");
+    return data(code2);
+  }
+  function sequenceFurther(code2) {
+    if (code2 === 35) {
+      effects.consume(code2);
+      return sequenceFurther;
+    }
+    effects.exit("atxHeadingSequence");
+    return atBreak(code2);
+  }
+  function data(code2) {
+    if (code2 === null || code2 === 35 || markdownLineEndingOrSpace(code2)) {
+      effects.exit("atxHeadingText");
+      return atBreak(code2);
+    }
+    effects.consume(code2);
+    return data;
+  }
+}
+const htmlBlockNames = [
+  "address",
+  "article",
+  "aside",
+  "base",
+  "basefont",
+  "blockquote",
+  "body",
+  "caption",
+  "center",
+  "col",
+  "colgroup",
+  "dd",
+  "details",
+  "dialog",
+  "dir",
+  "div",
+  "dl",
+  "dt",
+  "fieldset",
+  "figcaption",
+  "figure",
+  "footer",
+  "form",
+  "frame",
+  "frameset",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "head",
+  "header",
+  "hr",
+  "html",
+  "iframe",
+  "legend",
+  "li",
+  "link",
+  "main",
+  "menu",
+  "menuitem",
+  "nav",
+  "noframes",
+  "ol",
+  "optgroup",
+  "option",
+  "p",
+  "param",
+  "search",
+  "section",
+  "summary",
+  "table",
+  "tbody",
+  "td",
+  "tfoot",
+  "th",
+  "thead",
+  "title",
+  "tr",
+  "track",
+  "ul"
+];
+const htmlRawNames = ["pre", "script", "style", "textarea"];
+const htmlFlow = {
+  concrete: true,
+  name: "htmlFlow",
+  resolveTo: resolveToHtmlFlow,
+  tokenize: tokenizeHtmlFlow
+};
+const blankLineBefore = {
+  partial: true,
+  tokenize: tokenizeBlankLineBefore
+};
+const nonLazyContinuationStart = {
+  partial: true,
+  tokenize: tokenizeNonLazyContinuationStart
+};
+function resolveToHtmlFlow(events) {
+  let index2 = events.length;
+  while (index2--) {
+    if (events[index2][0] === "enter" && events[index2][1].type === "htmlFlow") {
+      break;
+    }
+  }
+  if (index2 > 1 && events[index2 - 2][1].type === "linePrefix") {
+    events[index2][1].start = events[index2 - 2][1].start;
+    events[index2 + 1][1].start = events[index2 - 2][1].start;
+    events.splice(index2 - 2, 2);
+  }
+  return events;
+}
+function tokenizeHtmlFlow(effects, ok2, nok) {
+  const self2 = this;
+  let marker;
+  let closingTag;
+  let buffer;
+  let index2;
+  let markerB;
+  return start2;
+  function start2(code2) {
+    return before(code2);
+  }
+  function before(code2) {
+    effects.enter("htmlFlow");
+    effects.enter("htmlFlowData");
+    effects.consume(code2);
+    return open;
+  }
+  function open(code2) {
+    if (code2 === 33) {
+      effects.consume(code2);
+      return declarationOpen;
+    }
+    if (code2 === 47) {
+      effects.consume(code2);
+      closingTag = true;
+      return tagCloseStart;
+    }
+    if (code2 === 63) {
+      effects.consume(code2);
+      marker = 3;
+      return self2.interrupt ? ok2 : continuationDeclarationInside;
+    }
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      buffer = String.fromCharCode(code2);
+      return tagName;
+    }
+    return nok(code2);
+  }
+  function declarationOpen(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      marker = 2;
+      return commentOpenInside;
+    }
+    if (code2 === 91) {
+      effects.consume(code2);
+      marker = 5;
+      index2 = 0;
+      return cdataOpenInside;
+    }
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      marker = 4;
+      return self2.interrupt ? ok2 : continuationDeclarationInside;
+    }
+    return nok(code2);
+  }
+  function commentOpenInside(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return self2.interrupt ? ok2 : continuationDeclarationInside;
+    }
+    return nok(code2);
+  }
+  function cdataOpenInside(code2) {
+    const value = "CDATA[";
+    if (code2 === value.charCodeAt(index2++)) {
+      effects.consume(code2);
+      if (index2 === value.length) {
+        return self2.interrupt ? ok2 : continuation;
+      }
+      return cdataOpenInside;
+    }
+    return nok(code2);
+  }
+  function tagCloseStart(code2) {
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      buffer = String.fromCharCode(code2);
+      return tagName;
+    }
+    return nok(code2);
+  }
+  function tagName(code2) {
+    if (code2 === null || code2 === 47 || code2 === 62 || markdownLineEndingOrSpace(code2)) {
+      const slash = code2 === 47;
+      const name2 = buffer.toLowerCase();
+      if (!slash && !closingTag && htmlRawNames.includes(name2)) {
+        marker = 1;
+        return self2.interrupt ? ok2(code2) : continuation(code2);
+      }
+      if (htmlBlockNames.includes(buffer.toLowerCase())) {
+        marker = 6;
+        if (slash) {
+          effects.consume(code2);
+          return basicSelfClosing;
+        }
+        return self2.interrupt ? ok2(code2) : continuation(code2);
+      }
+      marker = 7;
+      return self2.interrupt && !self2.parser.lazy[self2.now().line] ? nok(code2) : closingTag ? completeClosingTagAfter(code2) : completeAttributeNameBefore(code2);
+    }
+    if (code2 === 45 || asciiAlphanumeric(code2)) {
+      effects.consume(code2);
+      buffer += String.fromCharCode(code2);
+      return tagName;
+    }
+    return nok(code2);
+  }
+  function basicSelfClosing(code2) {
+    if (code2 === 62) {
+      effects.consume(code2);
+      return self2.interrupt ? ok2 : continuation;
+    }
+    return nok(code2);
+  }
+  function completeClosingTagAfter(code2) {
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return completeClosingTagAfter;
+    }
+    return completeEnd(code2);
+  }
+  function completeAttributeNameBefore(code2) {
+    if (code2 === 47) {
+      effects.consume(code2);
+      return completeEnd;
+    }
+    if (code2 === 58 || code2 === 95 || asciiAlpha(code2)) {
+      effects.consume(code2);
+      return completeAttributeName;
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return completeAttributeNameBefore;
+    }
+    return completeEnd(code2);
+  }
+  function completeAttributeName(code2) {
+    if (code2 === 45 || code2 === 46 || code2 === 58 || code2 === 95 || asciiAlphanumeric(code2)) {
+      effects.consume(code2);
+      return completeAttributeName;
+    }
+    return completeAttributeNameAfter(code2);
+  }
+  function completeAttributeNameAfter(code2) {
+    if (code2 === 61) {
+      effects.consume(code2);
+      return completeAttributeValueBefore;
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return completeAttributeNameAfter;
+    }
+    return completeAttributeNameBefore(code2);
+  }
+  function completeAttributeValueBefore(code2) {
+    if (code2 === null || code2 === 60 || code2 === 61 || code2 === 62 || code2 === 96) {
+      return nok(code2);
+    }
+    if (code2 === 34 || code2 === 39) {
+      effects.consume(code2);
+      markerB = code2;
+      return completeAttributeValueQuoted;
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return completeAttributeValueBefore;
+    }
+    return completeAttributeValueUnquoted(code2);
+  }
+  function completeAttributeValueQuoted(code2) {
+    if (code2 === markerB) {
+      effects.consume(code2);
+      markerB = null;
+      return completeAttributeValueQuotedAfter;
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return completeAttributeValueQuoted;
+  }
+  function completeAttributeValueUnquoted(code2) {
+    if (code2 === null || code2 === 34 || code2 === 39 || code2 === 47 || code2 === 60 || code2 === 61 || code2 === 62 || code2 === 96 || markdownLineEndingOrSpace(code2)) {
+      return completeAttributeNameAfter(code2);
+    }
+    effects.consume(code2);
+    return completeAttributeValueUnquoted;
+  }
+  function completeAttributeValueQuotedAfter(code2) {
+    if (code2 === 47 || code2 === 62 || markdownSpace(code2)) {
+      return completeAttributeNameBefore(code2);
+    }
+    return nok(code2);
+  }
+  function completeEnd(code2) {
+    if (code2 === 62) {
+      effects.consume(code2);
+      return completeAfter;
+    }
+    return nok(code2);
+  }
+  function completeAfter(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      return continuation(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return completeAfter;
+    }
+    return nok(code2);
+  }
+  function continuation(code2) {
+    if (code2 === 45 && marker === 2) {
+      effects.consume(code2);
+      return continuationCommentInside;
+    }
+    if (code2 === 60 && marker === 1) {
+      effects.consume(code2);
+      return continuationRawTagOpen;
+    }
+    if (code2 === 62 && marker === 4) {
+      effects.consume(code2);
+      return continuationClose;
+    }
+    if (code2 === 63 && marker === 3) {
+      effects.consume(code2);
+      return continuationDeclarationInside;
+    }
+    if (code2 === 93 && marker === 5) {
+      effects.consume(code2);
+      return continuationCdataInside;
+    }
+    if (markdownLineEnding(code2) && (marker === 6 || marker === 7)) {
+      effects.exit("htmlFlowData");
+      return effects.check(blankLineBefore, continuationAfter, continuationStart)(code2);
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("htmlFlowData");
+      return continuationStart(code2);
+    }
+    effects.consume(code2);
+    return continuation;
+  }
+  function continuationStart(code2) {
+    return effects.check(nonLazyContinuationStart, continuationStartNonLazy, continuationAfter)(code2);
+  }
+  function continuationStartNonLazy(code2) {
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return continuationBefore;
+  }
+  function continuationBefore(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      return continuationStart(code2);
+    }
+    effects.enter("htmlFlowData");
+    return continuation(code2);
+  }
+  function continuationCommentInside(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return continuationDeclarationInside;
+    }
+    return continuation(code2);
+  }
+  function continuationRawTagOpen(code2) {
+    if (code2 === 47) {
+      effects.consume(code2);
+      buffer = "";
+      return continuationRawEndTag;
+    }
+    return continuation(code2);
+  }
+  function continuationRawEndTag(code2) {
+    if (code2 === 62) {
+      const name2 = buffer.toLowerCase();
+      if (htmlRawNames.includes(name2)) {
+        effects.consume(code2);
+        return continuationClose;
+      }
+      return continuation(code2);
+    }
+    if (asciiAlpha(code2) && buffer.length < 8) {
+      effects.consume(code2);
+      buffer += String.fromCharCode(code2);
+      return continuationRawEndTag;
+    }
+    return continuation(code2);
+  }
+  function continuationCdataInside(code2) {
+    if (code2 === 93) {
+      effects.consume(code2);
+      return continuationDeclarationInside;
+    }
+    return continuation(code2);
+  }
+  function continuationDeclarationInside(code2) {
+    if (code2 === 62) {
+      effects.consume(code2);
+      return continuationClose;
+    }
+    if (code2 === 45 && marker === 2) {
+      effects.consume(code2);
+      return continuationDeclarationInside;
+    }
+    return continuation(code2);
+  }
+  function continuationClose(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("htmlFlowData");
+      return continuationAfter(code2);
+    }
+    effects.consume(code2);
+    return continuationClose;
+  }
+  function continuationAfter(code2) {
+    effects.exit("htmlFlow");
+    return ok2(code2);
+  }
+}
+function tokenizeNonLazyContinuationStart(effects, ok2, nok) {
+  const self2 = this;
+  return start2;
+  function start2(code2) {
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      return after;
+    }
+    return nok(code2);
+  }
+  function after(code2) {
+    return self2.parser.lazy[self2.now().line] ? nok(code2) : ok2(code2);
+  }
+}
+function tokenizeBlankLineBefore(effects, ok2, nok) {
+  return start2;
+  function start2(code2) {
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return effects.attempt(blankLine, ok2, nok);
+  }
+}
+const htmlText = {
+  name: "htmlText",
+  tokenize: tokenizeHtmlText
+};
+function tokenizeHtmlText(effects, ok2, nok) {
+  const self2 = this;
+  let marker;
+  let index2;
+  let returnState;
+  return start2;
+  function start2(code2) {
+    effects.enter("htmlText");
+    effects.enter("htmlTextData");
+    effects.consume(code2);
+    return open;
+  }
+  function open(code2) {
+    if (code2 === 33) {
+      effects.consume(code2);
+      return declarationOpen;
+    }
+    if (code2 === 47) {
+      effects.consume(code2);
+      return tagCloseStart;
+    }
+    if (code2 === 63) {
+      effects.consume(code2);
+      return instruction;
+    }
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      return tagOpen;
+    }
+    return nok(code2);
+  }
+  function declarationOpen(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return commentOpenInside;
+    }
+    if (code2 === 91) {
+      effects.consume(code2);
+      index2 = 0;
+      return cdataOpenInside;
+    }
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      return declaration;
+    }
+    return nok(code2);
+  }
+  function commentOpenInside(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return commentEnd;
+    }
+    return nok(code2);
+  }
+  function comment(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (code2 === 45) {
+      effects.consume(code2);
+      return commentClose;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = comment;
+      return lineEndingBefore(code2);
+    }
+    effects.consume(code2);
+    return comment;
+  }
+  function commentClose(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return commentEnd;
+    }
+    return comment(code2);
+  }
+  function commentEnd(code2) {
+    return code2 === 62 ? end(code2) : code2 === 45 ? commentClose(code2) : comment(code2);
+  }
+  function cdataOpenInside(code2) {
+    const value = "CDATA[";
+    if (code2 === value.charCodeAt(index2++)) {
+      effects.consume(code2);
+      return index2 === value.length ? cdata : cdataOpenInside;
+    }
+    return nok(code2);
+  }
+  function cdata(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (code2 === 93) {
+      effects.consume(code2);
+      return cdataClose;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = cdata;
+      return lineEndingBefore(code2);
+    }
+    effects.consume(code2);
+    return cdata;
+  }
+  function cdataClose(code2) {
+    if (code2 === 93) {
+      effects.consume(code2);
+      return cdataEnd;
+    }
+    return cdata(code2);
+  }
+  function cdataEnd(code2) {
+    if (code2 === 62) {
+      return end(code2);
+    }
+    if (code2 === 93) {
+      effects.consume(code2);
+      return cdataEnd;
+    }
+    return cdata(code2);
+  }
+  function declaration(code2) {
+    if (code2 === null || code2 === 62) {
+      return end(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = declaration;
+      return lineEndingBefore(code2);
+    }
+    effects.consume(code2);
+    return declaration;
+  }
+  function instruction(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (code2 === 63) {
+      effects.consume(code2);
+      return instructionClose;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = instruction;
+      return lineEndingBefore(code2);
+    }
+    effects.consume(code2);
+    return instruction;
+  }
+  function instructionClose(code2) {
+    return code2 === 62 ? end(code2) : instruction(code2);
+  }
+  function tagCloseStart(code2) {
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      return tagClose;
+    }
+    return nok(code2);
+  }
+  function tagClose(code2) {
+    if (code2 === 45 || asciiAlphanumeric(code2)) {
+      effects.consume(code2);
+      return tagClose;
+    }
+    return tagCloseBetween(code2);
+  }
+  function tagCloseBetween(code2) {
+    if (markdownLineEnding(code2)) {
+      returnState = tagCloseBetween;
+      return lineEndingBefore(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return tagCloseBetween;
+    }
+    return end(code2);
+  }
+  function tagOpen(code2) {
+    if (code2 === 45 || asciiAlphanumeric(code2)) {
+      effects.consume(code2);
+      return tagOpen;
+    }
+    if (code2 === 47 || code2 === 62 || markdownLineEndingOrSpace(code2)) {
+      return tagOpenBetween(code2);
+    }
+    return nok(code2);
+  }
+  function tagOpenBetween(code2) {
+    if (code2 === 47) {
+      effects.consume(code2);
+      return end;
+    }
+    if (code2 === 58 || code2 === 95 || asciiAlpha(code2)) {
+      effects.consume(code2);
+      return tagOpenAttributeName;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = tagOpenBetween;
+      return lineEndingBefore(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return tagOpenBetween;
+    }
+    return end(code2);
+  }
+  function tagOpenAttributeName(code2) {
+    if (code2 === 45 || code2 === 46 || code2 === 58 || code2 === 95 || asciiAlphanumeric(code2)) {
+      effects.consume(code2);
+      return tagOpenAttributeName;
+    }
+    return tagOpenAttributeNameAfter(code2);
+  }
+  function tagOpenAttributeNameAfter(code2) {
+    if (code2 === 61) {
+      effects.consume(code2);
+      return tagOpenAttributeValueBefore;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = tagOpenAttributeNameAfter;
+      return lineEndingBefore(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return tagOpenAttributeNameAfter;
+    }
+    return tagOpenBetween(code2);
+  }
+  function tagOpenAttributeValueBefore(code2) {
+    if (code2 === null || code2 === 60 || code2 === 61 || code2 === 62 || code2 === 96) {
+      return nok(code2);
+    }
+    if (code2 === 34 || code2 === 39) {
+      effects.consume(code2);
+      marker = code2;
+      return tagOpenAttributeValueQuoted;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = tagOpenAttributeValueBefore;
+      return lineEndingBefore(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return tagOpenAttributeValueBefore;
+    }
+    effects.consume(code2);
+    return tagOpenAttributeValueUnquoted;
+  }
+  function tagOpenAttributeValueQuoted(code2) {
+    if (code2 === marker) {
+      effects.consume(code2);
+      marker = void 0;
+      return tagOpenAttributeValueQuotedAfter;
+    }
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = tagOpenAttributeValueQuoted;
+      return lineEndingBefore(code2);
+    }
+    effects.consume(code2);
+    return tagOpenAttributeValueQuoted;
+  }
+  function tagOpenAttributeValueUnquoted(code2) {
+    if (code2 === null || code2 === 34 || code2 === 39 || code2 === 60 || code2 === 61 || code2 === 96) {
+      return nok(code2);
+    }
+    if (code2 === 47 || code2 === 62 || markdownLineEndingOrSpace(code2)) {
+      return tagOpenBetween(code2);
+    }
+    effects.consume(code2);
+    return tagOpenAttributeValueUnquoted;
+  }
+  function tagOpenAttributeValueQuotedAfter(code2) {
+    if (code2 === 47 || code2 === 62 || markdownLineEndingOrSpace(code2)) {
+      return tagOpenBetween(code2);
+    }
+    return nok(code2);
+  }
+  function end(code2) {
+    if (code2 === 62) {
+      effects.consume(code2);
+      effects.exit("htmlTextData");
+      effects.exit("htmlText");
+      return ok2;
+    }
+    return nok(code2);
+  }
+  function lineEndingBefore(code2) {
+    effects.exit("htmlTextData");
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return lineEndingAfter;
+  }
+  function lineEndingAfter(code2) {
+    return markdownSpace(code2) ? factorySpace(effects, lineEndingAfterPrefix, "linePrefix", self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4)(code2) : lineEndingAfterPrefix(code2);
+  }
+  function lineEndingAfterPrefix(code2) {
+    effects.enter("htmlTextData");
+    return returnState(code2);
+  }
+}
+const labelEnd = {
+  name: "labelEnd",
+  resolveAll: resolveAllLabelEnd,
+  resolveTo: resolveToLabelEnd,
+  tokenize: tokenizeLabelEnd
+};
+const resourceConstruct = {
+  tokenize: tokenizeResource
+};
+const referenceFullConstruct = {
+  tokenize: tokenizeReferenceFull
+};
+const referenceCollapsedConstruct = {
+  tokenize: tokenizeReferenceCollapsed
+};
+function resolveAllLabelEnd(events) {
+  let index2 = -1;
+  const newEvents = [];
+  while (++index2 < events.length) {
+    const token = events[index2][1];
+    newEvents.push(events[index2]);
+    if (token.type === "labelImage" || token.type === "labelLink" || token.type === "labelEnd") {
+      const offset = token.type === "labelImage" ? 4 : 2;
+      token.type = "data";
+      index2 += offset;
+    }
+  }
+  if (events.length !== newEvents.length) {
+    splice(events, 0, events.length, newEvents);
+  }
+  return events;
+}
+function resolveToLabelEnd(events, context) {
+  let index2 = events.length;
+  let offset = 0;
+  let token;
+  let open;
+  let close;
+  let media;
+  while (index2--) {
+    token = events[index2][1];
+    if (open) {
+      if (token.type === "link" || token.type === "labelLink" && token._inactive) {
+        break;
+      }
+      if (events[index2][0] === "enter" && token.type === "labelLink") {
+        token._inactive = true;
+      }
+    } else if (close) {
+      if (events[index2][0] === "enter" && (token.type === "labelImage" || token.type === "labelLink") && !token._balanced) {
+        open = index2;
+        if (token.type !== "labelLink") {
+          offset = 2;
+          break;
+        }
+      }
+    } else if (token.type === "labelEnd") {
+      close = index2;
+    }
+  }
+  const group = {
+    type: events[open][1].type === "labelLink" ? "link" : "image",
+    start: {
+      ...events[open][1].start
+    },
+    end: {
+      ...events[events.length - 1][1].end
+    }
+  };
+  const label = {
+    type: "label",
+    start: {
+      ...events[open][1].start
+    },
+    end: {
+      ...events[close][1].end
+    }
+  };
+  const text2 = {
+    type: "labelText",
+    start: {
+      ...events[open + offset + 2][1].end
+    },
+    end: {
+      ...events[close - 2][1].start
+    }
+  };
+  media = [["enter", group, context], ["enter", label, context]];
+  media = push(media, events.slice(open + 1, open + offset + 3));
+  media = push(media, [["enter", text2, context]]);
+  media = push(media, resolveAll(context.parser.constructs.insideSpan.null, events.slice(open + offset + 4, close - 3), context));
+  media = push(media, [["exit", text2, context], events[close - 2], events[close - 1], ["exit", label, context]]);
+  media = push(media, events.slice(close + 1));
+  media = push(media, [["exit", group, context]]);
+  splice(events, open, events.length, media);
+  return events;
+}
+function tokenizeLabelEnd(effects, ok2, nok) {
+  const self2 = this;
+  let index2 = self2.events.length;
+  let labelStart;
+  let defined;
+  while (index2--) {
+    if ((self2.events[index2][1].type === "labelImage" || self2.events[index2][1].type === "labelLink") && !self2.events[index2][1]._balanced) {
+      labelStart = self2.events[index2][1];
+      break;
+    }
+  }
+  return start2;
+  function start2(code2) {
+    if (!labelStart) {
+      return nok(code2);
+    }
+    if (labelStart._inactive) {
+      return labelEndNok(code2);
+    }
+    defined = self2.parser.defined.includes(normalizeIdentifier(self2.sliceSerialize({
+      start: labelStart.end,
+      end: self2.now()
+    })));
+    effects.enter("labelEnd");
+    effects.enter("labelMarker");
+    effects.consume(code2);
+    effects.exit("labelMarker");
+    effects.exit("labelEnd");
+    return after;
+  }
+  function after(code2) {
+    if (code2 === 40) {
+      return effects.attempt(resourceConstruct, labelEndOk, defined ? labelEndOk : labelEndNok)(code2);
+    }
+    if (code2 === 91) {
+      return effects.attempt(referenceFullConstruct, labelEndOk, defined ? referenceNotFull : labelEndNok)(code2);
+    }
+    return defined ? labelEndOk(code2) : labelEndNok(code2);
+  }
+  function referenceNotFull(code2) {
+    return effects.attempt(referenceCollapsedConstruct, labelEndOk, labelEndNok)(code2);
+  }
+  function labelEndOk(code2) {
+    return ok2(code2);
+  }
+  function labelEndNok(code2) {
+    labelStart._balanced = true;
+    return nok(code2);
+  }
+}
+function tokenizeResource(effects, ok2, nok) {
+  return resourceStart;
+  function resourceStart(code2) {
+    effects.enter("resource");
+    effects.enter("resourceMarker");
+    effects.consume(code2);
+    effects.exit("resourceMarker");
+    return resourceBefore;
+  }
+  function resourceBefore(code2) {
+    return markdownLineEndingOrSpace(code2) ? factoryWhitespace(effects, resourceOpen)(code2) : resourceOpen(code2);
+  }
+  function resourceOpen(code2) {
+    if (code2 === 41) {
+      return resourceEnd(code2);
+    }
+    return factoryDestination(effects, resourceDestinationAfter, resourceDestinationMissing, "resourceDestination", "resourceDestinationLiteral", "resourceDestinationLiteralMarker", "resourceDestinationRaw", "resourceDestinationString", 32)(code2);
+  }
+  function resourceDestinationAfter(code2) {
+    return markdownLineEndingOrSpace(code2) ? factoryWhitespace(effects, resourceBetween)(code2) : resourceEnd(code2);
+  }
+  function resourceDestinationMissing(code2) {
+    return nok(code2);
+  }
+  function resourceBetween(code2) {
+    if (code2 === 34 || code2 === 39 || code2 === 40) {
+      return factoryTitle(effects, resourceTitleAfter, nok, "resourceTitle", "resourceTitleMarker", "resourceTitleString")(code2);
+    }
+    return resourceEnd(code2);
+  }
+  function resourceTitleAfter(code2) {
+    return markdownLineEndingOrSpace(code2) ? factoryWhitespace(effects, resourceEnd)(code2) : resourceEnd(code2);
+  }
+  function resourceEnd(code2) {
+    if (code2 === 41) {
+      effects.enter("resourceMarker");
+      effects.consume(code2);
+      effects.exit("resourceMarker");
+      effects.exit("resource");
+      return ok2;
+    }
+    return nok(code2);
+  }
+}
+function tokenizeReferenceFull(effects, ok2, nok) {
+  const self2 = this;
+  return referenceFull;
+  function referenceFull(code2) {
+    return factoryLabel.call(self2, effects, referenceFullAfter, referenceFullMissing, "reference", "referenceMarker", "referenceString")(code2);
+  }
+  function referenceFullAfter(code2) {
+    return self2.parser.defined.includes(normalizeIdentifier(self2.sliceSerialize(self2.events[self2.events.length - 1][1]).slice(1, -1))) ? ok2(code2) : nok(code2);
+  }
+  function referenceFullMissing(code2) {
+    return nok(code2);
+  }
+}
+function tokenizeReferenceCollapsed(effects, ok2, nok) {
+  return referenceCollapsedStart;
+  function referenceCollapsedStart(code2) {
+    effects.enter("reference");
+    effects.enter("referenceMarker");
+    effects.consume(code2);
+    effects.exit("referenceMarker");
+    return referenceCollapsedOpen;
+  }
+  function referenceCollapsedOpen(code2) {
+    if (code2 === 93) {
+      effects.enter("referenceMarker");
+      effects.consume(code2);
+      effects.exit("referenceMarker");
+      effects.exit("reference");
+      return ok2;
+    }
+    return nok(code2);
+  }
+}
+const labelStartImage = {
+  name: "labelStartImage",
+  resolveAll: labelEnd.resolveAll,
+  tokenize: tokenizeLabelStartImage
+};
+function tokenizeLabelStartImage(effects, ok2, nok) {
+  const self2 = this;
+  return start2;
+  function start2(code2) {
+    effects.enter("labelImage");
+    effects.enter("labelImageMarker");
+    effects.consume(code2);
+    effects.exit("labelImageMarker");
+    return open;
+  }
+  function open(code2) {
+    if (code2 === 91) {
+      effects.enter("labelMarker");
+      effects.consume(code2);
+      effects.exit("labelMarker");
+      effects.exit("labelImage");
+      return after;
+    }
+    return nok(code2);
+  }
+  function after(code2) {
+    return code2 === 94 && "_hiddenFootnoteSupport" in self2.parser.constructs ? nok(code2) : ok2(code2);
+  }
+}
+const labelStartLink = {
+  name: "labelStartLink",
+  resolveAll: labelEnd.resolveAll,
+  tokenize: tokenizeLabelStartLink
+};
+function tokenizeLabelStartLink(effects, ok2, nok) {
+  const self2 = this;
+  return start2;
+  function start2(code2) {
+    effects.enter("labelLink");
+    effects.enter("labelMarker");
+    effects.consume(code2);
+    effects.exit("labelMarker");
+    effects.exit("labelLink");
+    return after;
+  }
+  function after(code2) {
+    return code2 === 94 && "_hiddenFootnoteSupport" in self2.parser.constructs ? nok(code2) : ok2(code2);
+  }
+}
+const lineEnding = {
+  name: "lineEnding",
+  tokenize: tokenizeLineEnding
+};
+function tokenizeLineEnding(effects, ok2) {
+  return start2;
+  function start2(code2) {
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return factorySpace(effects, ok2, "linePrefix");
+  }
+}
+const thematicBreak$2 = {
+  name: "thematicBreak",
+  tokenize: tokenizeThematicBreak
+};
+function tokenizeThematicBreak(effects, ok2, nok) {
+  let size = 0;
+  let marker;
+  return start2;
+  function start2(code2) {
+    effects.enter("thematicBreak");
+    return before(code2);
+  }
+  function before(code2) {
+    marker = code2;
+    return atBreak(code2);
+  }
+  function atBreak(code2) {
+    if (code2 === marker) {
+      effects.enter("thematicBreakSequence");
+      return sequence(code2);
+    }
+    if (size >= 3 && (code2 === null || markdownLineEnding(code2))) {
+      effects.exit("thematicBreak");
+      return ok2(code2);
+    }
+    return nok(code2);
+  }
+  function sequence(code2) {
+    if (code2 === marker) {
+      effects.consume(code2);
+      size++;
+      return sequence;
+    }
+    effects.exit("thematicBreakSequence");
+    return markdownSpace(code2) ? factorySpace(effects, atBreak, "whitespace")(code2) : atBreak(code2);
+  }
+}
+const list$2 = {
+  continuation: {
+    tokenize: tokenizeListContinuation
+  },
+  exit: tokenizeListEnd,
+  name: "list",
+  tokenize: tokenizeListStart
+};
+const listItemPrefixWhitespaceConstruct = {
+  partial: true,
+  tokenize: tokenizeListItemPrefixWhitespace
+};
+const indentConstruct = {
+  partial: true,
+  tokenize: tokenizeIndent$1
+};
+function tokenizeListStart(effects, ok2, nok) {
+  const self2 = this;
+  const tail = self2.events[self2.events.length - 1];
+  let initialSize = tail && tail[1].type === "linePrefix" ? tail[2].sliceSerialize(tail[1], true).length : 0;
+  let size = 0;
+  return start2;
+  function start2(code2) {
+    const kind = self2.containerState.type || (code2 === 42 || code2 === 43 || code2 === 45 ? "listUnordered" : "listOrdered");
+    if (kind === "listUnordered" ? !self2.containerState.marker || code2 === self2.containerState.marker : asciiDigit(code2)) {
+      if (!self2.containerState.type) {
+        self2.containerState.type = kind;
+        effects.enter(kind, {
+          _container: true
+        });
+      }
+      if (kind === "listUnordered") {
+        effects.enter("listItemPrefix");
+        return code2 === 42 || code2 === 45 ? effects.check(thematicBreak$2, nok, atMarker)(code2) : atMarker(code2);
+      }
+      if (!self2.interrupt || code2 === 49) {
+        effects.enter("listItemPrefix");
+        effects.enter("listItemValue");
+        return inside(code2);
+      }
+    }
+    return nok(code2);
+  }
+  function inside(code2) {
+    if (asciiDigit(code2) && ++size < 10) {
+      effects.consume(code2);
+      return inside;
+    }
+    if ((!self2.interrupt || size < 2) && (self2.containerState.marker ? code2 === self2.containerState.marker : code2 === 41 || code2 === 46)) {
+      effects.exit("listItemValue");
+      return atMarker(code2);
+    }
+    return nok(code2);
+  }
+  function atMarker(code2) {
+    effects.enter("listItemMarker");
+    effects.consume(code2);
+    effects.exit("listItemMarker");
+    self2.containerState.marker = self2.containerState.marker || code2;
+    return effects.check(
+      blankLine,
+      // Can’t be empty when interrupting.
+      self2.interrupt ? nok : onBlank,
+      effects.attempt(listItemPrefixWhitespaceConstruct, endOfPrefix, otherPrefix)
+    );
+  }
+  function onBlank(code2) {
+    self2.containerState.initialBlankLine = true;
+    initialSize++;
+    return endOfPrefix(code2);
+  }
+  function otherPrefix(code2) {
+    if (markdownSpace(code2)) {
+      effects.enter("listItemPrefixWhitespace");
+      effects.consume(code2);
+      effects.exit("listItemPrefixWhitespace");
+      return endOfPrefix;
+    }
+    return nok(code2);
+  }
+  function endOfPrefix(code2) {
+    self2.containerState.size = initialSize + self2.sliceSerialize(effects.exit("listItemPrefix"), true).length;
+    return ok2(code2);
+  }
+}
+function tokenizeListContinuation(effects, ok2, nok) {
+  const self2 = this;
+  self2.containerState._closeFlow = void 0;
+  return effects.check(blankLine, onBlank, notBlank);
+  function onBlank(code2) {
+    self2.containerState.furtherBlankLines = self2.containerState.furtherBlankLines || self2.containerState.initialBlankLine;
+    return factorySpace(effects, ok2, "listItemIndent", self2.containerState.size + 1)(code2);
+  }
+  function notBlank(code2) {
+    if (self2.containerState.furtherBlankLines || !markdownSpace(code2)) {
+      self2.containerState.furtherBlankLines = void 0;
+      self2.containerState.initialBlankLine = void 0;
+      return notInCurrentItem(code2);
+    }
+    self2.containerState.furtherBlankLines = void 0;
+    self2.containerState.initialBlankLine = void 0;
+    return effects.attempt(indentConstruct, ok2, notInCurrentItem)(code2);
+  }
+  function notInCurrentItem(code2) {
+    self2.containerState._closeFlow = true;
+    self2.interrupt = void 0;
+    return factorySpace(effects, effects.attempt(list$2, ok2, nok), "linePrefix", self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4)(code2);
+  }
+}
+function tokenizeIndent$1(effects, ok2, nok) {
+  const self2 = this;
+  return factorySpace(effects, afterPrefix, "listItemIndent", self2.containerState.size + 1);
+  function afterPrefix(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    return tail && tail[1].type === "listItemIndent" && tail[2].sliceSerialize(tail[1], true).length === self2.containerState.size ? ok2(code2) : nok(code2);
+  }
+}
+function tokenizeListEnd(effects) {
+  effects.exit(this.containerState.type);
+}
+function tokenizeListItemPrefixWhitespace(effects, ok2, nok) {
+  const self2 = this;
+  return factorySpace(effects, afterPrefix, "listItemPrefixWhitespace", self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4 + 1);
+  function afterPrefix(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    return !markdownSpace(code2) && tail && tail[1].type === "listItemPrefixWhitespace" ? ok2(code2) : nok(code2);
+  }
+}
+const setextUnderline = {
+  name: "setextUnderline",
+  resolveTo: resolveToSetextUnderline,
+  tokenize: tokenizeSetextUnderline
+};
+function resolveToSetextUnderline(events, context) {
+  let index2 = events.length;
+  let content2;
+  let text2;
+  let definition2;
+  while (index2--) {
+    if (events[index2][0] === "enter") {
+      if (events[index2][1].type === "content") {
+        content2 = index2;
+        break;
+      }
+      if (events[index2][1].type === "paragraph") {
+        text2 = index2;
+      }
+    } else {
+      if (events[index2][1].type === "content") {
+        events.splice(index2, 1);
+      }
+      if (!definition2 && events[index2][1].type === "definition") {
+        definition2 = index2;
+      }
+    }
+  }
+  const heading2 = {
+    type: "setextHeading",
+    start: {
+      ...events[content2][1].start
+    },
+    end: {
+      ...events[events.length - 1][1].end
+    }
+  };
+  events[text2][1].type = "setextHeadingText";
+  if (definition2) {
+    events.splice(text2, 0, ["enter", heading2, context]);
+    events.splice(definition2 + 1, 0, ["exit", events[content2][1], context]);
+    events[content2][1].end = {
+      ...events[definition2][1].end
+    };
+  } else {
+    events[content2][1] = heading2;
+  }
+  events.push(["exit", heading2, context]);
+  return events;
+}
+function tokenizeSetextUnderline(effects, ok2, nok) {
+  const self2 = this;
+  let marker;
+  return start2;
+  function start2(code2) {
+    let index2 = self2.events.length;
+    let paragraph2;
+    while (index2--) {
+      if (self2.events[index2][1].type !== "lineEnding" && self2.events[index2][1].type !== "linePrefix" && self2.events[index2][1].type !== "content") {
+        paragraph2 = self2.events[index2][1].type === "paragraph";
+        break;
+      }
+    }
+    if (!self2.parser.lazy[self2.now().line] && (self2.interrupt || paragraph2)) {
+      effects.enter("setextHeadingLine");
+      marker = code2;
+      return before(code2);
+    }
+    return nok(code2);
+  }
+  function before(code2) {
+    effects.enter("setextHeadingLineSequence");
+    return inside(code2);
+  }
+  function inside(code2) {
+    if (code2 === marker) {
+      effects.consume(code2);
+      return inside;
+    }
+    effects.exit("setextHeadingLineSequence");
+    return markdownSpace(code2) ? factorySpace(effects, after, "lineSuffix")(code2) : after(code2);
+  }
+  function after(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("setextHeadingLine");
+      return ok2(code2);
+    }
+    return nok(code2);
+  }
+}
+const flow$1 = {
+  tokenize: initializeFlow
+};
+function initializeFlow(effects) {
+  const self2 = this;
+  const initial = effects.attempt(
+    // Try to parse a blank line.
+    blankLine,
+    atBlankEnding,
+    // Try to parse initial flow (essentially, only code).
+    effects.attempt(this.parser.constructs.flowInitial, afterConstruct, factorySpace(effects, effects.attempt(this.parser.constructs.flow, afterConstruct, effects.attempt(content, afterConstruct)), "linePrefix"))
+  );
+  return initial;
+  function atBlankEnding(code2) {
+    if (code2 === null) {
+      effects.consume(code2);
+      return;
+    }
+    effects.enter("lineEndingBlank");
+    effects.consume(code2);
+    effects.exit("lineEndingBlank");
+    self2.currentConstruct = void 0;
+    return initial;
+  }
+  function afterConstruct(code2) {
+    if (code2 === null) {
+      effects.consume(code2);
+      return;
+    }
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    self2.currentConstruct = void 0;
+    return initial;
+  }
+}
+const resolver = {
+  resolveAll: createResolver()
+};
+const string$1 = initializeFactory("string");
+const text$4 = initializeFactory("text");
+function initializeFactory(field) {
+  return {
+    resolveAll: createResolver(field === "text" ? resolveAllLineSuffixes : void 0),
+    tokenize: initializeText
+  };
+  function initializeText(effects) {
+    const self2 = this;
+    const constructs2 = this.parser.constructs[field];
+    const text2 = effects.attempt(constructs2, start2, notText);
+    return start2;
+    function start2(code2) {
+      return atBreak(code2) ? text2(code2) : notText(code2);
+    }
+    function notText(code2) {
+      if (code2 === null) {
+        effects.consume(code2);
+        return;
+      }
+      effects.enter("data");
+      effects.consume(code2);
+      return data;
+    }
+    function data(code2) {
+      if (atBreak(code2)) {
+        effects.exit("data");
+        return text2(code2);
+      }
+      effects.consume(code2);
+      return data;
+    }
+    function atBreak(code2) {
+      if (code2 === null) {
+        return true;
+      }
+      const list2 = constructs2[code2];
+      let index2 = -1;
+      if (list2) {
+        while (++index2 < list2.length) {
+          const item = list2[index2];
+          if (!item.previous || item.previous.call(self2, self2.previous)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+  }
+}
+function createResolver(extraResolver) {
+  return resolveAllText;
+  function resolveAllText(events, context) {
+    let index2 = -1;
+    let enter;
+    while (++index2 <= events.length) {
+      if (enter === void 0) {
+        if (events[index2] && events[index2][1].type === "data") {
+          enter = index2;
+          index2++;
+        }
+      } else if (!events[index2] || events[index2][1].type !== "data") {
+        if (index2 !== enter + 2) {
+          events[enter][1].end = events[index2 - 1][1].end;
+          events.splice(enter + 2, index2 - enter - 2);
+          index2 = enter + 2;
+        }
+        enter = void 0;
+      }
+    }
+    return extraResolver ? extraResolver(events, context) : events;
+  }
+}
+function resolveAllLineSuffixes(events, context) {
+  let eventIndex = 0;
+  while (++eventIndex <= events.length) {
+    if ((eventIndex === events.length || events[eventIndex][1].type === "lineEnding") && events[eventIndex - 1][1].type === "data") {
+      const data = events[eventIndex - 1][1];
+      const chunks = context.sliceStream(data);
+      let index2 = chunks.length;
+      let bufferIndex = -1;
+      let size = 0;
+      let tabs;
+      while (index2--) {
+        const chunk = chunks[index2];
+        if (typeof chunk === "string") {
+          bufferIndex = chunk.length;
+          while (chunk.charCodeAt(bufferIndex - 1) === 32) {
+            size++;
+            bufferIndex--;
+          }
+          if (bufferIndex) break;
+          bufferIndex = -1;
+        } else if (chunk === -2) {
+          tabs = true;
+          size++;
+        } else if (chunk === -1) ;
+        else {
+          index2++;
+          break;
+        }
+      }
+      if (context._contentTypeTextTrailing && eventIndex === events.length) {
+        size = 0;
+      }
+      if (size) {
+        const token = {
+          type: eventIndex === events.length || tabs || size < 2 ? "lineSuffix" : "hardBreakTrailing",
+          start: {
+            _bufferIndex: index2 ? bufferIndex : data.start._bufferIndex + bufferIndex,
+            _index: data.start._index + index2,
+            line: data.end.line,
+            column: data.end.column - size,
+            offset: data.end.offset - size
+          },
+          end: {
+            ...data.end
+          }
+        };
+        data.end = {
+          ...token.start
+        };
+        if (data.start.offset === data.end.offset) {
+          Object.assign(data, token);
+        } else {
+          events.splice(eventIndex, 0, ["enter", token, context], ["exit", token, context]);
+          eventIndex += 2;
+        }
+      }
+      eventIndex++;
+    }
+  }
+  return events;
+}
+const document$1 = {
+  [42]: list$2,
+  [43]: list$2,
+  [45]: list$2,
+  [48]: list$2,
+  [49]: list$2,
+  [50]: list$2,
+  [51]: list$2,
+  [52]: list$2,
+  [53]: list$2,
+  [54]: list$2,
+  [55]: list$2,
+  [56]: list$2,
+  [57]: list$2,
+  [62]: blockQuote
+};
+const contentInitial = {
+  [91]: definition$1
+};
+const flowInitial = {
+  [-2]: codeIndented,
+  [-1]: codeIndented,
+  [32]: codeIndented
+};
+const flow = {
+  [35]: headingAtx,
+  [42]: thematicBreak$2,
+  [45]: [setextUnderline, thematicBreak$2],
+  [60]: htmlFlow,
+  [61]: setextUnderline,
+  [95]: thematicBreak$2,
+  [96]: codeFenced,
+  [126]: codeFenced
+};
+const string = {
+  [38]: characterReference,
+  [92]: characterEscape
+};
+const text$3 = {
+  [-5]: lineEnding,
+  [-4]: lineEnding,
+  [-3]: lineEnding,
+  [33]: labelStartImage,
+  [38]: characterReference,
+  [42]: attention,
+  [60]: [autolink, htmlText],
+  [91]: labelStartLink,
+  [92]: [hardBreakEscape, characterEscape],
+  [93]: labelEnd,
+  [95]: attention,
+  [96]: codeText
+};
+const insideSpan = {
+  null: [attention, resolver]
+};
+const attentionMarkers = {
+  null: [42, 95]
+};
+const disable = {
+  null: []
+};
+const defaultConstructs = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  attentionMarkers,
+  contentInitial,
+  disable,
+  document: document$1,
+  flow,
+  flowInitial,
+  insideSpan,
+  string,
+  text: text$3
+}, Symbol.toStringTag, { value: "Module" }));
+function createTokenizer(parser, initialize, from) {
+  let point2 = {
+    _bufferIndex: -1,
+    _index: 0,
+    line: from && from.line || 1,
+    column: from && from.column || 1,
+    offset: from && from.offset || 0
+  };
+  const columnStart = {};
+  const resolveAllConstructs = [];
+  let chunks = [];
+  let stack = [];
+  const effects = {
+    attempt: constructFactory(onsuccessfulconstruct),
+    check: constructFactory(onsuccessfulcheck),
+    consume,
+    enter,
+    exit: exit2,
+    interrupt: constructFactory(onsuccessfulcheck, {
+      interrupt: true
+    })
+  };
+  const context = {
+    code: null,
+    containerState: {},
+    defineSkip,
+    events: [],
+    now: now2,
+    parser,
+    previous: null,
+    sliceSerialize,
+    sliceStream,
+    write
+  };
+  let state = initialize.tokenize.call(context, effects);
+  if (initialize.resolveAll) {
+    resolveAllConstructs.push(initialize);
+  }
+  return context;
+  function write(slice) {
+    chunks = push(chunks, slice);
+    main();
+    if (chunks[chunks.length - 1] !== null) {
+      return [];
+    }
+    addResult(initialize, 0);
+    context.events = resolveAll(resolveAllConstructs, context.events, context);
+    return context.events;
+  }
+  function sliceSerialize(token, expandTabs) {
+    return serializeChunks(sliceStream(token), expandTabs);
+  }
+  function sliceStream(token) {
+    return sliceChunks(chunks, token);
+  }
+  function now2() {
+    const {
+      _bufferIndex,
+      _index,
+      line,
+      column,
+      offset
+    } = point2;
+    return {
+      _bufferIndex,
+      _index,
+      line,
+      column,
+      offset
+    };
+  }
+  function defineSkip(value) {
+    columnStart[value.line] = value.column;
+    accountForPotentialSkip();
+  }
+  function main() {
+    let chunkIndex;
+    while (point2._index < chunks.length) {
+      const chunk = chunks[point2._index];
+      if (typeof chunk === "string") {
+        chunkIndex = point2._index;
+        if (point2._bufferIndex < 0) {
+          point2._bufferIndex = 0;
+        }
+        while (point2._index === chunkIndex && point2._bufferIndex < chunk.length) {
+          go(chunk.charCodeAt(point2._bufferIndex));
+        }
+      } else {
+        go(chunk);
+      }
+    }
+  }
+  function go(code2) {
+    state = state(code2);
+  }
+  function consume(code2) {
+    if (markdownLineEnding(code2)) {
+      point2.line++;
+      point2.column = 1;
+      point2.offset += code2 === -3 ? 2 : 1;
+      accountForPotentialSkip();
+    } else if (code2 !== -1) {
+      point2.column++;
+      point2.offset++;
+    }
+    if (point2._bufferIndex < 0) {
+      point2._index++;
+    } else {
+      point2._bufferIndex++;
+      if (point2._bufferIndex === // Points w/ non-negative `_bufferIndex` reference
+      // strings.
+      /** @type {string} */
+      chunks[point2._index].length) {
+        point2._bufferIndex = -1;
+        point2._index++;
+      }
+    }
+    context.previous = code2;
+  }
+  function enter(type, fields) {
+    const token = fields || {};
+    token.type = type;
+    token.start = now2();
+    context.events.push(["enter", token, context]);
+    stack.push(token);
+    return token;
+  }
+  function exit2(type) {
+    const token = stack.pop();
+    token.end = now2();
+    context.events.push(["exit", token, context]);
+    return token;
+  }
+  function onsuccessfulconstruct(construct, info) {
+    addResult(construct, info.from);
+  }
+  function onsuccessfulcheck(_, info) {
+    info.restore();
+  }
+  function constructFactory(onreturn, fields) {
+    return hook;
+    function hook(constructs2, returnState, bogusState) {
+      let listOfConstructs;
+      let constructIndex;
+      let currentConstruct;
+      let info;
+      return Array.isArray(constructs2) ? (
+        /* c8 ignore next 1 */
+        handleListOfConstructs(constructs2)
+      ) : "tokenize" in constructs2 ? (
+        // Looks like a construct.
+        handleListOfConstructs([
+          /** @type {Construct} */
+          constructs2
+        ])
+      ) : handleMapOfConstructs(constructs2);
+      function handleMapOfConstructs(map2) {
+        return start2;
+        function start2(code2) {
+          const left = code2 !== null && map2[code2];
+          const all2 = code2 !== null && map2.null;
+          const list2 = [
+            // To do: add more extension tests.
+            /* c8 ignore next 2 */
+            ...Array.isArray(left) ? left : left ? [left] : [],
+            ...Array.isArray(all2) ? all2 : all2 ? [all2] : []
+          ];
+          return handleListOfConstructs(list2)(code2);
+        }
+      }
+      function handleListOfConstructs(list2) {
+        listOfConstructs = list2;
+        constructIndex = 0;
+        if (list2.length === 0) {
+          return bogusState;
+        }
+        return handleConstruct(list2[constructIndex]);
+      }
+      function handleConstruct(construct) {
+        return start2;
+        function start2(code2) {
+          info = store();
+          currentConstruct = construct;
+          if (!construct.partial) {
+            context.currentConstruct = construct;
+          }
+          if (construct.name && context.parser.constructs.disable.null.includes(construct.name)) {
+            return nok();
+          }
+          return construct.tokenize.call(
+            // If we do have fields, create an object w/ `context` as its
+            // prototype.
+            // This allows a “live binding”, which is needed for `interrupt`.
+            fields ? Object.assign(Object.create(context), fields) : context,
+            effects,
+            ok2,
+            nok
+          )(code2);
+        }
+      }
+      function ok2(code2) {
+        onreturn(currentConstruct, info);
+        return returnState;
+      }
+      function nok(code2) {
+        info.restore();
+        if (++constructIndex < listOfConstructs.length) {
+          return handleConstruct(listOfConstructs[constructIndex]);
+        }
+        return bogusState;
+      }
+    }
+  }
+  function addResult(construct, from2) {
+    if (construct.resolveAll && !resolveAllConstructs.includes(construct)) {
+      resolveAllConstructs.push(construct);
+    }
+    if (construct.resolve) {
+      splice(context.events, from2, context.events.length - from2, construct.resolve(context.events.slice(from2), context));
+    }
+    if (construct.resolveTo) {
+      context.events = construct.resolveTo(context.events, context);
+    }
+  }
+  function store() {
+    const startPoint = now2();
+    const startPrevious = context.previous;
+    const startCurrentConstruct = context.currentConstruct;
+    const startEventsIndex = context.events.length;
+    const startStack = Array.from(stack);
+    return {
+      from: startEventsIndex,
+      restore
+    };
+    function restore() {
+      point2 = startPoint;
+      context.previous = startPrevious;
+      context.currentConstruct = startCurrentConstruct;
+      context.events.length = startEventsIndex;
+      stack = startStack;
+      accountForPotentialSkip();
+    }
+  }
+  function accountForPotentialSkip() {
+    if (point2.line in columnStart && point2.column < 2) {
+      point2.column = columnStart[point2.line];
+      point2.offset += columnStart[point2.line] - 1;
+    }
+  }
+}
+function sliceChunks(chunks, token) {
+  const startIndex = token.start._index;
+  const startBufferIndex = token.start._bufferIndex;
+  const endIndex = token.end._index;
+  const endBufferIndex = token.end._bufferIndex;
+  let view;
+  if (startIndex === endIndex) {
+    view = [chunks[startIndex].slice(startBufferIndex, endBufferIndex)];
+  } else {
+    view = chunks.slice(startIndex, endIndex);
+    if (startBufferIndex > -1) {
+      const head = view[0];
+      if (typeof head === "string") {
+        view[0] = head.slice(startBufferIndex);
+      } else {
+        view.shift();
+      }
+    }
+    if (endBufferIndex > 0) {
+      view.push(chunks[endIndex].slice(0, endBufferIndex));
+    }
+  }
+  return view;
+}
+function serializeChunks(chunks, expandTabs) {
+  let index2 = -1;
+  const result = [];
+  let atTab;
+  while (++index2 < chunks.length) {
+    const chunk = chunks[index2];
+    let value;
+    if (typeof chunk === "string") {
+      value = chunk;
+    } else switch (chunk) {
+      case -5: {
+        value = "\r";
+        break;
+      }
+      case -4: {
+        value = "\n";
+        break;
+      }
+      case -3: {
+        value = "\r\n";
+        break;
+      }
+      case -2: {
+        value = expandTabs ? " " : "	";
+        break;
+      }
+      case -1: {
+        if (!expandTabs && atTab) continue;
+        value = " ";
+        break;
+      }
+      default: {
+        value = String.fromCharCode(chunk);
+      }
+    }
+    atTab = chunk === -2;
+    result.push(value);
+  }
+  return result.join("");
+}
+function parse(options) {
+  const settings = options || {};
+  const constructs2 = (
+    /** @type {FullNormalizedExtension} */
+    combineExtensions([defaultConstructs, ...settings.extensions || []])
+  );
+  const parser = {
+    constructs: constructs2,
+    content: create2(content$1),
+    defined: [],
+    document: create2(document$2),
+    flow: create2(flow$1),
+    lazy: {},
+    string: create2(string$1),
+    text: create2(text$4)
+  };
+  return parser;
+  function create2(initial) {
+    return creator2;
+    function creator2(from) {
+      return createTokenizer(parser, initial, from);
+    }
+  }
+}
+function postprocess(events) {
+  while (!subtokenize(events)) {
+  }
+  return events;
+}
+const search = /[\0\t\n\r]/g;
+function preprocess() {
+  let column = 1;
+  let buffer = "";
+  let start2 = true;
+  let atCarriageReturn;
+  return preprocessor;
+  function preprocessor(value, encoding, end) {
+    const chunks = [];
+    let match;
+    let next;
+    let startPosition;
+    let endPosition;
+    let code2;
+    value = buffer + (typeof value === "string" ? value.toString() : new TextDecoder(encoding || void 0).decode(value));
+    startPosition = 0;
+    buffer = "";
+    if (start2) {
+      if (value.charCodeAt(0) === 65279) {
+        startPosition++;
+      }
+      start2 = void 0;
+    }
+    while (startPosition < value.length) {
+      search.lastIndex = startPosition;
+      match = search.exec(value);
+      endPosition = match && match.index !== void 0 ? match.index : value.length;
+      code2 = value.charCodeAt(endPosition);
+      if (!match) {
+        buffer = value.slice(startPosition);
+        break;
+      }
+      if (code2 === 10 && startPosition === endPosition && atCarriageReturn) {
+        chunks.push(-3);
+        atCarriageReturn = void 0;
+      } else {
+        if (atCarriageReturn) {
+          chunks.push(-5);
+          atCarriageReturn = void 0;
+        }
+        if (startPosition < endPosition) {
+          chunks.push(value.slice(startPosition, endPosition));
+          column += endPosition - startPosition;
+        }
+        switch (code2) {
+          case 0: {
+            chunks.push(65533);
+            column++;
+            break;
+          }
+          case 9: {
+            next = Math.ceil(column / 4) * 4;
+            chunks.push(-2);
+            while (column++ < next) chunks.push(-1);
+            break;
+          }
+          case 10: {
+            chunks.push(-4);
+            column = 1;
+            break;
+          }
+          default: {
+            atCarriageReturn = true;
+            column = 1;
+          }
+        }
+      }
+      startPosition = endPosition + 1;
+    }
+    if (end) {
+      if (atCarriageReturn) chunks.push(-5);
+      if (buffer) chunks.push(buffer);
+      chunks.push(null);
+    }
+    return chunks;
+  }
+}
+const characterEscapeOrReference = /\\([!-/:-@[-`{-~])|&(#(?:\d{1,7}|x[\da-f]{1,6})|[\da-z]{1,31});/gi;
+function decodeString(value) {
+  return value.replace(characterEscapeOrReference, decode);
+}
+function decode($0, $1, $2) {
+  if ($1) {
+    return $1;
+  }
+  const head = $2.charCodeAt(0);
+  if (head === 35) {
+    const head2 = $2.charCodeAt(1);
+    const hex2 = head2 === 120 || head2 === 88;
+    return decodeNumericCharacterReference($2.slice(hex2 ? 2 : 1), hex2 ? 16 : 10);
+  }
+  return decodeNamedCharacterReference($2) || $0;
+}
+const own$2 = {}.hasOwnProperty;
+function fromMarkdown(value, encoding, options) {
+  if (typeof encoding !== "string") {
+    options = encoding;
+    encoding = void 0;
+  }
+  return compiler(options)(postprocess(parse(options).document().write(preprocess()(value, encoding, true))));
+}
+function compiler(options) {
+  const config = {
+    transforms: [],
+    canContainEols: ["emphasis", "fragment", "heading", "paragraph", "strong"],
+    enter: {
+      autolink: opener(link2),
+      autolinkProtocol: onenterdata,
+      autolinkEmail: onenterdata,
+      atxHeading: opener(heading2),
+      blockQuote: opener(blockQuote2),
+      characterEscape: onenterdata,
+      characterReference: onenterdata,
+      codeFenced: opener(codeFlow),
+      codeFencedFenceInfo: buffer,
+      codeFencedFenceMeta: buffer,
+      codeIndented: opener(codeFlow, buffer),
+      codeText: opener(codeText2, buffer),
+      codeTextData: onenterdata,
+      data: onenterdata,
+      codeFlowValue: onenterdata,
+      definition: opener(definition2),
+      definitionDestinationString: buffer,
+      definitionLabelString: buffer,
+      definitionTitleString: buffer,
+      emphasis: opener(emphasis2),
+      hardBreakEscape: opener(hardBreak2),
+      hardBreakTrailing: opener(hardBreak2),
+      htmlFlow: opener(html2, buffer),
+      htmlFlowData: onenterdata,
+      htmlText: opener(html2, buffer),
+      htmlTextData: onenterdata,
+      image: opener(image2),
+      label: buffer,
+      link: opener(link2),
+      listItem: opener(listItem2),
+      listItemValue: onenterlistitemvalue,
+      listOrdered: opener(list2, onenterlistordered),
+      listUnordered: opener(list2),
+      paragraph: opener(paragraph2),
+      reference: onenterreference,
+      referenceString: buffer,
+      resourceDestinationString: buffer,
+      resourceTitleString: buffer,
+      setextHeading: opener(heading2),
+      strong: opener(strong2),
+      thematicBreak: opener(thematicBreak2)
+    },
+    exit: {
+      atxHeading: closer(),
+      atxHeadingSequence: onexitatxheadingsequence,
+      autolink: closer(),
+      autolinkEmail: onexitautolinkemail,
+      autolinkProtocol: onexitautolinkprotocol,
+      blockQuote: closer(),
+      characterEscapeValue: onexitdata,
+      characterReferenceMarkerHexadecimal: onexitcharacterreferencemarker,
+      characterReferenceMarkerNumeric: onexitcharacterreferencemarker,
+      characterReferenceValue: onexitcharacterreferencevalue,
+      characterReference: onexitcharacterreference,
+      codeFenced: closer(onexitcodefenced),
+      codeFencedFence: onexitcodefencedfence,
+      codeFencedFenceInfo: onexitcodefencedfenceinfo,
+      codeFencedFenceMeta: onexitcodefencedfencemeta,
+      codeFlowValue: onexitdata,
+      codeIndented: closer(onexitcodeindented),
+      codeText: closer(onexitcodetext),
+      codeTextData: onexitdata,
+      data: onexitdata,
+      definition: closer(),
+      definitionDestinationString: onexitdefinitiondestinationstring,
+      definitionLabelString: onexitdefinitionlabelstring,
+      definitionTitleString: onexitdefinitiontitlestring,
+      emphasis: closer(),
+      hardBreakEscape: closer(onexithardbreak),
+      hardBreakTrailing: closer(onexithardbreak),
+      htmlFlow: closer(onexithtmlflow),
+      htmlFlowData: onexitdata,
+      htmlText: closer(onexithtmltext),
+      htmlTextData: onexitdata,
+      image: closer(onexitimage),
+      label: onexitlabel,
+      labelText: onexitlabeltext,
+      lineEnding: onexitlineending,
+      link: closer(onexitlink),
+      listItem: closer(),
+      listOrdered: closer(),
+      listUnordered: closer(),
+      paragraph: closer(),
+      referenceString: onexitreferencestring,
+      resourceDestinationString: onexitresourcedestinationstring,
+      resourceTitleString: onexitresourcetitlestring,
+      resource: onexitresource,
+      setextHeading: closer(onexitsetextheading),
+      setextHeadingLineSequence: onexitsetextheadinglinesequence,
+      setextHeadingText: onexitsetextheadingtext,
+      strong: closer(),
+      thematicBreak: closer()
+    }
+  };
+  configure(config, (options || {}).mdastExtensions || []);
+  const data = {};
+  return compile;
+  function compile(events) {
+    let tree = {
+      type: "root",
+      children: []
+    };
+    const context = {
+      stack: [tree],
+      tokenStack: [],
+      config,
+      enter,
+      exit: exit2,
+      buffer,
+      resume,
+      data
+    };
+    const listStack = [];
+    let index2 = -1;
+    while (++index2 < events.length) {
+      if (events[index2][1].type === "listOrdered" || events[index2][1].type === "listUnordered") {
+        if (events[index2][0] === "enter") {
+          listStack.push(index2);
+        } else {
+          const tail = listStack.pop();
+          index2 = prepareList(events, tail, index2);
+        }
+      }
+    }
+    index2 = -1;
+    while (++index2 < events.length) {
+      const handler = config[events[index2][0]];
+      if (own$2.call(handler, events[index2][1].type)) {
+        handler[events[index2][1].type].call(Object.assign({
+          sliceSerialize: events[index2][2].sliceSerialize
+        }, context), events[index2][1]);
+      }
+    }
+    if (context.tokenStack.length > 0) {
+      const tail = context.tokenStack[context.tokenStack.length - 1];
+      const handler = tail[1] || defaultOnError;
+      handler.call(context, void 0, tail[0]);
+    }
+    tree.position = {
+      start: point(events.length > 0 ? events[0][1].start : {
+        line: 1,
+        column: 1,
+        offset: 0
+      }),
+      end: point(events.length > 0 ? events[events.length - 2][1].end : {
+        line: 1,
+        column: 1,
+        offset: 0
+      })
+    };
+    index2 = -1;
+    while (++index2 < config.transforms.length) {
+      tree = config.transforms[index2](tree) || tree;
+    }
+    return tree;
+  }
+  function prepareList(events, start2, length) {
+    let index2 = start2 - 1;
+    let containerBalance = -1;
+    let listSpread = false;
+    let listItem3;
+    let lineIndex;
+    let firstBlankLineIndex;
+    let atMarker;
+    while (++index2 <= length) {
+      const event = events[index2];
+      switch (event[1].type) {
+        case "listUnordered":
+        case "listOrdered":
+        case "blockQuote": {
+          if (event[0] === "enter") {
+            containerBalance++;
+          } else {
+            containerBalance--;
+          }
+          atMarker = void 0;
+          break;
+        }
+        case "lineEndingBlank": {
+          if (event[0] === "enter") {
+            if (listItem3 && !atMarker && !containerBalance && !firstBlankLineIndex) {
+              firstBlankLineIndex = index2;
+            }
+            atMarker = void 0;
+          }
+          break;
+        }
+        case "linePrefix":
+        case "listItemValue":
+        case "listItemMarker":
+        case "listItemPrefix":
+        case "listItemPrefixWhitespace": {
+          break;
+        }
+        default: {
+          atMarker = void 0;
+        }
+      }
+      if (!containerBalance && event[0] === "enter" && event[1].type === "listItemPrefix" || containerBalance === -1 && event[0] === "exit" && (event[1].type === "listUnordered" || event[1].type === "listOrdered")) {
+        if (listItem3) {
+          let tailIndex = index2;
+          lineIndex = void 0;
+          while (tailIndex--) {
+            const tailEvent = events[tailIndex];
+            if (tailEvent[1].type === "lineEnding" || tailEvent[1].type === "lineEndingBlank") {
+              if (tailEvent[0] === "exit") continue;
+              if (lineIndex) {
+                events[lineIndex][1].type = "lineEndingBlank";
+                listSpread = true;
+              }
+              tailEvent[1].type = "lineEnding";
+              lineIndex = tailIndex;
+            } else if (tailEvent[1].type === "linePrefix" || tailEvent[1].type === "blockQuotePrefix" || tailEvent[1].type === "blockQuotePrefixWhitespace" || tailEvent[1].type === "blockQuoteMarker" || tailEvent[1].type === "listItemIndent") ;
+            else {
+              break;
+            }
+          }
+          if (firstBlankLineIndex && (!lineIndex || firstBlankLineIndex < lineIndex)) {
+            listItem3._spread = true;
+          }
+          listItem3.end = Object.assign({}, lineIndex ? events[lineIndex][1].start : event[1].end);
+          events.splice(lineIndex || index2, 0, ["exit", listItem3, event[2]]);
+          index2++;
+          length++;
+        }
+        if (event[1].type === "listItemPrefix") {
+          const item = {
+            type: "listItem",
+            _spread: false,
+            start: Object.assign({}, event[1].start),
+            // @ts-expect-error: we’ll add `end` in a second.
+            end: void 0
+          };
+          listItem3 = item;
+          events.splice(index2, 0, ["enter", item, event[2]]);
+          index2++;
+          length++;
+          firstBlankLineIndex = void 0;
+          atMarker = true;
+        }
+      }
+    }
+    events[start2][1]._spread = listSpread;
+    return length;
+  }
+  function opener(create2, and) {
+    return open;
+    function open(token) {
+      enter.call(this, create2(token), token);
+      if (and) and.call(this, token);
+    }
+  }
+  function buffer() {
+    this.stack.push({
+      type: "fragment",
+      children: []
+    });
+  }
+  function enter(node2, token, errorHandler) {
+    const parent = this.stack[this.stack.length - 1];
+    const siblings = parent.children;
+    siblings.push(node2);
+    this.stack.push(node2);
+    this.tokenStack.push([token, errorHandler || void 0]);
+    node2.position = {
+      start: point(token.start),
+      // @ts-expect-error: `end` will be patched later.
+      end: void 0
+    };
+  }
+  function closer(and) {
+    return close;
+    function close(token) {
+      if (and) and.call(this, token);
+      exit2.call(this, token);
+    }
+  }
+  function exit2(token, onExitError) {
+    const node2 = this.stack.pop();
+    const open = this.tokenStack.pop();
+    if (!open) {
+      throw new Error("Cannot close `" + token.type + "` (" + stringifyPosition({
+        start: token.start,
+        end: token.end
+      }) + "): it’s not open");
+    } else if (open[0].type !== token.type) {
+      if (onExitError) {
+        onExitError.call(this, token, open[0]);
+      } else {
+        const handler = open[1] || defaultOnError;
+        handler.call(this, token, open[0]);
+      }
+    }
+    node2.position.end = point(token.end);
+  }
+  function resume() {
+    return toString$1(this.stack.pop());
+  }
+  function onenterlistordered() {
+    this.data.expectingFirstListItemValue = true;
+  }
+  function onenterlistitemvalue(token) {
+    if (this.data.expectingFirstListItemValue) {
+      const ancestor = this.stack[this.stack.length - 2];
+      ancestor.start = Number.parseInt(this.sliceSerialize(token), 10);
+      this.data.expectingFirstListItemValue = void 0;
+    }
+  }
+  function onexitcodefencedfenceinfo() {
+    const data2 = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.lang = data2;
+  }
+  function onexitcodefencedfencemeta() {
+    const data2 = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.meta = data2;
+  }
+  function onexitcodefencedfence() {
+    if (this.data.flowCodeInside) return;
+    this.buffer();
+    this.data.flowCodeInside = true;
+  }
+  function onexitcodefenced() {
+    const data2 = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.value = data2.replace(/^(\r?\n|\r)|(\r?\n|\r)$/g, "");
+    this.data.flowCodeInside = void 0;
+  }
+  function onexitcodeindented() {
+    const data2 = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.value = data2.replace(/(\r?\n|\r)$/g, "");
+  }
+  function onexitdefinitionlabelstring(token) {
+    const label = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.label = label;
+    node2.identifier = normalizeIdentifier(this.sliceSerialize(token)).toLowerCase();
+  }
+  function onexitdefinitiontitlestring() {
+    const data2 = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.title = data2;
+  }
+  function onexitdefinitiondestinationstring() {
+    const data2 = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.url = data2;
+  }
+  function onexitatxheadingsequence(token) {
+    const node2 = this.stack[this.stack.length - 1];
+    if (!node2.depth) {
+      const depth = this.sliceSerialize(token).length;
+      node2.depth = depth;
+    }
+  }
+  function onexitsetextheadingtext() {
+    this.data.setextHeadingSlurpLineEnding = true;
+  }
+  function onexitsetextheadinglinesequence(token) {
+    const node2 = this.stack[this.stack.length - 1];
+    node2.depth = this.sliceSerialize(token).codePointAt(0) === 61 ? 1 : 2;
+  }
+  function onexitsetextheading() {
+    this.data.setextHeadingSlurpLineEnding = void 0;
+  }
+  function onenterdata(token) {
+    const node2 = this.stack[this.stack.length - 1];
+    const siblings = node2.children;
+    let tail = siblings[siblings.length - 1];
+    if (!tail || tail.type !== "text") {
+      tail = text2();
+      tail.position = {
+        start: point(token.start),
+        // @ts-expect-error: we’ll add `end` later.
+        end: void 0
+      };
+      siblings.push(tail);
+    }
+    this.stack.push(tail);
+  }
+  function onexitdata(token) {
+    const tail = this.stack.pop();
+    tail.value += this.sliceSerialize(token);
+    tail.position.end = point(token.end);
+  }
+  function onexitlineending(token) {
+    const context = this.stack[this.stack.length - 1];
+    if (this.data.atHardBreak) {
+      const tail = context.children[context.children.length - 1];
+      tail.position.end = point(token.end);
+      this.data.atHardBreak = void 0;
+      return;
+    }
+    if (!this.data.setextHeadingSlurpLineEnding && config.canContainEols.includes(context.type)) {
+      onenterdata.call(this, token);
+      onexitdata.call(this, token);
+    }
+  }
+  function onexithardbreak() {
+    this.data.atHardBreak = true;
+  }
+  function onexithtmlflow() {
+    const data2 = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.value = data2;
+  }
+  function onexithtmltext() {
+    const data2 = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.value = data2;
+  }
+  function onexitcodetext() {
+    const data2 = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.value = data2;
+  }
+  function onexitlink() {
+    const node2 = this.stack[this.stack.length - 1];
+    if (this.data.inReference) {
+      const referenceType = this.data.referenceType || "shortcut";
+      node2.type += "Reference";
+      node2.referenceType = referenceType;
+      delete node2.url;
+      delete node2.title;
+    } else {
+      delete node2.identifier;
+      delete node2.label;
+    }
+    this.data.referenceType = void 0;
+  }
+  function onexitimage() {
+    const node2 = this.stack[this.stack.length - 1];
+    if (this.data.inReference) {
+      const referenceType = this.data.referenceType || "shortcut";
+      node2.type += "Reference";
+      node2.referenceType = referenceType;
+      delete node2.url;
+      delete node2.title;
+    } else {
+      delete node2.identifier;
+      delete node2.label;
+    }
+    this.data.referenceType = void 0;
+  }
+  function onexitlabeltext(token) {
+    const string2 = this.sliceSerialize(token);
+    const ancestor = this.stack[this.stack.length - 2];
+    ancestor.label = decodeString(string2);
+    ancestor.identifier = normalizeIdentifier(string2).toLowerCase();
+  }
+  function onexitlabel() {
+    const fragment = this.stack[this.stack.length - 1];
+    const value = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    this.data.inReference = true;
+    if (node2.type === "link") {
+      const children2 = fragment.children;
+      node2.children = children2;
+    } else {
+      node2.alt = value;
+    }
+  }
+  function onexitresourcedestinationstring() {
+    const data2 = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.url = data2;
+  }
+  function onexitresourcetitlestring() {
+    const data2 = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.title = data2;
+  }
+  function onexitresource() {
+    this.data.inReference = void 0;
+  }
+  function onenterreference() {
+    this.data.referenceType = "collapsed";
+  }
+  function onexitreferencestring(token) {
+    const label = this.resume();
+    const node2 = this.stack[this.stack.length - 1];
+    node2.label = label;
+    node2.identifier = normalizeIdentifier(this.sliceSerialize(token)).toLowerCase();
+    this.data.referenceType = "full";
+  }
+  function onexitcharacterreferencemarker(token) {
+    this.data.characterReferenceType = token.type;
+  }
+  function onexitcharacterreferencevalue(token) {
+    const data2 = this.sliceSerialize(token);
+    const type = this.data.characterReferenceType;
+    let value;
+    if (type) {
+      value = decodeNumericCharacterReference(data2, type === "characterReferenceMarkerNumeric" ? 10 : 16);
+      this.data.characterReferenceType = void 0;
+    } else {
+      const result = decodeNamedCharacterReference(data2);
+      value = result;
+    }
+    const tail = this.stack[this.stack.length - 1];
+    tail.value += value;
+  }
+  function onexitcharacterreference(token) {
+    const tail = this.stack.pop();
+    tail.position.end = point(token.end);
+  }
+  function onexitautolinkprotocol(token) {
+    onexitdata.call(this, token);
+    const node2 = this.stack[this.stack.length - 1];
+    node2.url = this.sliceSerialize(token);
+  }
+  function onexitautolinkemail(token) {
+    onexitdata.call(this, token);
+    const node2 = this.stack[this.stack.length - 1];
+    node2.url = "mailto:" + this.sliceSerialize(token);
+  }
+  function blockQuote2() {
+    return {
+      type: "blockquote",
+      children: []
+    };
+  }
+  function codeFlow() {
+    return {
+      type: "code",
+      lang: null,
+      meta: null,
+      value: ""
+    };
+  }
+  function codeText2() {
+    return {
+      type: "inlineCode",
+      value: ""
+    };
+  }
+  function definition2() {
+    return {
+      type: "definition",
+      identifier: "",
+      label: null,
+      title: null,
+      url: ""
+    };
+  }
+  function emphasis2() {
+    return {
+      type: "emphasis",
+      children: []
+    };
+  }
+  function heading2() {
+    return {
+      type: "heading",
+      // @ts-expect-error `depth` will be set later.
+      depth: 0,
+      children: []
+    };
+  }
+  function hardBreak2() {
+    return {
+      type: "break"
+    };
+  }
+  function html2() {
+    return {
+      type: "html",
+      value: ""
+    };
+  }
+  function image2() {
+    return {
+      type: "image",
+      title: null,
+      url: "",
+      alt: null
+    };
+  }
+  function link2() {
+    return {
+      type: "link",
+      title: null,
+      url: "",
+      children: []
+    };
+  }
+  function list2(token) {
+    return {
+      type: "list",
+      ordered: token.type === "listOrdered",
+      start: null,
+      spread: token._spread,
+      children: []
+    };
+  }
+  function listItem2(token) {
+    return {
+      type: "listItem",
+      spread: token._spread,
+      checked: null,
+      children: []
+    };
+  }
+  function paragraph2() {
+    return {
+      type: "paragraph",
+      children: []
+    };
+  }
+  function strong2() {
+    return {
+      type: "strong",
+      children: []
+    };
+  }
+  function text2() {
+    return {
+      type: "text",
+      value: ""
+    };
+  }
+  function thematicBreak2() {
+    return {
+      type: "thematicBreak"
+    };
+  }
+}
+function point(d) {
+  return {
+    line: d.line,
+    column: d.column,
+    offset: d.offset
+  };
+}
+function configure(combined, extensions) {
+  let index2 = -1;
+  while (++index2 < extensions.length) {
+    const value = extensions[index2];
+    if (Array.isArray(value)) {
+      configure(combined, value);
+    } else {
+      extension(combined, value);
+    }
+  }
+}
+function extension(combined, extension2) {
+  let key;
+  for (key in extension2) {
+    if (own$2.call(extension2, key)) {
+      switch (key) {
+        case "canContainEols": {
+          const right = extension2[key];
+          if (right) {
+            combined[key].push(...right);
+          }
+          break;
+        }
+        case "transforms": {
+          const right = extension2[key];
+          if (right) {
+            combined[key].push(...right);
+          }
+          break;
+        }
+        case "enter":
+        case "exit": {
+          const right = extension2[key];
+          if (right) {
+            Object.assign(combined[key], right);
+          }
+          break;
+        }
+      }
+    }
+  }
+}
+function defaultOnError(left, right) {
+  if (left) {
+    throw new Error("Cannot close `" + left.type + "` (" + stringifyPosition({
+      start: left.start,
+      end: left.end
+    }) + "): a different token (`" + right.type + "`, " + stringifyPosition({
+      start: right.start,
+      end: right.end
+    }) + ") is open");
+  } else {
+    throw new Error("Cannot close document, a token (`" + right.type + "`, " + stringifyPosition({
+      start: right.start,
+      end: right.end
+    }) + ") is still open");
+  }
+}
+function remarkParse(options) {
+  const self2 = this;
+  self2.parser = parser;
+  function parser(doc) {
+    return fromMarkdown(doc, {
+      ...self2.data("settings"),
+      ...options,
+      // Note: these options are not in the readme.
+      // The goal is for them to be set by plugins on `data` instead of being
+      // passed by users.
+      extensions: self2.data("micromarkExtensions") || [],
+      mdastExtensions: self2.data("fromMarkdownExtensions") || []
+    });
+  }
+}
+function blockquote$1(state, node2) {
+  const result = {
+    type: "element",
+    tagName: "blockquote",
+    properties: {},
+    children: state.wrap(state.all(node2), true)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function hardBreak$1(state, node2) {
+  const result = { type: "element", tagName: "br", properties: {}, children: [] };
+  state.patch(node2, result);
+  return [state.applyData(node2, result), { type: "text", value: "\n" }];
+}
+function code$2(state, node2) {
+  const value = node2.value ? node2.value + "\n" : "";
+  const properties = {};
+  const language = node2.lang ? node2.lang.split(/\s+/) : [];
+  if (language.length > 0) {
+    properties.className = ["language-" + language[0]];
+  }
+  let result = {
+    type: "element",
+    tagName: "code",
+    properties,
+    children: [{ type: "text", value }]
+  };
+  if (node2.meta) {
+    result.data = { meta: node2.meta };
+  }
+  state.patch(node2, result);
+  result = state.applyData(node2, result);
+  result = { type: "element", tagName: "pre", properties: {}, children: [result] };
+  state.patch(node2, result);
+  return result;
+}
+function strikethrough(state, node2) {
+  const result = {
+    type: "element",
+    tagName: "del",
+    properties: {},
+    children: state.all(node2)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function emphasis$1(state, node2) {
+  const result = {
+    type: "element",
+    tagName: "em",
+    properties: {},
+    children: state.all(node2)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function footnoteReference$1(state, node2) {
+  const clobberPrefix = typeof state.options.clobberPrefix === "string" ? state.options.clobberPrefix : "user-content-";
+  const id2 = String(node2.identifier).toUpperCase();
+  const safeId = normalizeUri(id2.toLowerCase());
+  const index2 = state.footnoteOrder.indexOf(id2);
+  let counter;
+  let reuseCounter = state.footnoteCounts.get(id2);
+  if (reuseCounter === void 0) {
+    reuseCounter = 0;
+    state.footnoteOrder.push(id2);
+    counter = state.footnoteOrder.length;
+  } else {
+    counter = index2 + 1;
+  }
+  reuseCounter += 1;
+  state.footnoteCounts.set(id2, reuseCounter);
+  const link2 = {
+    type: "element",
+    tagName: "a",
+    properties: {
+      href: "#" + clobberPrefix + "fn-" + safeId,
+      id: clobberPrefix + "fnref-" + safeId + (reuseCounter > 1 ? "-" + reuseCounter : ""),
+      dataFootnoteRef: true,
+      ariaDescribedBy: ["footnote-label"]
+    },
+    children: [{ type: "text", value: String(counter) }]
+  };
+  state.patch(node2, link2);
+  const sup = {
+    type: "element",
+    tagName: "sup",
+    properties: {},
+    children: [link2]
+  };
+  state.patch(node2, sup);
+  return state.applyData(node2, sup);
+}
+function heading$1(state, node2) {
+  const result = {
+    type: "element",
+    tagName: "h" + node2.depth,
+    properties: {},
+    children: state.all(node2)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function html$1(state, node2) {
+  if (state.options.allowDangerousHtml) {
+    const result = { type: "raw", value: node2.value };
+    state.patch(node2, result);
+    return state.applyData(node2, result);
+  }
+  return void 0;
+}
+function revert(state, node2) {
+  const subtype = node2.referenceType;
+  let suffix = "]";
+  if (subtype === "collapsed") {
+    suffix += "[]";
+  } else if (subtype === "full") {
+    suffix += "[" + (node2.label || node2.identifier) + "]";
+  }
+  if (node2.type === "imageReference") {
+    return [{ type: "text", value: "![" + node2.alt + suffix }];
+  }
+  const contents = state.all(node2);
+  const head = contents[0];
+  if (head && head.type === "text") {
+    head.value = "[" + head.value;
+  } else {
+    contents.unshift({ type: "text", value: "[" });
+  }
+  const tail = contents[contents.length - 1];
+  if (tail && tail.type === "text") {
+    tail.value += suffix;
+  } else {
+    contents.push({ type: "text", value: suffix });
+  }
+  return contents;
+}
+function imageReference$1(state, node2) {
+  const id2 = String(node2.identifier).toUpperCase();
+  const definition2 = state.definitionById.get(id2);
+  if (!definition2) {
+    return revert(state, node2);
+  }
+  const properties = { src: normalizeUri(definition2.url || ""), alt: node2.alt };
+  if (definition2.title !== null && definition2.title !== void 0) {
+    properties.title = definition2.title;
+  }
+  const result = { type: "element", tagName: "img", properties, children: [] };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function image$1(state, node2) {
+  const properties = { src: normalizeUri(node2.url) };
+  if (node2.alt !== null && node2.alt !== void 0) {
+    properties.alt = node2.alt;
+  }
+  if (node2.title !== null && node2.title !== void 0) {
+    properties.title = node2.title;
+  }
+  const result = { type: "element", tagName: "img", properties, children: [] };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function inlineCode$1(state, node2) {
+  const text2 = { type: "text", value: node2.value.replace(/\r?\n|\r/g, " ") };
+  state.patch(node2, text2);
+  const result = {
+    type: "element",
+    tagName: "code",
+    properties: {},
+    children: [text2]
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function linkReference$1(state, node2) {
+  const id2 = String(node2.identifier).toUpperCase();
+  const definition2 = state.definitionById.get(id2);
+  if (!definition2) {
+    return revert(state, node2);
+  }
+  const properties = { href: normalizeUri(definition2.url || "") };
+  if (definition2.title !== null && definition2.title !== void 0) {
+    properties.title = definition2.title;
+  }
+  const result = {
+    type: "element",
+    tagName: "a",
+    properties,
+    children: state.all(node2)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function link$1(state, node2) {
+  const properties = { href: normalizeUri(node2.url) };
+  if (node2.title !== null && node2.title !== void 0) {
+    properties.title = node2.title;
+  }
+  const result = {
+    type: "element",
+    tagName: "a",
+    properties,
+    children: state.all(node2)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function listItem$1(state, node2, parent) {
+  const results = state.all(node2);
+  const loose = parent ? listLoose(parent) : listItemLoose(node2);
+  const properties = {};
+  const children2 = [];
+  if (typeof node2.checked === "boolean") {
+    const head = results[0];
+    let paragraph2;
+    if (head && head.type === "element" && head.tagName === "p") {
+      paragraph2 = head;
+    } else {
+      paragraph2 = { type: "element", tagName: "p", properties: {}, children: [] };
+      results.unshift(paragraph2);
+    }
+    if (paragraph2.children.length > 0) {
+      paragraph2.children.unshift({ type: "text", value: " " });
+    }
+    paragraph2.children.unshift({
+      type: "element",
+      tagName: "input",
+      properties: { type: "checkbox", checked: node2.checked, disabled: true },
+      children: []
+    });
+    properties.className = ["task-list-item"];
+  }
+  let index2 = -1;
+  while (++index2 < results.length) {
+    const child = results[index2];
+    if (loose || index2 !== 0 || child.type !== "element" || child.tagName !== "p") {
+      children2.push({ type: "text", value: "\n" });
+    }
+    if (child.type === "element" && child.tagName === "p" && !loose) {
+      children2.push(...child.children);
+    } else {
+      children2.push(child);
+    }
+  }
+  const tail = results[results.length - 1];
+  if (tail && (loose || tail.type !== "element" || tail.tagName !== "p")) {
+    children2.push({ type: "text", value: "\n" });
+  }
+  const result = { type: "element", tagName: "li", properties, children: children2 };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function listLoose(node2) {
+  let loose = false;
+  if (node2.type === "list") {
+    loose = node2.spread || false;
+    const children2 = node2.children;
+    let index2 = -1;
+    while (!loose && ++index2 < children2.length) {
+      loose = listItemLoose(children2[index2]);
+    }
+  }
+  return loose;
+}
+function listItemLoose(node2) {
+  const spread = node2.spread;
+  return spread === null || spread === void 0 ? node2.children.length > 1 : spread;
+}
+function list$1(state, node2) {
+  const properties = {};
+  const results = state.all(node2);
+  let index2 = -1;
+  if (typeof node2.start === "number" && node2.start !== 1) {
+    properties.start = node2.start;
+  }
+  while (++index2 < results.length) {
+    const child = results[index2];
+    if (child.type === "element" && child.tagName === "li" && child.properties && Array.isArray(child.properties.className) && child.properties.className.includes("task-list-item")) {
+      properties.className = ["contains-task-list"];
+      break;
+    }
+  }
+  const result = {
+    type: "element",
+    tagName: node2.ordered ? "ol" : "ul",
+    properties,
+    children: state.wrap(results, true)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function paragraph$1(state, node2) {
+  const result = {
+    type: "element",
+    tagName: "p",
+    properties: {},
+    children: state.all(node2)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function root$1(state, node2) {
+  const result = { type: "root", children: state.wrap(state.all(node2)) };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function strong$1(state, node2) {
+  const result = {
+    type: "element",
+    tagName: "strong",
+    properties: {},
+    children: state.all(node2)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function table(state, node2) {
+  const rows = state.all(node2);
+  const firstRow = rows.shift();
+  const tableContent = [];
+  if (firstRow) {
+    const head = {
+      type: "element",
+      tagName: "thead",
+      properties: {},
+      children: state.wrap([firstRow], true)
+    };
+    state.patch(node2.children[0], head);
+    tableContent.push(head);
+  }
+  if (rows.length > 0) {
+    const body = {
+      type: "element",
+      tagName: "tbody",
+      properties: {},
+      children: state.wrap(rows, true)
+    };
+    const start2 = pointStart(node2.children[1]);
+    const end = pointEnd(node2.children[node2.children.length - 1]);
+    if (start2 && end) body.position = { start: start2, end };
+    tableContent.push(body);
+  }
+  const result = {
+    type: "element",
+    tagName: "table",
+    properties: {},
+    children: state.wrap(tableContent, true)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function tableRow(state, node2, parent) {
+  const siblings = parent ? parent.children : void 0;
+  const rowIndex = siblings ? siblings.indexOf(node2) : 1;
+  const tagName = rowIndex === 0 ? "th" : "td";
+  const align = parent && parent.type === "table" ? parent.align : void 0;
+  const length = align ? align.length : node2.children.length;
+  let cellIndex = -1;
+  const cells = [];
+  while (++cellIndex < length) {
+    const cell = node2.children[cellIndex];
+    const properties = {};
+    const alignValue = align ? align[cellIndex] : void 0;
+    if (alignValue) {
+      properties.align = alignValue;
+    }
+    let result2 = { type: "element", tagName, properties, children: [] };
+    if (cell) {
+      result2.children = state.all(cell);
+      state.patch(cell, result2);
+      result2 = state.applyData(cell, result2);
+    }
+    cells.push(result2);
+  }
+  const result = {
+    type: "element",
+    tagName: "tr",
+    properties: {},
+    children: state.wrap(cells, true)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function tableCell(state, node2) {
+  const result = {
+    type: "element",
+    tagName: "td",
+    // Assume body cell.
+    properties: {},
+    children: state.all(node2)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+const tab = 9;
+const space = 32;
+function trimLines(value) {
+  const source = String(value);
+  const search2 = /\r?\n|\r/g;
+  let match = search2.exec(source);
+  let last = 0;
+  const lines = [];
+  while (match) {
+    lines.push(
+      trimLine(source.slice(last, match.index), last > 0, true),
+      match[0]
+    );
+    last = match.index + match[0].length;
+    match = search2.exec(source);
+  }
+  lines.push(trimLine(source.slice(last), last > 0, false));
+  return lines.join("");
+}
+function trimLine(value, start2, end) {
+  let startIndex = 0;
+  let endIndex = value.length;
+  if (start2) {
+    let code2 = value.codePointAt(startIndex);
+    while (code2 === tab || code2 === space) {
+      startIndex++;
+      code2 = value.codePointAt(startIndex);
+    }
+  }
+  if (end) {
+    let code2 = value.codePointAt(endIndex - 1);
+    while (code2 === tab || code2 === space) {
+      endIndex--;
+      code2 = value.codePointAt(endIndex - 1);
+    }
+  }
+  return endIndex > startIndex ? value.slice(startIndex, endIndex) : "";
+}
+function text$2(state, node2) {
+  const result = { type: "text", value: trimLines(String(node2.value)) };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function thematicBreak$1(state, node2) {
+  const result = {
+    type: "element",
+    tagName: "hr",
+    properties: {},
+    children: []
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+const handlers = {
+  blockquote: blockquote$1,
+  break: hardBreak$1,
+  code: code$2,
+  delete: strikethrough,
+  emphasis: emphasis$1,
+  footnoteReference: footnoteReference$1,
+  heading: heading$1,
+  html: html$1,
+  imageReference: imageReference$1,
+  image: image$1,
+  inlineCode: inlineCode$1,
+  linkReference: linkReference$1,
+  link: link$1,
+  listItem: listItem$1,
+  list: list$1,
+  paragraph: paragraph$1,
+  // @ts-expect-error: root is different, but hard to type.
+  root: root$1,
+  strong: strong$1,
+  table,
+  tableCell,
+  tableRow,
+  text: text$2,
+  thematicBreak: thematicBreak$1,
+  toml: ignore,
+  yaml: ignore,
+  definition: ignore,
+  footnoteDefinition: ignore
+};
+function ignore() {
+  return void 0;
+}
+const VOID = -1;
+const PRIMITIVE = 0;
+const ARRAY = 1;
+const OBJECT = 2;
+const DATE = 3;
+const REGEXP = 4;
+const MAP = 5;
+const SET = 6;
+const ERROR = 7;
+const BIGINT = 8;
+const env = typeof self === "object" ? self : globalThis;
+const deserializer = ($, _) => {
+  const as = (out, index2) => {
+    $.set(index2, out);
+    return out;
+  };
+  const unpair = (index2) => {
+    if ($.has(index2))
+      return $.get(index2);
+    const [type, value] = _[index2];
+    switch (type) {
+      case PRIMITIVE:
+      case VOID:
+        return as(value, index2);
+      case ARRAY: {
+        const arr = as([], index2);
+        for (const index3 of value)
+          arr.push(unpair(index3));
+        return arr;
+      }
+      case OBJECT: {
+        const object2 = as({}, index2);
+        for (const [key, index3] of value)
+          object2[unpair(key)] = unpair(index3);
+        return object2;
+      }
+      case DATE:
+        return as(new Date(value), index2);
+      case REGEXP: {
+        const { source, flags } = value;
+        return as(new RegExp(source, flags), index2);
+      }
+      case MAP: {
+        const map2 = as(/* @__PURE__ */ new Map(), index2);
+        for (const [key, index3] of value)
+          map2.set(unpair(key), unpair(index3));
+        return map2;
+      }
+      case SET: {
+        const set2 = as(/* @__PURE__ */ new Set(), index2);
+        for (const index3 of value)
+          set2.add(unpair(index3));
+        return set2;
+      }
+      case ERROR: {
+        const { name: name2, message } = value;
+        return as(new env[name2](message), index2);
+      }
+      case BIGINT:
+        return as(BigInt(value), index2);
+      case "BigInt":
+        return as(Object(BigInt(value)), index2);
+      case "ArrayBuffer":
+        return as(new Uint8Array(value).buffer, value);
+      case "DataView": {
+        const { buffer } = new Uint8Array(value);
+        return as(new DataView(buffer), value);
+      }
+    }
+    return as(new env[type](value), index2);
+  };
+  return unpair;
+};
+const deserialize = (serialized) => deserializer(/* @__PURE__ */ new Map(), serialized)(0);
+const EMPTY = "";
+const { toString } = {};
+const { keys } = Object;
+const typeOf = (value) => {
+  const type = typeof value;
+  if (type !== "object" || !value)
+    return [PRIMITIVE, type];
+  const asString = toString.call(value).slice(8, -1);
+  switch (asString) {
+    case "Array":
+      return [ARRAY, EMPTY];
+    case "Object":
+      return [OBJECT, EMPTY];
+    case "Date":
+      return [DATE, EMPTY];
+    case "RegExp":
+      return [REGEXP, EMPTY];
+    case "Map":
+      return [MAP, EMPTY];
+    case "Set":
+      return [SET, EMPTY];
+    case "DataView":
+      return [ARRAY, asString];
+  }
+  if (asString.includes("Array"))
+    return [ARRAY, asString];
+  if (asString.includes("Error"))
+    return [ERROR, asString];
+  return [OBJECT, asString];
+};
+const shouldSkip = ([TYPE, type]) => TYPE === PRIMITIVE && (type === "function" || type === "symbol");
+const serializer = (strict, json, $, _) => {
+  const as = (out, value) => {
+    const index2 = _.push(out) - 1;
+    $.set(value, index2);
+    return index2;
+  };
+  const pair = (value) => {
+    if ($.has(value))
+      return $.get(value);
+    let [TYPE, type] = typeOf(value);
+    switch (TYPE) {
+      case PRIMITIVE: {
+        let entry = value;
+        switch (type) {
+          case "bigint":
+            TYPE = BIGINT;
+            entry = value.toString();
+            break;
+          case "function":
+          case "symbol":
+            if (strict)
+              throw new TypeError("unable to serialize " + type);
+            entry = null;
+            break;
+          case "undefined":
+            return as([VOID], value);
+        }
+        return as([TYPE, entry], value);
+      }
+      case ARRAY: {
+        if (type) {
+          let spread = value;
+          if (type === "DataView") {
+            spread = new Uint8Array(value.buffer);
+          } else if (type === "ArrayBuffer") {
+            spread = new Uint8Array(value);
+          }
+          return as([type, [...spread]], value);
+        }
+        const arr = [];
+        const index2 = as([TYPE, arr], value);
+        for (const entry of value)
+          arr.push(pair(entry));
+        return index2;
+      }
+      case OBJECT: {
+        if (type) {
+          switch (type) {
+            case "BigInt":
+              return as([type, value.toString()], value);
+            case "Boolean":
+            case "Number":
+            case "String":
+              return as([type, value.valueOf()], value);
+          }
+        }
+        if (json && "toJSON" in value)
+          return pair(value.toJSON());
+        const entries = [];
+        const index2 = as([TYPE, entries], value);
+        for (const key of keys(value)) {
+          if (strict || !shouldSkip(typeOf(value[key])))
+            entries.push([pair(key), pair(value[key])]);
+        }
+        return index2;
+      }
+      case DATE:
+        return as([TYPE, value.toISOString()], value);
+      case REGEXP: {
+        const { source, flags } = value;
+        return as([TYPE, { source, flags }], value);
+      }
+      case MAP: {
+        const entries = [];
+        const index2 = as([TYPE, entries], value);
+        for (const [key, entry] of value) {
+          if (strict || !(shouldSkip(typeOf(key)) || shouldSkip(typeOf(entry))))
+            entries.push([pair(key), pair(entry)]);
+        }
+        return index2;
+      }
+      case SET: {
+        const entries = [];
+        const index2 = as([TYPE, entries], value);
+        for (const entry of value) {
+          if (strict || !shouldSkip(typeOf(entry)))
+            entries.push(pair(entry));
+        }
+        return index2;
+      }
+    }
+    const { message } = value;
+    return as([TYPE, { name: type, message }], value);
+  };
+  return pair;
+};
+const serialize$1 = (value, { json, lossy } = {}) => {
+  const _ = [];
+  return serializer(!(json || lossy), !!json, /* @__PURE__ */ new Map(), _)(value), _;
+};
+const structuredClone$1 = typeof structuredClone === "function" ? (
+  /* c8 ignore start */
+  (any, options) => options && ("json" in options || "lossy" in options) ? deserialize(serialize$1(any, options)) : structuredClone(any)
+) : (any, options) => deserialize(serialize$1(any, options));
+function defaultFootnoteBackContent(_, rereferenceIndex) {
+  const result = [{ type: "text", value: "↩" }];
+  if (rereferenceIndex > 1) {
+    result.push({
+      type: "element",
+      tagName: "sup",
+      properties: {},
+      children: [{ type: "text", value: String(rereferenceIndex) }]
+    });
+  }
+  return result;
+}
+function defaultFootnoteBackLabel(referenceIndex, rereferenceIndex) {
+  return "Back to reference " + (referenceIndex + 1) + (rereferenceIndex > 1 ? "-" + rereferenceIndex : "");
+}
+function footer(state) {
+  const clobberPrefix = typeof state.options.clobberPrefix === "string" ? state.options.clobberPrefix : "user-content-";
+  const footnoteBackContent = state.options.footnoteBackContent || defaultFootnoteBackContent;
+  const footnoteBackLabel = state.options.footnoteBackLabel || defaultFootnoteBackLabel;
+  const footnoteLabel = state.options.footnoteLabel || "Footnotes";
+  const footnoteLabelTagName = state.options.footnoteLabelTagName || "h2";
+  const footnoteLabelProperties = state.options.footnoteLabelProperties || {
+    className: ["sr-only"]
+  };
+  const listItems = [];
+  let referenceIndex = -1;
+  while (++referenceIndex < state.footnoteOrder.length) {
+    const definition2 = state.footnoteById.get(
+      state.footnoteOrder[referenceIndex]
+    );
+    if (!definition2) {
+      continue;
+    }
+    const content2 = state.all(definition2);
+    const id2 = String(definition2.identifier).toUpperCase();
+    const safeId = normalizeUri(id2.toLowerCase());
+    let rereferenceIndex = 0;
+    const backReferences = [];
+    const counts = state.footnoteCounts.get(id2);
+    while (counts !== void 0 && ++rereferenceIndex <= counts) {
+      if (backReferences.length > 0) {
+        backReferences.push({ type: "text", value: " " });
+      }
+      let children2 = typeof footnoteBackContent === "string" ? footnoteBackContent : footnoteBackContent(referenceIndex, rereferenceIndex);
+      if (typeof children2 === "string") {
+        children2 = { type: "text", value: children2 };
+      }
+      backReferences.push({
+        type: "element",
+        tagName: "a",
+        properties: {
+          href: "#" + clobberPrefix + "fnref-" + safeId + (rereferenceIndex > 1 ? "-" + rereferenceIndex : ""),
+          dataFootnoteBackref: "",
+          ariaLabel: typeof footnoteBackLabel === "string" ? footnoteBackLabel : footnoteBackLabel(referenceIndex, rereferenceIndex),
+          className: ["data-footnote-backref"]
+        },
+        children: Array.isArray(children2) ? children2 : [children2]
+      });
+    }
+    const tail = content2[content2.length - 1];
+    if (tail && tail.type === "element" && tail.tagName === "p") {
+      const tailTail = tail.children[tail.children.length - 1];
+      if (tailTail && tailTail.type === "text") {
+        tailTail.value += " ";
+      } else {
+        tail.children.push({ type: "text", value: " " });
+      }
+      tail.children.push(...backReferences);
+    } else {
+      content2.push(...backReferences);
+    }
+    const listItem2 = {
+      type: "element",
+      tagName: "li",
+      properties: { id: clobberPrefix + "fn-" + safeId },
+      children: state.wrap(content2, true)
+    };
+    state.patch(definition2, listItem2);
+    listItems.push(listItem2);
+  }
+  if (listItems.length === 0) {
+    return;
+  }
+  return {
+    type: "element",
+    tagName: "section",
+    properties: { dataFootnotes: true, className: ["footnotes"] },
+    children: [
+      {
+        type: "element",
+        tagName: footnoteLabelTagName,
+        properties: {
+          ...structuredClone$1(footnoteLabelProperties),
+          id: "footnote-label"
+        },
+        children: [{ type: "text", value: footnoteLabel }]
+      },
+      { type: "text", value: "\n" },
+      {
+        type: "element",
+        tagName: "ol",
+        properties: {},
+        children: state.wrap(listItems, true)
+      },
+      { type: "text", value: "\n" }
+    ]
+  };
+}
+const convert = (
+  // Note: overloads in JSDoc can’t yet use different `@template`s.
+  /**
+   * @type {(
+   *   (<Condition extends string>(test: Condition) => (node: unknown, index?: number | null | undefined, parent?: Parent | null | undefined, context?: unknown) => node is Node & {type: Condition}) &
+   *   (<Condition extends Props>(test: Condition) => (node: unknown, index?: number | null | undefined, parent?: Parent | null | undefined, context?: unknown) => node is Node & Condition) &
+   *   (<Condition extends TestFunction>(test: Condition) => (node: unknown, index?: number | null | undefined, parent?: Parent | null | undefined, context?: unknown) => node is Node & Predicate<Condition, Node>) &
+   *   ((test?: null | undefined) => (node?: unknown, index?: number | null | undefined, parent?: Parent | null | undefined, context?: unknown) => node is Node) &
+   *   ((test?: Test) => Check)
+   * )}
+   */
+  /**
+   * @param {Test} [test]
+   * @returns {Check}
+   */
+  (function(test) {
+    if (test === null || test === void 0) {
+      return ok;
+    }
+    if (typeof test === "function") {
+      return castFactory(test);
+    }
+    if (typeof test === "object") {
+      return Array.isArray(test) ? anyFactory(test) : (
+        // Cast because `ReadonlyArray` goes into the above but `isArray`
+        // narrows to `Array`.
+        propertiesFactory(
+          /** @type {Props} */
+          test
+        )
+      );
+    }
+    if (typeof test === "string") {
+      return typeFactory(test);
+    }
+    throw new Error("Expected function, string, or object as test");
+  })
+);
+function anyFactory(tests) {
+  const checks2 = [];
+  let index2 = -1;
+  while (++index2 < tests.length) {
+    checks2[index2] = convert(tests[index2]);
+  }
+  return castFactory(any);
+  function any(...parameters) {
+    let index3 = -1;
+    while (++index3 < checks2.length) {
+      if (checks2[index3].apply(this, parameters)) return true;
+    }
+    return false;
+  }
+}
+function propertiesFactory(check) {
+  const checkAsRecord = (
+    /** @type {Record<string, unknown>} */
+    check
+  );
+  return castFactory(all2);
+  function all2(node2) {
+    const nodeAsRecord = (
+      /** @type {Record<string, unknown>} */
+      /** @type {unknown} */
+      node2
+    );
+    let key;
+    for (key in check) {
+      if (nodeAsRecord[key] !== checkAsRecord[key]) return false;
+    }
+    return true;
+  }
+}
+function typeFactory(check) {
+  return castFactory(type);
+  function type(node2) {
+    return node2 && node2.type === check;
+  }
+}
+function castFactory(testFunction) {
+  return check;
+  function check(value, index2, parent) {
+    return Boolean(
+      looksLikeANode(value) && testFunction.call(
+        this,
+        value,
+        typeof index2 === "number" ? index2 : void 0,
+        parent || void 0
+      )
+    );
+  }
+}
+function ok() {
+  return true;
+}
+function looksLikeANode(value) {
+  return value !== null && typeof value === "object" && "type" in value;
+}
+function color(d) {
+  return d;
+}
+const empty = [];
+const CONTINUE = true;
+const EXIT = false;
+const SKIP = "skip";
+function visitParents(tree, test, visitor, reverse) {
+  let check;
+  if (typeof test === "function" && typeof visitor !== "function") {
+    reverse = visitor;
+    visitor = test;
+  } else {
+    check = test;
+  }
+  const is = convert(check);
+  const step = reverse ? -1 : 1;
+  factory(tree, void 0, [])();
+  function factory(node2, index2, parents) {
+    const value = (
+      /** @type {Record<string, unknown>} */
+      node2 && typeof node2 === "object" ? node2 : {}
+    );
+    if (typeof value.type === "string") {
+      const name2 = (
+        // `hast`
+        typeof value.tagName === "string" ? value.tagName : (
+          // `xast`
+          typeof value.name === "string" ? value.name : void 0
+        )
+      );
+      Object.defineProperty(visit2, "name", {
+        value: "node (" + color(node2.type + (name2 ? "<" + name2 + ">" : "")) + ")"
+      });
+    }
+    return visit2;
+    function visit2() {
+      let result = empty;
+      let subresult;
+      let offset;
+      let grandparents;
+      if (!test || is(node2, index2, parents[parents.length - 1] || void 0)) {
+        result = toResult(visitor(node2, parents));
+        if (result[0] === EXIT) {
+          return result;
+        }
+      }
+      if ("children" in node2 && node2.children) {
+        const nodeAsParent = (
+          /** @type {UnistParent} */
+          node2
+        );
+        if (nodeAsParent.children && result[0] !== SKIP) {
+          offset = (reverse ? nodeAsParent.children.length : -1) + step;
+          grandparents = parents.concat(nodeAsParent);
+          while (offset > -1 && offset < nodeAsParent.children.length) {
+            const child = nodeAsParent.children[offset];
+            subresult = factory(child, offset, grandparents)();
+            if (subresult[0] === EXIT) {
+              return subresult;
+            }
+            offset = typeof subresult[1] === "number" ? subresult[1] : offset + step;
+          }
+        }
+      }
+      return result;
+    }
+  }
+}
+function toResult(value) {
+  if (Array.isArray(value)) {
+    return value;
+  }
+  if (typeof value === "number") {
+    return [CONTINUE, value];
+  }
+  return value === null || value === void 0 ? empty : [value];
+}
+function visit(tree, testOrVisitor, visitorOrReverse, maybeReverse) {
+  let reverse;
+  let test;
+  let visitor;
+  if (typeof testOrVisitor === "function" && typeof visitorOrReverse !== "function") {
+    test = void 0;
+    visitor = testOrVisitor;
+    reverse = visitorOrReverse;
+  } else {
+    test = testOrVisitor;
+    visitor = visitorOrReverse;
+    reverse = maybeReverse;
+  }
+  visitParents(tree, test, overload, reverse);
+  function overload(node2, parents) {
+    const parent = parents[parents.length - 1];
+    const index2 = parent ? parent.children.indexOf(node2) : void 0;
+    return visitor(node2, index2, parent);
+  }
+}
+const own$1 = {}.hasOwnProperty;
+const emptyOptions$1 = {};
+function createState(tree, options) {
+  const settings = options || emptyOptions$1;
+  const definitionById = /* @__PURE__ */ new Map();
+  const footnoteById = /* @__PURE__ */ new Map();
+  const footnoteCounts = /* @__PURE__ */ new Map();
+  const handlers$1 = { ...handlers, ...settings.handlers };
+  const state = {
+    all: all2,
+    applyData,
+    definitionById,
+    footnoteById,
+    footnoteCounts,
+    footnoteOrder: [],
+    handlers: handlers$1,
+    one: one2,
+    options: settings,
+    patch,
+    wrap: wrap$1
+  };
+  visit(tree, function(node2) {
+    if (node2.type === "definition" || node2.type === "footnoteDefinition") {
+      const map2 = node2.type === "definition" ? definitionById : footnoteById;
+      const id2 = String(node2.identifier).toUpperCase();
+      if (!map2.has(id2)) {
+        map2.set(id2, node2);
+      }
+    }
+  });
+  return state;
+  function one2(node2, parent) {
+    const type = node2.type;
+    const handle2 = state.handlers[type];
+    if (own$1.call(state.handlers, type) && handle2) {
+      return handle2(state, node2, parent);
+    }
+    if (state.options.passThrough && state.options.passThrough.includes(type)) {
+      if ("children" in node2) {
+        const { children: children2, ...shallow } = node2;
+        const result = structuredClone$1(shallow);
+        result.children = state.all(node2);
+        return result;
+      }
+      return structuredClone$1(node2);
+    }
+    const unknown = state.options.unknownHandler || defaultUnknownHandler;
+    return unknown(state, node2, parent);
+  }
+  function all2(parent) {
+    const values = [];
+    if ("children" in parent) {
+      const nodes = parent.children;
+      let index2 = -1;
+      while (++index2 < nodes.length) {
+        const result = state.one(nodes[index2], parent);
+        if (result) {
+          if (index2 && nodes[index2 - 1].type === "break") {
+            if (!Array.isArray(result) && result.type === "text") {
+              result.value = trimMarkdownSpaceStart(result.value);
+            }
+            if (!Array.isArray(result) && result.type === "element") {
+              const head = result.children[0];
+              if (head && head.type === "text") {
+                head.value = trimMarkdownSpaceStart(head.value);
+              }
+            }
+          }
+          if (Array.isArray(result)) {
+            values.push(...result);
+          } else {
+            values.push(result);
+          }
+        }
+      }
+    }
+    return values;
+  }
+}
+function patch(from, to) {
+  if (from.position) to.position = position$1(from);
+}
+function applyData(from, to) {
+  let result = to;
+  if (from && from.data) {
+    const hName = from.data.hName;
+    const hChildren = from.data.hChildren;
+    const hProperties = from.data.hProperties;
+    if (typeof hName === "string") {
+      if (result.type === "element") {
+        result.tagName = hName;
+      } else {
+        const children2 = "children" in result ? result.children : [result];
+        result = { type: "element", tagName: hName, properties: {}, children: children2 };
+      }
+    }
+    if (result.type === "element" && hProperties) {
+      Object.assign(result.properties, structuredClone$1(hProperties));
+    }
+    if ("children" in result && result.children && hChildren !== null && hChildren !== void 0) {
+      result.children = hChildren;
+    }
+  }
+  return result;
+}
+function defaultUnknownHandler(state, node2) {
+  const data = node2.data || {};
+  const result = "value" in node2 && !(own$1.call(data, "hProperties") || own$1.call(data, "hChildren")) ? { type: "text", value: node2.value } : {
+    type: "element",
+    tagName: "div",
+    properties: {},
+    children: state.all(node2)
+  };
+  state.patch(node2, result);
+  return state.applyData(node2, result);
+}
+function wrap$1(nodes, loose) {
+  const result = [];
+  let index2 = -1;
+  if (loose) {
+    result.push({ type: "text", value: "\n" });
+  }
+  while (++index2 < nodes.length) {
+    if (index2) result.push({ type: "text", value: "\n" });
+    result.push(nodes[index2]);
+  }
+  if (loose && nodes.length > 0) {
+    result.push({ type: "text", value: "\n" });
+  }
+  return result;
+}
+function trimMarkdownSpaceStart(value) {
+  let index2 = 0;
+  let code2 = value.charCodeAt(index2);
+  while (code2 === 9 || code2 === 32) {
+    index2++;
+    code2 = value.charCodeAt(index2);
+  }
+  return value.slice(index2);
+}
+function toHast(tree, options) {
+  const state = createState(tree, options);
+  const node2 = state.one(tree, void 0);
+  const foot = footer(state);
+  const result = Array.isArray(node2) ? { type: "root", children: node2 } : node2 || { type: "root", children: [] };
+  if (foot) {
+    result.children.push({ type: "text", value: "\n" }, foot);
+  }
+  return result;
+}
+function remarkRehype(destination, options) {
+  if (destination && "run" in destination) {
+    return async function(tree, file) {
+      const hastTree = (
+        /** @type {HastRoot} */
+        toHast(tree, { file, ...options })
+      );
+      await destination.run(hastTree, file);
+    };
+  }
+  return function(tree, file) {
+    return (
+      /** @type {HastRoot} */
+      toHast(tree, { file, ...destination || options })
+    );
+  };
+}
+function bail(error) {
+  if (error) {
+    throw error;
+  }
+}
+var extend$1;
+var hasRequiredExtend;
+function requireExtend() {
+  if (hasRequiredExtend) return extend$1;
+  hasRequiredExtend = 1;
+  var hasOwn = Object.prototype.hasOwnProperty;
+  var toStr = Object.prototype.toString;
+  var defineProperty = Object.defineProperty;
+  var gOPD = Object.getOwnPropertyDescriptor;
+  var isArray = function isArray2(arr) {
+    if (typeof Array.isArray === "function") {
+      return Array.isArray(arr);
+    }
+    return toStr.call(arr) === "[object Array]";
+  };
+  var isPlainObject2 = function isPlainObject3(obj) {
+    if (!obj || toStr.call(obj) !== "[object Object]") {
+      return false;
+    }
+    var hasOwnConstructor = hasOwn.call(obj, "constructor");
+    var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call(obj.constructor.prototype, "isPrototypeOf");
+    if (obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf) {
+      return false;
+    }
+    var key;
+    for (key in obj) {
+    }
+    return typeof key === "undefined" || hasOwn.call(obj, key);
+  };
+  var setProperty = function setProperty2(target, options) {
+    if (defineProperty && options.name === "__proto__") {
+      defineProperty(target, options.name, {
+        enumerable: true,
+        configurable: true,
+        value: options.newValue,
+        writable: true
+      });
+    } else {
+      target[options.name] = options.newValue;
+    }
+  };
+  var getProperty = function getProperty2(obj, name2) {
+    if (name2 === "__proto__") {
+      if (!hasOwn.call(obj, name2)) {
+        return void 0;
+      } else if (gOPD) {
+        return gOPD(obj, name2).value;
+      }
+    }
+    return obj[name2];
+  };
+  extend$1 = function extend2() {
+    var options, name2, src, copy, copyIsArray, clone;
+    var target = arguments[0];
+    var i = 1;
+    var length = arguments.length;
+    var deep = false;
+    if (typeof target === "boolean") {
+      deep = target;
+      target = arguments[1] || {};
+      i = 2;
+    }
+    if (target == null || typeof target !== "object" && typeof target !== "function") {
+      target = {};
+    }
+    for (; i < length; ++i) {
+      options = arguments[i];
+      if (options != null) {
+        for (name2 in options) {
+          src = getProperty(target, name2);
+          copy = getProperty(options, name2);
+          if (target !== copy) {
+            if (deep && copy && (isPlainObject2(copy) || (copyIsArray = isArray(copy)))) {
+              if (copyIsArray) {
+                copyIsArray = false;
+                clone = src && isArray(src) ? src : [];
+              } else {
+                clone = src && isPlainObject2(src) ? src : {};
+              }
+              setProperty(target, { name: name2, newValue: extend2(deep, clone, copy) });
+            } else if (typeof copy !== "undefined") {
+              setProperty(target, { name: name2, newValue: copy });
+            }
+          }
+        }
+      }
+    }
+    return target;
+  };
+  return extend$1;
+}
+var extendExports = requireExtend();
+const extend = /* @__PURE__ */ getDefaultExportFromCjs(extendExports);
+function isPlainObject(value) {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  const prototype = Object.getPrototypeOf(value);
+  return (prototype === null || prototype === Object.prototype || Object.getPrototypeOf(prototype) === null) && !(Symbol.toStringTag in value) && !(Symbol.iterator in value);
+}
+function trough() {
+  const fns = [];
+  const pipeline = { run, use };
+  return pipeline;
+  function run(...values) {
+    let middlewareIndex = -1;
+    const callback = values.pop();
+    if (typeof callback !== "function") {
+      throw new TypeError("Expected function as last argument, not " + callback);
+    }
+    next(null, ...values);
+    function next(error, ...output) {
+      const fn = fns[++middlewareIndex];
+      let index2 = -1;
+      if (error) {
+        callback(error);
+        return;
+      }
+      while (++index2 < values.length) {
+        if (output[index2] === null || output[index2] === void 0) {
+          output[index2] = values[index2];
+        }
+      }
+      values = output;
+      if (fn) {
+        wrap(fn, next)(...output);
+      } else {
+        callback(null, ...output);
+      }
+    }
+  }
+  function use(middelware) {
+    if (typeof middelware !== "function") {
+      throw new TypeError(
+        "Expected `middelware` to be a function, not " + middelware
+      );
+    }
+    fns.push(middelware);
+    return pipeline;
+  }
+}
+function wrap(middleware, callback) {
+  let called;
+  return wrapped;
+  function wrapped(...parameters) {
+    const fnExpectsCallback = middleware.length > parameters.length;
+    let result;
+    if (fnExpectsCallback) {
+      parameters.push(done);
+    }
+    try {
+      result = middleware.apply(this, parameters);
+    } catch (error) {
+      const exception = (
+        /** @type {Error} */
+        error
+      );
+      if (fnExpectsCallback && called) {
+        throw exception;
+      }
+      return done(exception);
+    }
+    if (!fnExpectsCallback) {
+      if (result && result.then && typeof result.then === "function") {
+        result.then(then, done);
+      } else if (result instanceof Error) {
+        done(result);
+      } else {
+        then(result);
+      }
+    }
+  }
+  function done(error, ...output) {
+    if (!called) {
+      called = true;
+      callback(error, ...output);
+    }
+  }
+  function then(value) {
+    done(null, value);
+  }
+}
+const minpath = { basename, dirname, extname, join, sep: "/" };
+function basename(path2, extname2) {
+  if (extname2 !== void 0 && typeof extname2 !== "string") {
+    throw new TypeError('"ext" argument must be a string');
+  }
+  assertPath$1(path2);
+  let start2 = 0;
+  let end = -1;
+  let index2 = path2.length;
+  let seenNonSlash;
+  if (extname2 === void 0 || extname2.length === 0 || extname2.length > path2.length) {
+    while (index2--) {
+      if (path2.codePointAt(index2) === 47) {
+        if (seenNonSlash) {
+          start2 = index2 + 1;
+          break;
+        }
+      } else if (end < 0) {
+        seenNonSlash = true;
+        end = index2 + 1;
+      }
+    }
+    return end < 0 ? "" : path2.slice(start2, end);
+  }
+  if (extname2 === path2) {
+    return "";
+  }
+  let firstNonSlashEnd = -1;
+  let extnameIndex = extname2.length - 1;
+  while (index2--) {
+    if (path2.codePointAt(index2) === 47) {
+      if (seenNonSlash) {
+        start2 = index2 + 1;
+        break;
+      }
+    } else {
+      if (firstNonSlashEnd < 0) {
+        seenNonSlash = true;
+        firstNonSlashEnd = index2 + 1;
+      }
+      if (extnameIndex > -1) {
+        if (path2.codePointAt(index2) === extname2.codePointAt(extnameIndex--)) {
+          if (extnameIndex < 0) {
+            end = index2;
+          }
+        } else {
+          extnameIndex = -1;
+          end = firstNonSlashEnd;
+        }
+      }
+    }
+  }
+  if (start2 === end) {
+    end = firstNonSlashEnd;
+  } else if (end < 0) {
+    end = path2.length;
+  }
+  return path2.slice(start2, end);
+}
+function dirname(path2) {
+  assertPath$1(path2);
+  if (path2.length === 0) {
+    return ".";
+  }
+  let end = -1;
+  let index2 = path2.length;
+  let unmatchedSlash;
+  while (--index2) {
+    if (path2.codePointAt(index2) === 47) {
+      if (unmatchedSlash) {
+        end = index2;
+        break;
+      }
+    } else if (!unmatchedSlash) {
+      unmatchedSlash = true;
+    }
+  }
+  return end < 0 ? path2.codePointAt(0) === 47 ? "/" : "." : end === 1 && path2.codePointAt(0) === 47 ? "//" : path2.slice(0, end);
+}
+function extname(path2) {
+  assertPath$1(path2);
+  let index2 = path2.length;
+  let end = -1;
+  let startPart = 0;
+  let startDot = -1;
+  let preDotState = 0;
+  let unmatchedSlash;
+  while (index2--) {
+    const code2 = path2.codePointAt(index2);
+    if (code2 === 47) {
+      if (unmatchedSlash) {
+        startPart = index2 + 1;
+        break;
+      }
+      continue;
+    }
+    if (end < 0) {
+      unmatchedSlash = true;
+      end = index2 + 1;
+    }
+    if (code2 === 46) {
+      if (startDot < 0) {
+        startDot = index2;
+      } else if (preDotState !== 1) {
+        preDotState = 1;
+      }
+    } else if (startDot > -1) {
+      preDotState = -1;
+    }
+  }
+  if (startDot < 0 || end < 0 || // We saw a non-dot character immediately before the dot.
+  preDotState === 0 || // The (right-most) trimmed path component is exactly `..`.
+  preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+    return "";
+  }
+  return path2.slice(startDot, end);
+}
+function join(...segments) {
+  let index2 = -1;
+  let joined;
+  while (++index2 < segments.length) {
+    assertPath$1(segments[index2]);
+    if (segments[index2]) {
+      joined = joined === void 0 ? segments[index2] : joined + "/" + segments[index2];
+    }
+  }
+  return joined === void 0 ? "." : normalize(joined);
+}
+function normalize(path2) {
+  assertPath$1(path2);
+  const absolute = path2.codePointAt(0) === 47;
+  let value = normalizeString(path2, !absolute);
+  if (value.length === 0 && !absolute) {
+    value = ".";
+  }
+  if (value.length > 0 && path2.codePointAt(path2.length - 1) === 47) {
+    value += "/";
+  }
+  return absolute ? "/" + value : value;
+}
+function normalizeString(path2, allowAboveRoot) {
+  let result = "";
+  let lastSegmentLength = 0;
+  let lastSlash = -1;
+  let dots = 0;
+  let index2 = -1;
+  let code2;
+  let lastSlashIndex;
+  while (++index2 <= path2.length) {
+    if (index2 < path2.length) {
+      code2 = path2.codePointAt(index2);
+    } else if (code2 === 47) {
+      break;
+    } else {
+      code2 = 47;
+    }
+    if (code2 === 47) {
+      if (lastSlash === index2 - 1 || dots === 1) ;
+      else if (lastSlash !== index2 - 1 && dots === 2) {
+        if (result.length < 2 || lastSegmentLength !== 2 || result.codePointAt(result.length - 1) !== 46 || result.codePointAt(result.length - 2) !== 46) {
+          if (result.length > 2) {
+            lastSlashIndex = result.lastIndexOf("/");
+            if (lastSlashIndex !== result.length - 1) {
+              if (lastSlashIndex < 0) {
+                result = "";
+                lastSegmentLength = 0;
+              } else {
+                result = result.slice(0, lastSlashIndex);
+                lastSegmentLength = result.length - 1 - result.lastIndexOf("/");
+              }
+              lastSlash = index2;
+              dots = 0;
+              continue;
+            }
+          } else if (result.length > 0) {
+            result = "";
+            lastSegmentLength = 0;
+            lastSlash = index2;
+            dots = 0;
+            continue;
+          }
+        }
+        if (allowAboveRoot) {
+          result = result.length > 0 ? result + "/.." : "..";
+          lastSegmentLength = 2;
+        }
+      } else {
+        if (result.length > 0) {
+          result += "/" + path2.slice(lastSlash + 1, index2);
+        } else {
+          result = path2.slice(lastSlash + 1, index2);
+        }
+        lastSegmentLength = index2 - lastSlash - 1;
+      }
+      lastSlash = index2;
+      dots = 0;
+    } else if (code2 === 46 && dots > -1) {
+      dots++;
+    } else {
+      dots = -1;
+    }
+  }
+  return result;
+}
+function assertPath$1(path2) {
+  if (typeof path2 !== "string") {
+    throw new TypeError(
+      "Path must be a string. Received " + JSON.stringify(path2)
+    );
+  }
+}
+const minproc = { cwd };
+function cwd() {
+  return "/";
+}
+function isUrl(fileUrlOrPath) {
+  return Boolean(
+    fileUrlOrPath !== null && typeof fileUrlOrPath === "object" && "href" in fileUrlOrPath && fileUrlOrPath.href && "protocol" in fileUrlOrPath && fileUrlOrPath.protocol && // @ts-expect-error: indexing is fine.
+    fileUrlOrPath.auth === void 0
+  );
+}
+function urlToPath(path2) {
+  if (typeof path2 === "string") {
+    path2 = new URL(path2);
+  } else if (!isUrl(path2)) {
+    const error = new TypeError(
+      'The "path" argument must be of type string or an instance of URL. Received `' + path2 + "`"
+    );
+    error.code = "ERR_INVALID_ARG_TYPE";
+    throw error;
+  }
+  if (path2.protocol !== "file:") {
+    const error = new TypeError("The URL must be of scheme file");
+    error.code = "ERR_INVALID_URL_SCHEME";
+    throw error;
+  }
+  return getPathFromURLPosix(path2);
+}
+function getPathFromURLPosix(url) {
+  if (url.hostname !== "") {
+    const error = new TypeError(
+      'File URL host must be "localhost" or empty on darwin'
+    );
+    error.code = "ERR_INVALID_FILE_URL_HOST";
+    throw error;
+  }
+  const pathname = url.pathname;
+  let index2 = -1;
+  while (++index2 < pathname.length) {
+    if (pathname.codePointAt(index2) === 37 && pathname.codePointAt(index2 + 1) === 50) {
+      const third = pathname.codePointAt(index2 + 2);
+      if (third === 70 || third === 102) {
+        const error = new TypeError(
+          "File URL path must not include encoded / characters"
+        );
+        error.code = "ERR_INVALID_FILE_URL_PATH";
+        throw error;
+      }
+    }
+  }
+  return decodeURIComponent(pathname);
+}
+const order = (
+  /** @type {const} */
+  [
+    "history",
+    "path",
+    "basename",
+    "stem",
+    "extname",
+    "dirname"
+  ]
+);
+class VFile {
+  /**
+   * Create a new virtual file.
+   *
+   * `options` is treated as:
+   *
+   * *   `string` or `Uint8Array` — `{value: options}`
+   * *   `URL` — `{path: options}`
+   * *   `VFile` — shallow copies its data over to the new file
+   * *   `object` — all fields are shallow copied over to the new file
+   *
+   * Path related fields are set in the following order (least specific to
+   * most specific): `history`, `path`, `basename`, `stem`, `extname`,
+   * `dirname`.
+   *
+   * You cannot set `dirname` or `extname` without setting either `history`,
+   * `path`, `basename`, or `stem` too.
+   *
+   * @param {Compatible | null | undefined} [value]
+   *   File value.
+   * @returns
+   *   New instance.
+   */
+  constructor(value) {
+    let options;
+    if (!value) {
+      options = {};
+    } else if (isUrl(value)) {
+      options = { path: value };
+    } else if (typeof value === "string" || isUint8Array$1(value)) {
+      options = { value };
+    } else {
+      options = value;
+    }
+    this.cwd = "cwd" in options ? "" : minproc.cwd();
+    this.data = {};
+    this.history = [];
+    this.messages = [];
+    this.value;
+    this.map;
+    this.result;
+    this.stored;
+    let index2 = -1;
+    while (++index2 < order.length) {
+      const field2 = order[index2];
+      if (field2 in options && options[field2] !== void 0 && options[field2] !== null) {
+        this[field2] = field2 === "history" ? [...options[field2]] : options[field2];
+      }
+    }
+    let field;
+    for (field in options) {
+      if (!order.includes(field)) {
+        this[field] = options[field];
+      }
+    }
+  }
+  /**
+   * Get the basename (including extname) (example: `'index.min.js'`).
+   *
+   * @returns {string | undefined}
+   *   Basename.
+   */
+  get basename() {
+    return typeof this.path === "string" ? minpath.basename(this.path) : void 0;
+  }
+  /**
+   * Set basename (including extname) (`'index.min.js'`).
+   *
+   * Cannot contain path separators (`'/'` on unix, macOS, and browsers, `'\'`
+   * on windows).
+   * Cannot be nullified (use `file.path = file.dirname` instead).
+   *
+   * @param {string} basename
+   *   Basename.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  set basename(basename2) {
+    assertNonEmpty(basename2, "basename");
+    assertPart(basename2, "basename");
+    this.path = minpath.join(this.dirname || "", basename2);
+  }
+  /**
+   * Get the parent path (example: `'~'`).
+   *
+   * @returns {string | undefined}
+   *   Dirname.
+   */
+  get dirname() {
+    return typeof this.path === "string" ? minpath.dirname(this.path) : void 0;
+  }
+  /**
+   * Set the parent path (example: `'~'`).
+   *
+   * Cannot be set if there’s no `path` yet.
+   *
+   * @param {string | undefined} dirname
+   *   Dirname.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  set dirname(dirname2) {
+    assertPath(this.basename, "dirname");
+    this.path = minpath.join(dirname2 || "", this.basename);
+  }
+  /**
+   * Get the extname (including dot) (example: `'.js'`).
+   *
+   * @returns {string | undefined}
+   *   Extname.
+   */
+  get extname() {
+    return typeof this.path === "string" ? minpath.extname(this.path) : void 0;
+  }
+  /**
+   * Set the extname (including dot) (example: `'.js'`).
+   *
+   * Cannot contain path separators (`'/'` on unix, macOS, and browsers, `'\'`
+   * on windows).
+   * Cannot be set if there’s no `path` yet.
+   *
+   * @param {string | undefined} extname
+   *   Extname.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  set extname(extname2) {
+    assertPart(extname2, "extname");
+    assertPath(this.dirname, "extname");
+    if (extname2) {
+      if (extname2.codePointAt(0) !== 46) {
+        throw new Error("`extname` must start with `.`");
+      }
+      if (extname2.includes(".", 1)) {
+        throw new Error("`extname` cannot contain multiple dots");
+      }
+    }
+    this.path = minpath.join(this.dirname, this.stem + (extname2 || ""));
+  }
+  /**
+   * Get the full path (example: `'~/index.min.js'`).
+   *
+   * @returns {string}
+   *   Path.
+   */
+  get path() {
+    return this.history[this.history.length - 1];
+  }
+  /**
+   * Set the full path (example: `'~/index.min.js'`).
+   *
+   * Cannot be nullified.
+   * You can set a file URL (a `URL` object with a `file:` protocol) which will
+   * be turned into a path with `url.fileURLToPath`.
+   *
+   * @param {URL | string} path
+   *   Path.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  set path(path2) {
+    if (isUrl(path2)) {
+      path2 = urlToPath(path2);
+    }
+    assertNonEmpty(path2, "path");
+    if (this.path !== path2) {
+      this.history.push(path2);
+    }
+  }
+  /**
+   * Get the stem (basename w/o extname) (example: `'index.min'`).
+   *
+   * @returns {string | undefined}
+   *   Stem.
+   */
+  get stem() {
+    return typeof this.path === "string" ? minpath.basename(this.path, this.extname) : void 0;
+  }
+  /**
+   * Set the stem (basename w/o extname) (example: `'index.min'`).
+   *
+   * Cannot contain path separators (`'/'` on unix, macOS, and browsers, `'\'`
+   * on windows).
+   * Cannot be nullified (use `file.path = file.dirname` instead).
+   *
+   * @param {string} stem
+   *   Stem.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  set stem(stem) {
+    assertNonEmpty(stem, "stem");
+    assertPart(stem, "stem");
+    this.path = minpath.join(this.dirname || "", stem + (this.extname || ""));
+  }
+  // Normal prototypal methods.
+  /**
+   * Create a fatal message for `reason` associated with the file.
+   *
+   * The `fatal` field of the message is set to `true` (error; file not usable)
+   * and the `file` field is set to the current file path.
+   * The message is added to the `messages` field on `file`.
+   *
+   * > 🪦 **Note**: also has obsolete signatures.
+   *
+   * @overload
+   * @param {string} reason
+   * @param {MessageOptions | null | undefined} [options]
+   * @returns {never}
+   *
+   * @overload
+   * @param {string} reason
+   * @param {Node | NodeLike | null | undefined} parent
+   * @param {string | null | undefined} [origin]
+   * @returns {never}
+   *
+   * @overload
+   * @param {string} reason
+   * @param {Point | Position | null | undefined} place
+   * @param {string | null | undefined} [origin]
+   * @returns {never}
+   *
+   * @overload
+   * @param {string} reason
+   * @param {string | null | undefined} [origin]
+   * @returns {never}
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {Node | NodeLike | null | undefined} parent
+   * @param {string | null | undefined} [origin]
+   * @returns {never}
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {Point | Position | null | undefined} place
+   * @param {string | null | undefined} [origin]
+   * @returns {never}
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {string | null | undefined} [origin]
+   * @returns {never}
+   *
+   * @param {Error | VFileMessage | string} causeOrReason
+   *   Reason for message, should use markdown.
+   * @param {Node | NodeLike | MessageOptions | Point | Position | string | null | undefined} [optionsOrParentOrPlace]
+   *   Configuration (optional).
+   * @param {string | null | undefined} [origin]
+   *   Place in code where the message originates (example:
+   *   `'my-package:my-rule'` or `'my-rule'`).
+   * @returns {never}
+   *   Never.
+   * @throws {VFileMessage}
+   *   Message.
+   */
+  fail(causeOrReason, optionsOrParentOrPlace, origin) {
+    const message = this.message(causeOrReason, optionsOrParentOrPlace, origin);
+    message.fatal = true;
+    throw message;
+  }
+  /**
+   * Create an info message for `reason` associated with the file.
+   *
+   * The `fatal` field of the message is set to `undefined` (info; change
+   * likely not needed) and the `file` field is set to the current file path.
+   * The message is added to the `messages` field on `file`.
+   *
+   * > 🪦 **Note**: also has obsolete signatures.
+   *
+   * @overload
+   * @param {string} reason
+   * @param {MessageOptions | null | undefined} [options]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {string} reason
+   * @param {Node | NodeLike | null | undefined} parent
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {string} reason
+   * @param {Point | Position | null | undefined} place
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {string} reason
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {Node | NodeLike | null | undefined} parent
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {Point | Position | null | undefined} place
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @param {Error | VFileMessage | string} causeOrReason
+   *   Reason for message, should use markdown.
+   * @param {Node | NodeLike | MessageOptions | Point | Position | string | null | undefined} [optionsOrParentOrPlace]
+   *   Configuration (optional).
+   * @param {string | null | undefined} [origin]
+   *   Place in code where the message originates (example:
+   *   `'my-package:my-rule'` or `'my-rule'`).
+   * @returns {VFileMessage}
+   *   Message.
+   */
+  info(causeOrReason, optionsOrParentOrPlace, origin) {
+    const message = this.message(causeOrReason, optionsOrParentOrPlace, origin);
+    message.fatal = void 0;
+    return message;
+  }
+  /**
+   * Create a message for `reason` associated with the file.
+   *
+   * The `fatal` field of the message is set to `false` (warning; change may be
+   * needed) and the `file` field is set to the current file path.
+   * The message is added to the `messages` field on `file`.
+   *
+   * > 🪦 **Note**: also has obsolete signatures.
+   *
+   * @overload
+   * @param {string} reason
+   * @param {MessageOptions | null | undefined} [options]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {string} reason
+   * @param {Node | NodeLike | null | undefined} parent
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {string} reason
+   * @param {Point | Position | null | undefined} place
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {string} reason
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {Node | NodeLike | null | undefined} parent
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {Point | Position | null | undefined} place
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @overload
+   * @param {Error | VFileMessage} cause
+   * @param {string | null | undefined} [origin]
+   * @returns {VFileMessage}
+   *
+   * @param {Error | VFileMessage | string} causeOrReason
+   *   Reason for message, should use markdown.
+   * @param {Node | NodeLike | MessageOptions | Point | Position | string | null | undefined} [optionsOrParentOrPlace]
+   *   Configuration (optional).
+   * @param {string | null | undefined} [origin]
+   *   Place in code where the message originates (example:
+   *   `'my-package:my-rule'` or `'my-rule'`).
+   * @returns {VFileMessage}
+   *   Message.
+   */
+  message(causeOrReason, optionsOrParentOrPlace, origin) {
+    const message = new VFileMessage(
+      // @ts-expect-error: the overloads are fine.
+      causeOrReason,
+      optionsOrParentOrPlace,
+      origin
+    );
+    if (this.path) {
+      message.name = this.path + ":" + message.name;
+      message.file = this.path;
+    }
+    message.fatal = false;
+    this.messages.push(message);
+    return message;
+  }
+  /**
+   * Serialize the file.
+   *
+   * > **Note**: which encodings are supported depends on the engine.
+   * > For info on Node.js, see:
+   * > <https://nodejs.org/api/util.html#whatwg-supported-encodings>.
+   *
+   * @param {string | null | undefined} [encoding='utf8']
+   *   Character encoding to understand `value` as when it’s a `Uint8Array`
+   *   (default: `'utf-8'`).
+   * @returns {string}
+   *   Serialized file.
+   */
+  toString(encoding) {
+    if (this.value === void 0) {
+      return "";
+    }
+    if (typeof this.value === "string") {
+      return this.value;
+    }
+    const decoder = new TextDecoder(encoding || void 0);
+    return decoder.decode(this.value);
+  }
+}
+function assertPart(part, name2) {
+  if (part && part.includes(minpath.sep)) {
+    throw new Error(
+      "`" + name2 + "` cannot be a path: did not expect `" + minpath.sep + "`"
+    );
+  }
+}
+function assertNonEmpty(part, name2) {
+  if (!part) {
+    throw new Error("`" + name2 + "` cannot be empty");
+  }
+}
+function assertPath(path2, name2) {
+  if (!path2) {
+    throw new Error("Setting `" + name2 + "` requires `path` to be set too");
+  }
+}
+function isUint8Array$1(value) {
+  return Boolean(
+    value && typeof value === "object" && "byteLength" in value && "byteOffset" in value
+  );
+}
+const CallableInstance = (
+  /**
+   * @type {new <Parameters extends Array<unknown>, Result>(property: string | symbol) => (...parameters: Parameters) => Result}
+   */
+  /** @type {unknown} */
+  /**
+   * @this {Function}
+   * @param {string | symbol} property
+   * @returns {(...parameters: Array<unknown>) => unknown}
+   */
+  (function(property) {
+    const self2 = this;
+    const constr = self2.constructor;
+    const proto = (
+      /** @type {Record<string | symbol, Function>} */
+      // Prototypes do exist.
+      // type-coverage:ignore-next-line
+      constr.prototype
+    );
+    const value = proto[property];
+    const apply = function() {
+      return value.apply(apply, arguments);
+    };
+    Object.setPrototypeOf(apply, proto);
+    return apply;
+  })
+);
+const own = {}.hasOwnProperty;
+class Processor extends CallableInstance {
+  /**
+   * Create a processor.
+   */
+  constructor() {
+    super("copy");
+    this.Compiler = void 0;
+    this.Parser = void 0;
+    this.attachers = [];
+    this.compiler = void 0;
+    this.freezeIndex = -1;
+    this.frozen = void 0;
+    this.namespace = {};
+    this.parser = void 0;
+    this.transformers = trough();
+  }
+  /**
+   * Copy a processor.
+   *
+   * @deprecated
+   *   This is a private internal method and should not be used.
+   * @returns {Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>}
+   *   New *unfrozen* processor ({@linkcode Processor}) that is
+   *   configured to work the same as its ancestor.
+   *   When the descendant processor is configured in the future it does not
+   *   affect the ancestral processor.
+   */
+  copy() {
+    const destination = (
+      /** @type {Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>} */
+      new Processor()
+    );
+    let index2 = -1;
+    while (++index2 < this.attachers.length) {
+      const attacher = this.attachers[index2];
+      destination.use(...attacher);
+    }
+    destination.data(extend(true, {}, this.namespace));
+    return destination;
+  }
+  /**
+   * Configure the processor with info available to all plugins.
+   * Information is stored in an object.
+   *
+   * Typically, options can be given to a specific plugin, but sometimes it
+   * makes sense to have information shared with several plugins.
+   * For example, a list of HTML elements that are self-closing, which is
+   * needed during all phases.
+   *
+   * > **Note**: setting information cannot occur on *frozen* processors.
+   * > Call the processor first to create a new unfrozen processor.
+   *
+   * > **Note**: to register custom data in TypeScript, augment the
+   * > {@linkcode Data} interface.
+   *
+   * @example
+   *   This example show how to get and set info:
+   *
+   *   ```js
+   *   import {unified} from 'unified'
+   *
+   *   const processor = unified().data('alpha', 'bravo')
+   *
+   *   processor.data('alpha') // => 'bravo'
+   *
+   *   processor.data() // => {alpha: 'bravo'}
+   *
+   *   processor.data({charlie: 'delta'})
+   *
+   *   processor.data() // => {charlie: 'delta'}
+   *   ```
+   *
+   * @template {keyof Data} Key
+   *
+   * @overload
+   * @returns {Data}
+   *
+   * @overload
+   * @param {Data} dataset
+   * @returns {Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>}
+   *
+   * @overload
+   * @param {Key} key
+   * @returns {Data[Key]}
+   *
+   * @overload
+   * @param {Key} key
+   * @param {Data[Key]} value
+   * @returns {Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>}
+   *
+   * @param {Data | Key} [key]
+   *   Key to get or set, or entire dataset to set, or nothing to get the
+   *   entire dataset (optional).
+   * @param {Data[Key]} [value]
+   *   Value to set (optional).
+   * @returns {unknown}
+   *   The current processor when setting, the value at `key` when getting, or
+   *   the entire dataset when getting without key.
+   */
+  data(key, value) {
+    if (typeof key === "string") {
+      if (arguments.length === 2) {
+        assertUnfrozen("data", this.frozen);
+        this.namespace[key] = value;
+        return this;
+      }
+      return own.call(this.namespace, key) && this.namespace[key] || void 0;
+    }
+    if (key) {
+      assertUnfrozen("data", this.frozen);
+      this.namespace = key;
+      return this;
+    }
+    return this.namespace;
+  }
+  /**
+   * Freeze a processor.
+   *
+   * Frozen processors are meant to be extended and not to be configured
+   * directly.
+   *
+   * When a processor is frozen it cannot be unfrozen.
+   * New processors working the same way can be created by calling the
+   * processor.
+   *
+   * It’s possible to freeze processors explicitly by calling `.freeze()`.
+   * Processors freeze automatically when `.parse()`, `.run()`, `.runSync()`,
+   * `.stringify()`, `.process()`, or `.processSync()` are called.
+   *
+   * @returns {Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>}
+   *   The current processor.
+   */
+  freeze() {
+    if (this.frozen) {
+      return this;
+    }
+    const self2 = (
+      /** @type {Processor} */
+      /** @type {unknown} */
+      this
+    );
+    while (++this.freezeIndex < this.attachers.length) {
+      const [attacher, ...options] = this.attachers[this.freezeIndex];
+      if (options[0] === false) {
+        continue;
+      }
+      if (options[0] === true) {
+        options[0] = void 0;
+      }
+      const transformer = attacher.call(self2, ...options);
+      if (typeof transformer === "function") {
+        this.transformers.use(transformer);
+      }
+    }
+    this.frozen = true;
+    this.freezeIndex = Number.POSITIVE_INFINITY;
+    return this;
+  }
+  /**
+   * Parse text to a syntax tree.
+   *
+   * > **Note**: `parse` freezes the processor if not already *frozen*.
+   *
+   * > **Note**: `parse` performs the parse phase, not the run phase or other
+   * > phases.
+   *
+   * @param {Compatible | undefined} [file]
+   *   file to parse (optional); typically `string` or `VFile`; any value
+   *   accepted as `x` in `new VFile(x)`.
+   * @returns {ParseTree extends undefined ? Node : ParseTree}
+   *   Syntax tree representing `file`.
+   */
+  parse(file) {
+    this.freeze();
+    const realFile = vfile(file);
+    const parser = this.parser || this.Parser;
+    assertParser("parse", parser);
+    return parser(String(realFile), realFile);
+  }
+  /**
+   * Process the given file as configured on the processor.
+   *
+   * > **Note**: `process` freezes the processor if not already *frozen*.
+   *
+   * > **Note**: `process` performs the parse, run, and stringify phases.
+   *
+   * @overload
+   * @param {Compatible | undefined} file
+   * @param {ProcessCallback<VFileWithOutput<CompileResult>>} done
+   * @returns {undefined}
+   *
+   * @overload
+   * @param {Compatible | undefined} [file]
+   * @returns {Promise<VFileWithOutput<CompileResult>>}
+   *
+   * @param {Compatible | undefined} [file]
+   *   File (optional); typically `string` or `VFile`]; any value accepted as
+   *   `x` in `new VFile(x)`.
+   * @param {ProcessCallback<VFileWithOutput<CompileResult>> | undefined} [done]
+   *   Callback (optional).
+   * @returns {Promise<VFile> | undefined}
+   *   Nothing if `done` is given.
+   *   Otherwise a promise, rejected with a fatal error or resolved with the
+   *   processed file.
+   *
+   *   The parsed, transformed, and compiled value is available at
+   *   `file.value` (see note).
+   *
+   *   > **Note**: unified typically compiles by serializing: most
+   *   > compilers return `string` (or `Uint8Array`).
+   *   > Some compilers, such as the one configured with
+   *   > [`rehype-react`][rehype-react], return other values (in this case, a
+   *   > React tree).
+   *   > If you’re using a compiler that doesn’t serialize, expect different
+   *   > result values.
+   *   >
+   *   > To register custom results in TypeScript, add them to
+   *   > {@linkcode CompileResultMap}.
+   *
+   *   [rehype-react]: https://github.com/rehypejs/rehype-react
+   */
+  process(file, done) {
+    const self2 = this;
+    this.freeze();
+    assertParser("process", this.parser || this.Parser);
+    assertCompiler("process", this.compiler || this.Compiler);
+    return done ? executor(void 0, done) : new Promise(executor);
+    function executor(resolve, reject) {
+      const realFile = vfile(file);
+      const parseTree = (
+        /** @type {HeadTree extends undefined ? Node : HeadTree} */
+        /** @type {unknown} */
+        self2.parse(realFile)
+      );
+      self2.run(parseTree, realFile, function(error, tree, file2) {
+        if (error || !tree || !file2) {
+          return realDone(error);
+        }
+        const compileTree = (
+          /** @type {CompileTree extends undefined ? Node : CompileTree} */
+          /** @type {unknown} */
+          tree
+        );
+        const compileResult = self2.stringify(compileTree, file2);
+        if (looksLikeAValue(compileResult)) {
+          file2.value = compileResult;
+        } else {
+          file2.result = compileResult;
+        }
+        realDone(
+          error,
+          /** @type {VFileWithOutput<CompileResult>} */
+          file2
+        );
+      });
+      function realDone(error, file2) {
+        if (error || !file2) {
+          reject(error);
+        } else if (resolve) {
+          resolve(file2);
+        } else {
+          done(void 0, file2);
+        }
+      }
+    }
+  }
+  /**
+   * Process the given file as configured on the processor.
+   *
+   * An error is thrown if asynchronous transforms are configured.
+   *
+   * > **Note**: `processSync` freezes the processor if not already *frozen*.
+   *
+   * > **Note**: `processSync` performs the parse, run, and stringify phases.
+   *
+   * @param {Compatible | undefined} [file]
+   *   File (optional); typically `string` or `VFile`; any value accepted as
+   *   `x` in `new VFile(x)`.
+   * @returns {VFileWithOutput<CompileResult>}
+   *   The processed file.
+   *
+   *   The parsed, transformed, and compiled value is available at
+   *   `file.value` (see note).
+   *
+   *   > **Note**: unified typically compiles by serializing: most
+   *   > compilers return `string` (or `Uint8Array`).
+   *   > Some compilers, such as the one configured with
+   *   > [`rehype-react`][rehype-react], return other values (in this case, a
+   *   > React tree).
+   *   > If you’re using a compiler that doesn’t serialize, expect different
+   *   > result values.
+   *   >
+   *   > To register custom results in TypeScript, add them to
+   *   > {@linkcode CompileResultMap}.
+   *
+   *   [rehype-react]: https://github.com/rehypejs/rehype-react
+   */
+  processSync(file) {
+    let complete = false;
+    let result;
+    this.freeze();
+    assertParser("processSync", this.parser || this.Parser);
+    assertCompiler("processSync", this.compiler || this.Compiler);
+    this.process(file, realDone);
+    assertDone("processSync", "process", complete);
+    return result;
+    function realDone(error, file2) {
+      complete = true;
+      bail(error);
+      result = file2;
+    }
+  }
+  /**
+   * Run *transformers* on a syntax tree.
+   *
+   * > **Note**: `run` freezes the processor if not already *frozen*.
+   *
+   * > **Note**: `run` performs the run phase, not other phases.
+   *
+   * @overload
+   * @param {HeadTree extends undefined ? Node : HeadTree} tree
+   * @param {RunCallback<TailTree extends undefined ? Node : TailTree>} done
+   * @returns {undefined}
+   *
+   * @overload
+   * @param {HeadTree extends undefined ? Node : HeadTree} tree
+   * @param {Compatible | undefined} file
+   * @param {RunCallback<TailTree extends undefined ? Node : TailTree>} done
+   * @returns {undefined}
+   *
+   * @overload
+   * @param {HeadTree extends undefined ? Node : HeadTree} tree
+   * @param {Compatible | undefined} [file]
+   * @returns {Promise<TailTree extends undefined ? Node : TailTree>}
+   *
+   * @param {HeadTree extends undefined ? Node : HeadTree} tree
+   *   Tree to transform and inspect.
+   * @param {(
+   *   RunCallback<TailTree extends undefined ? Node : TailTree> |
+   *   Compatible
+   * )} [file]
+   *   File associated with `node` (optional); any value accepted as `x` in
+   *   `new VFile(x)`.
+   * @param {RunCallback<TailTree extends undefined ? Node : TailTree>} [done]
+   *   Callback (optional).
+   * @returns {Promise<TailTree extends undefined ? Node : TailTree> | undefined}
+   *   Nothing if `done` is given.
+   *   Otherwise, a promise rejected with a fatal error or resolved with the
+   *   transformed tree.
+   */
+  run(tree, file, done) {
+    assertNode(tree);
+    this.freeze();
+    const transformers = this.transformers;
+    if (!done && typeof file === "function") {
+      done = file;
+      file = void 0;
+    }
+    return done ? executor(void 0, done) : new Promise(executor);
+    function executor(resolve, reject) {
+      const realFile = vfile(file);
+      transformers.run(tree, realFile, realDone);
+      function realDone(error, outputTree, file2) {
+        const resultingTree = (
+          /** @type {TailTree extends undefined ? Node : TailTree} */
+          outputTree || tree
+        );
+        if (error) {
+          reject(error);
+        } else if (resolve) {
+          resolve(resultingTree);
+        } else {
+          done(void 0, resultingTree, file2);
+        }
+      }
+    }
+  }
+  /**
+   * Run *transformers* on a syntax tree.
+   *
+   * An error is thrown if asynchronous transforms are configured.
+   *
+   * > **Note**: `runSync` freezes the processor if not already *frozen*.
+   *
+   * > **Note**: `runSync` performs the run phase, not other phases.
+   *
+   * @param {HeadTree extends undefined ? Node : HeadTree} tree
+   *   Tree to transform and inspect.
+   * @param {Compatible | undefined} [file]
+   *   File associated with `node` (optional); any value accepted as `x` in
+   *   `new VFile(x)`.
+   * @returns {TailTree extends undefined ? Node : TailTree}
+   *   Transformed tree.
+   */
+  runSync(tree, file) {
+    let complete = false;
+    let result;
+    this.run(tree, file, realDone);
+    assertDone("runSync", "run", complete);
+    return result;
+    function realDone(error, tree2) {
+      bail(error);
+      result = tree2;
+      complete = true;
+    }
+  }
+  /**
+   * Compile a syntax tree.
+   *
+   * > **Note**: `stringify` freezes the processor if not already *frozen*.
+   *
+   * > **Note**: `stringify` performs the stringify phase, not the run phase
+   * > or other phases.
+   *
+   * @param {CompileTree extends undefined ? Node : CompileTree} tree
+   *   Tree to compile.
+   * @param {Compatible | undefined} [file]
+   *   File associated with `node` (optional); any value accepted as `x` in
+   *   `new VFile(x)`.
+   * @returns {CompileResult extends undefined ? Value : CompileResult}
+   *   Textual representation of the tree (see note).
+   *
+   *   > **Note**: unified typically compiles by serializing: most compilers
+   *   > return `string` (or `Uint8Array`).
+   *   > Some compilers, such as the one configured with
+   *   > [`rehype-react`][rehype-react], return other values (in this case, a
+   *   > React tree).
+   *   > If you’re using a compiler that doesn’t serialize, expect different
+   *   > result values.
+   *   >
+   *   > To register custom results in TypeScript, add them to
+   *   > {@linkcode CompileResultMap}.
+   *
+   *   [rehype-react]: https://github.com/rehypejs/rehype-react
+   */
+  stringify(tree, file) {
+    this.freeze();
+    const realFile = vfile(file);
+    const compiler2 = this.compiler || this.Compiler;
+    assertCompiler("stringify", compiler2);
+    assertNode(tree);
+    return compiler2(tree, realFile);
+  }
+  /**
+   * Configure the processor to use a plugin, a list of usable values, or a
+   * preset.
+   *
+   * If the processor is already using a plugin, the previous plugin
+   * configuration is changed based on the options that are passed in.
+   * In other words, the plugin is not added a second time.
+   *
+   * > **Note**: `use` cannot be called on *frozen* processors.
+   * > Call the processor first to create a new unfrozen processor.
+   *
+   * @example
+   *   There are many ways to pass plugins to `.use()`.
+   *   This example gives an overview:
+   *
+   *   ```js
+   *   import {unified} from 'unified'
+   *
+   *   unified()
+   *     // Plugin with options:
+   *     .use(pluginA, {x: true, y: true})
+   *     // Passing the same plugin again merges configuration (to `{x: true, y: false, z: true}`):
+   *     .use(pluginA, {y: false, z: true})
+   *     // Plugins:
+   *     .use([pluginB, pluginC])
+   *     // Two plugins, the second with options:
+   *     .use([pluginD, [pluginE, {}]])
+   *     // Preset with plugins and settings:
+   *     .use({plugins: [pluginF, [pluginG, {}]], settings: {position: false}})
+   *     // Settings only:
+   *     .use({settings: {position: false}})
+   *   ```
+   *
+   * @template {Array<unknown>} [Parameters=[]]
+   * @template {Node | string | undefined} [Input=undefined]
+   * @template [Output=Input]
+   *
+   * @overload
+   * @param {Preset | null | undefined} [preset]
+   * @returns {Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>}
+   *
+   * @overload
+   * @param {PluggableList} list
+   * @returns {Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>}
+   *
+   * @overload
+   * @param {Plugin<Parameters, Input, Output>} plugin
+   * @param {...(Parameters | [boolean])} parameters
+   * @returns {UsePlugin<ParseTree, HeadTree, TailTree, CompileTree, CompileResult, Input, Output>}
+   *
+   * @param {PluggableList | Plugin | Preset | null | undefined} value
+   *   Usable value.
+   * @param {...unknown} parameters
+   *   Parameters, when a plugin is given as a usable value.
+   * @returns {Processor<ParseTree, HeadTree, TailTree, CompileTree, CompileResult>}
+   *   Current processor.
+   */
+  use(value, ...parameters) {
+    const attachers = this.attachers;
+    const namespace2 = this.namespace;
+    assertUnfrozen("use", this.frozen);
+    if (value === null || value === void 0) ;
+    else if (typeof value === "function") {
+      addPlugin(value, parameters);
+    } else if (typeof value === "object") {
+      if (Array.isArray(value)) {
+        addList(value);
+      } else {
+        addPreset(value);
+      }
+    } else {
+      throw new TypeError("Expected usable value, not `" + value + "`");
+    }
+    return this;
+    function add(value2) {
+      if (typeof value2 === "function") {
+        addPlugin(value2, []);
+      } else if (typeof value2 === "object") {
+        if (Array.isArray(value2)) {
+          const [plugin, ...parameters2] = (
+            /** @type {PluginTuple<Array<unknown>>} */
+            value2
+          );
+          addPlugin(plugin, parameters2);
+        } else {
+          addPreset(value2);
+        }
+      } else {
+        throw new TypeError("Expected usable value, not `" + value2 + "`");
+      }
+    }
+    function addPreset(result) {
+      if (!("plugins" in result) && !("settings" in result)) {
+        throw new Error(
+          "Expected usable value but received an empty preset, which is probably a mistake: presets typically come with `plugins` and sometimes with `settings`, but this has neither"
+        );
+      }
+      addList(result.plugins);
+      if (result.settings) {
+        namespace2.settings = extend(true, namespace2.settings, result.settings);
+      }
+    }
+    function addList(plugins) {
+      let index2 = -1;
+      if (plugins === null || plugins === void 0) ;
+      else if (Array.isArray(plugins)) {
+        while (++index2 < plugins.length) {
+          const thing = plugins[index2];
+          add(thing);
+        }
+      } else {
+        throw new TypeError("Expected a list of plugins, not `" + plugins + "`");
+      }
+    }
+    function addPlugin(plugin, parameters2) {
+      let index2 = -1;
+      let entryIndex = -1;
+      while (++index2 < attachers.length) {
+        if (attachers[index2][0] === plugin) {
+          entryIndex = index2;
+          break;
+        }
+      }
+      if (entryIndex === -1) {
+        attachers.push([plugin, ...parameters2]);
+      } else if (parameters2.length > 0) {
+        let [primary, ...rest] = parameters2;
+        const currentPrimary = attachers[entryIndex][1];
+        if (isPlainObject(currentPrimary) && isPlainObject(primary)) {
+          primary = extend(true, currentPrimary, primary);
+        }
+        attachers[entryIndex] = [plugin, primary, ...rest];
+      }
+    }
+  }
+}
+const unified = new Processor().freeze();
+function assertParser(name2, value) {
+  if (typeof value !== "function") {
+    throw new TypeError("Cannot `" + name2 + "` without `parser`");
+  }
+}
+function assertCompiler(name2, value) {
+  if (typeof value !== "function") {
+    throw new TypeError("Cannot `" + name2 + "` without `compiler`");
+  }
+}
+function assertUnfrozen(name2, frozen) {
+  if (frozen) {
+    throw new Error(
+      "Cannot call `" + name2 + "` on a frozen processor.\nCreate a new processor first, by calling it: use `processor()` instead of `processor`."
+    );
+  }
+}
+function assertNode(node2) {
+  if (!isPlainObject(node2) || typeof node2.type !== "string") {
+    throw new TypeError("Expected node, got `" + node2 + "`");
+  }
+}
+function assertDone(name2, asyncName, complete) {
+  if (!complete) {
+    throw new Error(
+      "`" + name2 + "` finished async. Use `" + asyncName + "` instead"
+    );
+  }
+}
+function vfile(value) {
+  return looksLikeAVFile(value) ? value : new VFile(value);
+}
+function looksLikeAVFile(value) {
+  return Boolean(
+    value && typeof value === "object" && "message" in value && "messages" in value
+  );
+}
+function looksLikeAValue(value) {
+  return typeof value === "string" || isUint8Array(value);
+}
+function isUint8Array(value) {
+  return Boolean(
+    value && typeof value === "object" && "byteLength" in value && "byteOffset" in value
+  );
+}
+const changelog = "https://github.com/remarkjs/react-markdown/blob/main/changelog.md";
+const emptyPlugins = [];
+const emptyRemarkRehypeOptions = { allowDangerousHtml: true };
+const safeProtocol = /^(https?|ircs?|mailto|xmpp)$/i;
+const deprecations = [
+  { from: "astPlugins", id: "remove-buggy-html-in-markdown-parser" },
+  { from: "allowDangerousHtml", id: "remove-buggy-html-in-markdown-parser" },
+  {
+    from: "allowNode",
+    id: "replace-allownode-allowedtypes-and-disallowedtypes",
+    to: "allowElement"
+  },
+  {
+    from: "allowedTypes",
+    id: "replace-allownode-allowedtypes-and-disallowedtypes",
+    to: "allowedElements"
+  },
+  { from: "className", id: "remove-classname" },
+  {
+    from: "disallowedTypes",
+    id: "replace-allownode-allowedtypes-and-disallowedtypes",
+    to: "disallowedElements"
+  },
+  { from: "escapeHtml", id: "remove-buggy-html-in-markdown-parser" },
+  { from: "includeElementIndex", id: "#remove-includeelementindex" },
+  {
+    from: "includeNodeIndex",
+    id: "change-includenodeindex-to-includeelementindex"
+  },
+  { from: "linkTarget", id: "remove-linktarget" },
+  { from: "plugins", id: "change-plugins-to-remarkplugins", to: "remarkPlugins" },
+  { from: "rawSourcePos", id: "#remove-rawsourcepos" },
+  { from: "renderers", id: "change-renderers-to-components", to: "components" },
+  { from: "source", id: "change-source-to-children", to: "children" },
+  { from: "sourcePos", id: "#remove-sourcepos" },
+  { from: "transformImageUri", id: "#add-urltransform", to: "urlTransform" },
+  { from: "transformLinkUri", id: "#add-urltransform", to: "urlTransform" }
+];
+function Markdown(options) {
+  const processor = createProcessor(options);
+  const file = createFile(options);
+  return post(processor.runSync(processor.parse(file), file), options);
+}
+function createProcessor(options) {
+  const rehypePlugins = options.rehypePlugins || emptyPlugins;
+  const remarkPlugins = options.remarkPlugins || emptyPlugins;
+  const remarkRehypeOptions = options.remarkRehypeOptions ? { ...options.remarkRehypeOptions, ...emptyRemarkRehypeOptions } : emptyRemarkRehypeOptions;
+  const processor = unified().use(remarkParse).use(remarkPlugins).use(remarkRehype, remarkRehypeOptions).use(rehypePlugins);
+  return processor;
+}
+function createFile(options) {
+  const children2 = options.children || "";
+  const file = new VFile();
+  if (typeof children2 === "string") {
+    file.value = children2;
+  }
+  return file;
+}
+function post(tree, options) {
+  const allowedElements = options.allowedElements;
+  const allowElement = options.allowElement;
+  const components = options.components;
+  const disallowedElements = options.disallowedElements;
+  const skipHtml = options.skipHtml;
+  const unwrapDisallowed = options.unwrapDisallowed;
+  const urlTransform = options.urlTransform || defaultUrlTransform;
+  for (const deprecation of deprecations) {
+    if (Object.hasOwn(options, deprecation.from)) {
+      unreachable(
+        "Unexpected `" + deprecation.from + "` prop, " + (deprecation.to ? "use `" + deprecation.to + "` instead" : "remove it") + " (see <" + changelog + "#" + deprecation.id + "> for more info)"
+      );
+    }
+  }
+  visit(tree, transform2);
+  return toJsxRuntime(tree, {
+    Fragment: jsxRuntimeExports.Fragment,
+    components,
+    ignoreInvalidStyle: true,
+    jsx: jsxRuntimeExports.jsx,
+    jsxs: jsxRuntimeExports.jsxs,
+    passKeys: true,
+    passNode: true
+  });
+  function transform2(node2, index2, parent) {
+    if (node2.type === "raw" && parent && typeof index2 === "number") {
+      if (skipHtml) {
+        parent.children.splice(index2, 1);
+      } else {
+        parent.children[index2] = { type: "text", value: node2.value };
+      }
+      return index2;
+    }
+    if (node2.type === "element") {
+      let key;
+      for (key in urlAttributes) {
+        if (Object.hasOwn(urlAttributes, key) && Object.hasOwn(node2.properties, key)) {
+          const value = node2.properties[key];
+          const test = urlAttributes[key];
+          if (test === null || test.includes(node2.tagName)) {
+            node2.properties[key] = urlTransform(String(value || ""), key, node2);
+          }
+        }
+      }
+    }
+    if (node2.type === "element") {
+      let remove2 = allowedElements ? !allowedElements.includes(node2.tagName) : disallowedElements ? disallowedElements.includes(node2.tagName) : false;
+      if (!remove2 && allowElement && typeof index2 === "number") {
+        remove2 = !allowElement(node2, index2, parent);
+      }
+      if (remove2 && parent && typeof index2 === "number") {
+        if (unwrapDisallowed && node2.children) {
+          parent.children.splice(index2, 1, ...node2.children);
+        } else {
+          parent.children.splice(index2, 1);
+        }
+        return index2;
+      }
+    }
+  }
+}
+function defaultUrlTransform(value) {
+  const colon = value.indexOf(":");
+  const questionMark = value.indexOf("?");
+  const numberSign = value.indexOf("#");
+  const slash = value.indexOf("/");
+  if (
+    // If there is no protocol, it’s relative.
+    colon === -1 || // If the first colon is after a `?`, `#`, or `/`, it’s not a protocol.
+    slash !== -1 && colon > slash || questionMark !== -1 && colon > questionMark || numberSign !== -1 && colon > numberSign || // It is a protocol, it should be allowed.
+    safeProtocol.test(value.slice(0, colon))
+  ) {
+    return value;
+  }
+  return "";
+}
+function ccount(value, character) {
+  const source = String(value);
+  if (typeof character !== "string") {
+    throw new TypeError("Expected character");
+  }
+  let count = 0;
+  let index2 = source.indexOf(character);
+  while (index2 !== -1) {
+    count++;
+    index2 = source.indexOf(character, index2 + character.length);
+  }
+  return count;
+}
+function escapeStringRegexp(string2) {
+  if (typeof string2 !== "string") {
+    throw new TypeError("Expected a string");
+  }
+  return string2.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&").replace(/-/g, "\\x2d");
+}
+function findAndReplace(tree, list2, options) {
+  const settings = options || {};
+  const ignored = convert(settings.ignore || []);
+  const pairs = toPairs(list2);
+  let pairIndex = -1;
+  while (++pairIndex < pairs.length) {
+    visitParents(tree, "text", visitor);
+  }
+  function visitor(node2, parents) {
+    let index2 = -1;
+    let grandparent;
+    while (++index2 < parents.length) {
+      const parent = parents[index2];
+      const siblings = grandparent ? grandparent.children : void 0;
+      if (ignored(
+        parent,
+        siblings ? siblings.indexOf(parent) : void 0,
+        grandparent
+      )) {
+        return;
+      }
+      grandparent = parent;
+    }
+    if (grandparent) {
+      return handler(node2, parents);
+    }
+  }
+  function handler(node2, parents) {
+    const parent = parents[parents.length - 1];
+    const find2 = pairs[pairIndex][0];
+    const replace2 = pairs[pairIndex][1];
+    let start2 = 0;
+    const siblings = parent.children;
+    const index2 = siblings.indexOf(node2);
+    let change = false;
+    let nodes = [];
+    find2.lastIndex = 0;
+    let match = find2.exec(node2.value);
+    while (match) {
+      const position2 = match.index;
+      const matchObject = {
+        index: match.index,
+        input: match.input,
+        stack: [...parents, node2]
+      };
+      let value = replace2(...match, matchObject);
+      if (typeof value === "string") {
+        value = value.length > 0 ? { type: "text", value } : void 0;
+      }
+      if (value === false) {
+        find2.lastIndex = position2 + 1;
+      } else {
+        if (start2 !== position2) {
+          nodes.push({
+            type: "text",
+            value: node2.value.slice(start2, position2)
+          });
+        }
+        if (Array.isArray(value)) {
+          nodes.push(...value);
+        } else if (value) {
+          nodes.push(value);
+        }
+        start2 = position2 + match[0].length;
+        change = true;
+      }
+      if (!find2.global) {
+        break;
+      }
+      match = find2.exec(node2.value);
+    }
+    if (change) {
+      if (start2 < node2.value.length) {
+        nodes.push({ type: "text", value: node2.value.slice(start2) });
+      }
+      parent.children.splice(index2, 1, ...nodes);
+    } else {
+      nodes = [node2];
+    }
+    return index2 + nodes.length;
+  }
+}
+function toPairs(tupleOrList) {
+  const result = [];
+  if (!Array.isArray(tupleOrList)) {
+    throw new TypeError("Expected find and replace tuple or list of tuples");
+  }
+  const list2 = !tupleOrList[0] || Array.isArray(tupleOrList[0]) ? tupleOrList : [tupleOrList];
+  let index2 = -1;
+  while (++index2 < list2.length) {
+    const tuple = list2[index2];
+    result.push([toExpression(tuple[0]), toFunction(tuple[1])]);
+  }
+  return result;
+}
+function toExpression(find2) {
+  return typeof find2 === "string" ? new RegExp(escapeStringRegexp(find2), "g") : find2;
+}
+function toFunction(replace2) {
+  return typeof replace2 === "function" ? replace2 : function() {
+    return replace2;
+  };
+}
+const inConstruct = "phrasing";
+const notInConstruct = ["autolink", "link", "image", "label"];
+function gfmAutolinkLiteralFromMarkdown() {
+  return {
+    transforms: [transformGfmAutolinkLiterals],
+    enter: {
+      literalAutolink: enterLiteralAutolink,
+      literalAutolinkEmail: enterLiteralAutolinkValue,
+      literalAutolinkHttp: enterLiteralAutolinkValue,
+      literalAutolinkWww: enterLiteralAutolinkValue
+    },
+    exit: {
+      literalAutolink: exitLiteralAutolink,
+      literalAutolinkEmail: exitLiteralAutolinkEmail,
+      literalAutolinkHttp: exitLiteralAutolinkHttp,
+      literalAutolinkWww: exitLiteralAutolinkWww
+    }
+  };
+}
+function gfmAutolinkLiteralToMarkdown() {
+  return {
+    unsafe: [
+      {
+        character: "@",
+        before: "[+\\-.\\w]",
+        after: "[\\-.\\w]",
+        inConstruct,
+        notInConstruct
+      },
+      {
+        character: ".",
+        before: "[Ww]",
+        after: "[\\-.\\w]",
+        inConstruct,
+        notInConstruct
+      },
+      {
+        character: ":",
+        before: "[ps]",
+        after: "\\/",
+        inConstruct,
+        notInConstruct
+      }
+    ]
+  };
+}
+function enterLiteralAutolink(token) {
+  this.enter({ type: "link", title: null, url: "", children: [] }, token);
+}
+function enterLiteralAutolinkValue(token) {
+  this.config.enter.autolinkProtocol.call(this, token);
+}
+function exitLiteralAutolinkHttp(token) {
+  this.config.exit.autolinkProtocol.call(this, token);
+}
+function exitLiteralAutolinkWww(token) {
+  this.config.exit.data.call(this, token);
+  const node2 = this.stack[this.stack.length - 1];
+  ok$1(node2.type === "link");
+  node2.url = "http://" + this.sliceSerialize(token);
+}
+function exitLiteralAutolinkEmail(token) {
+  this.config.exit.autolinkEmail.call(this, token);
+}
+function exitLiteralAutolink(token) {
+  this.exit(token);
+}
+function transformGfmAutolinkLiterals(tree) {
+  findAndReplace(
+    tree,
+    [
+      [/(https?:\/\/|www(?=\.))([-.\w]+)([^ \t\r\n]*)/gi, findUrl],
+      [new RegExp("(?<=^|\\s|\\p{P}|\\p{S})([-.\\w+]+)@([-\\w]+(?:\\.[-\\w]+)+)", "gu"), findEmail]
+    ],
+    { ignore: ["link", "linkReference"] }
+  );
+}
+function findUrl(_, protocol, domain2, path2, match) {
+  let prefix = "";
+  if (!previous(match)) {
+    return false;
+  }
+  if (/^w/i.test(protocol)) {
+    domain2 = protocol + domain2;
+    protocol = "";
+    prefix = "http://";
+  }
+  if (!isCorrectDomain(domain2)) {
+    return false;
+  }
+  const parts = splitUrl(domain2 + path2);
+  if (!parts[0]) return false;
+  const result = {
+    type: "link",
+    title: null,
+    url: prefix + protocol + parts[0],
+    children: [{ type: "text", value: protocol + parts[0] }]
+  };
+  if (parts[1]) {
+    return [result, { type: "text", value: parts[1] }];
+  }
+  return result;
+}
+function findEmail(_, atext, label, match) {
+  if (
+    // Not an expected previous character.
+    !previous(match, true) || // Label ends in not allowed character.
+    /[-\d_]$/.test(label)
+  ) {
+    return false;
+  }
+  return {
+    type: "link",
+    title: null,
+    url: "mailto:" + atext + "@" + label,
+    children: [{ type: "text", value: atext + "@" + label }]
+  };
+}
+function isCorrectDomain(domain2) {
+  const parts = domain2.split(".");
+  if (parts.length < 2 || parts[parts.length - 1] && (/_/.test(parts[parts.length - 1]) || !/[a-zA-Z\d]/.test(parts[parts.length - 1])) || parts[parts.length - 2] && (/_/.test(parts[parts.length - 2]) || !/[a-zA-Z\d]/.test(parts[parts.length - 2]))) {
+    return false;
+  }
+  return true;
+}
+function splitUrl(url) {
+  const trailExec = /[!"&'),.:;<>?\]}]+$/.exec(url);
+  if (!trailExec) {
+    return [url, void 0];
+  }
+  url = url.slice(0, trailExec.index);
+  let trail2 = trailExec[0];
+  let closingParenIndex = trail2.indexOf(")");
+  const openingParens = ccount(url, "(");
+  let closingParens = ccount(url, ")");
+  while (closingParenIndex !== -1 && openingParens > closingParens) {
+    url += trail2.slice(0, closingParenIndex + 1);
+    trail2 = trail2.slice(closingParenIndex + 1);
+    closingParenIndex = trail2.indexOf(")");
+    closingParens++;
+  }
+  return [url, trail2];
+}
+function previous(match, email) {
+  const code2 = match.input.charCodeAt(match.index - 1);
+  return (match.index === 0 || unicodeWhitespace(code2) || unicodePunctuation(code2)) && // If it’s an email, the previous character should not be a slash.
+  (!email || code2 !== 47);
+}
+footnoteReference.peek = footnoteReferencePeek;
+function enterFootnoteCallString() {
+  this.buffer();
+}
+function enterFootnoteCall(token) {
+  this.enter({ type: "footnoteReference", identifier: "", label: "" }, token);
+}
+function enterFootnoteDefinitionLabelString() {
+  this.buffer();
+}
+function enterFootnoteDefinition(token) {
+  this.enter(
+    { type: "footnoteDefinition", identifier: "", label: "", children: [] },
+    token
+  );
+}
+function exitFootnoteCallString(token) {
+  const label = this.resume();
+  const node2 = this.stack[this.stack.length - 1];
+  ok$1(node2.type === "footnoteReference");
+  node2.identifier = normalizeIdentifier(
+    this.sliceSerialize(token)
+  ).toLowerCase();
+  node2.label = label;
+}
+function exitFootnoteCall(token) {
+  this.exit(token);
+}
+function exitFootnoteDefinitionLabelString(token) {
+  const label = this.resume();
+  const node2 = this.stack[this.stack.length - 1];
+  ok$1(node2.type === "footnoteDefinition");
+  node2.identifier = normalizeIdentifier(
+    this.sliceSerialize(token)
+  ).toLowerCase();
+  node2.label = label;
+}
+function exitFootnoteDefinition(token) {
+  this.exit(token);
+}
+function footnoteReferencePeek() {
+  return "[";
+}
+function footnoteReference(node2, _, state, info) {
+  const tracker = state.createTracker(info);
+  let value = tracker.move("[^");
+  const exit2 = state.enter("footnoteReference");
+  const subexit = state.enter("reference");
+  value += tracker.move(
+    state.safe(state.associationId(node2), { after: "]", before: value })
+  );
+  subexit();
+  exit2();
+  value += tracker.move("]");
+  return value;
+}
+function gfmFootnoteFromMarkdown() {
+  return {
+    enter: {
+      gfmFootnoteCallString: enterFootnoteCallString,
+      gfmFootnoteCall: enterFootnoteCall,
+      gfmFootnoteDefinitionLabelString: enterFootnoteDefinitionLabelString,
+      gfmFootnoteDefinition: enterFootnoteDefinition
+    },
+    exit: {
+      gfmFootnoteCallString: exitFootnoteCallString,
+      gfmFootnoteCall: exitFootnoteCall,
+      gfmFootnoteDefinitionLabelString: exitFootnoteDefinitionLabelString,
+      gfmFootnoteDefinition: exitFootnoteDefinition
+    }
+  };
+}
+function gfmFootnoteToMarkdown(options) {
+  let firstLineBlank = false;
+  if (options && options.firstLineBlank) {
+    firstLineBlank = true;
+  }
+  return {
+    handlers: { footnoteDefinition, footnoteReference },
+    // This is on by default already.
+    unsafe: [{ character: "[", inConstruct: ["label", "phrasing", "reference"] }]
+  };
+  function footnoteDefinition(node2, _, state, info) {
+    const tracker = state.createTracker(info);
+    let value = tracker.move("[^");
+    const exit2 = state.enter("footnoteDefinition");
+    const subexit = state.enter("label");
+    value += tracker.move(
+      state.safe(state.associationId(node2), { before: value, after: "]" })
+    );
+    subexit();
+    value += tracker.move("]:");
+    if (node2.children && node2.children.length > 0) {
+      tracker.shift(4);
+      value += tracker.move(
+        (firstLineBlank ? "\n" : " ") + state.indentLines(
+          state.containerFlow(node2, tracker.current()),
+          firstLineBlank ? mapAll : mapExceptFirst
+        )
+      );
+    }
+    exit2();
+    return value;
+  }
+}
+function mapExceptFirst(line, index2, blank) {
+  return index2 === 0 ? line : mapAll(line, index2, blank);
+}
+function mapAll(line, index2, blank) {
+  return (blank ? "" : "    ") + line;
+}
+const constructsWithoutStrikethrough = [
+  "autolink",
+  "destinationLiteral",
+  "destinationRaw",
+  "reference",
+  "titleQuote",
+  "titleApostrophe"
+];
+handleDelete.peek = peekDelete;
+function gfmStrikethroughFromMarkdown() {
+  return {
+    canContainEols: ["delete"],
+    enter: { strikethrough: enterStrikethrough },
+    exit: { strikethrough: exitStrikethrough }
+  };
+}
+function gfmStrikethroughToMarkdown() {
+  return {
+    unsafe: [
+      {
+        character: "~",
+        inConstruct: "phrasing",
+        notInConstruct: constructsWithoutStrikethrough
+      }
+    ],
+    handlers: { delete: handleDelete }
+  };
+}
+function enterStrikethrough(token) {
+  this.enter({ type: "delete", children: [] }, token);
+}
+function exitStrikethrough(token) {
+  this.exit(token);
+}
+function handleDelete(node2, _, state, info) {
+  const tracker = state.createTracker(info);
+  const exit2 = state.enter("strikethrough");
+  let value = tracker.move("~~");
+  value += state.containerPhrasing(node2, {
+    ...tracker.current(),
+    before: value,
+    after: "~"
+  });
+  value += tracker.move("~~");
+  exit2();
+  return value;
+}
+function peekDelete() {
+  return "~";
+}
+function defaultStringLength(value) {
+  return value.length;
+}
+function markdownTable(table2, options) {
+  const settings = options || {};
+  const align = (settings.align || []).concat();
+  const stringLength = settings.stringLength || defaultStringLength;
+  const alignments = [];
+  const cellMatrix = [];
+  const sizeMatrix = [];
+  const longestCellByColumn = [];
+  let mostCellsPerRow = 0;
+  let rowIndex = -1;
+  while (++rowIndex < table2.length) {
+    const row2 = [];
+    const sizes2 = [];
+    let columnIndex2 = -1;
+    if (table2[rowIndex].length > mostCellsPerRow) {
+      mostCellsPerRow = table2[rowIndex].length;
+    }
+    while (++columnIndex2 < table2[rowIndex].length) {
+      const cell = serialize(table2[rowIndex][columnIndex2]);
+      if (settings.alignDelimiters !== false) {
+        const size = stringLength(cell);
+        sizes2[columnIndex2] = size;
+        if (longestCellByColumn[columnIndex2] === void 0 || size > longestCellByColumn[columnIndex2]) {
+          longestCellByColumn[columnIndex2] = size;
+        }
+      }
+      row2.push(cell);
+    }
+    cellMatrix[rowIndex] = row2;
+    sizeMatrix[rowIndex] = sizes2;
+  }
+  let columnIndex = -1;
+  if (typeof align === "object" && "length" in align) {
+    while (++columnIndex < mostCellsPerRow) {
+      alignments[columnIndex] = toAlignment(align[columnIndex]);
+    }
+  } else {
+    const code2 = toAlignment(align);
+    while (++columnIndex < mostCellsPerRow) {
+      alignments[columnIndex] = code2;
+    }
+  }
+  columnIndex = -1;
+  const row = [];
+  const sizes = [];
+  while (++columnIndex < mostCellsPerRow) {
+    const code2 = alignments[columnIndex];
+    let before = "";
+    let after = "";
+    if (code2 === 99) {
+      before = ":";
+      after = ":";
+    } else if (code2 === 108) {
+      before = ":";
+    } else if (code2 === 114) {
+      after = ":";
+    }
+    let size = settings.alignDelimiters === false ? 1 : Math.max(
+      1,
+      longestCellByColumn[columnIndex] - before.length - after.length
+    );
+    const cell = before + "-".repeat(size) + after;
+    if (settings.alignDelimiters !== false) {
+      size = before.length + size + after.length;
+      if (size > longestCellByColumn[columnIndex]) {
+        longestCellByColumn[columnIndex] = size;
+      }
+      sizes[columnIndex] = size;
+    }
+    row[columnIndex] = cell;
+  }
+  cellMatrix.splice(1, 0, row);
+  sizeMatrix.splice(1, 0, sizes);
+  rowIndex = -1;
+  const lines = [];
+  while (++rowIndex < cellMatrix.length) {
+    const row2 = cellMatrix[rowIndex];
+    const sizes2 = sizeMatrix[rowIndex];
+    columnIndex = -1;
+    const line = [];
+    while (++columnIndex < mostCellsPerRow) {
+      const cell = row2[columnIndex] || "";
+      let before = "";
+      let after = "";
+      if (settings.alignDelimiters !== false) {
+        const size = longestCellByColumn[columnIndex] - (sizes2[columnIndex] || 0);
+        const code2 = alignments[columnIndex];
+        if (code2 === 114) {
+          before = " ".repeat(size);
+        } else if (code2 === 99) {
+          if (size % 2) {
+            before = " ".repeat(size / 2 + 0.5);
+            after = " ".repeat(size / 2 - 0.5);
+          } else {
+            before = " ".repeat(size / 2);
+            after = before;
+          }
+        } else {
+          after = " ".repeat(size);
+        }
+      }
+      if (settings.delimiterStart !== false && !columnIndex) {
+        line.push("|");
+      }
+      if (settings.padding !== false && // Don’t add the opening space if we’re not aligning and the cell is
+      // empty: there will be a closing space.
+      !(settings.alignDelimiters === false && cell === "") && (settings.delimiterStart !== false || columnIndex)) {
+        line.push(" ");
+      }
+      if (settings.alignDelimiters !== false) {
+        line.push(before);
+      }
+      line.push(cell);
+      if (settings.alignDelimiters !== false) {
+        line.push(after);
+      }
+      if (settings.padding !== false) {
+        line.push(" ");
+      }
+      if (settings.delimiterEnd !== false || columnIndex !== mostCellsPerRow - 1) {
+        line.push("|");
+      }
+    }
+    lines.push(
+      settings.delimiterEnd === false ? line.join("").replace(/ +$/, "") : line.join("")
+    );
+  }
+  return lines.join("\n");
+}
+function serialize(value) {
+  return value === null || value === void 0 ? "" : String(value);
+}
+function toAlignment(value) {
+  const code2 = typeof value === "string" ? value.codePointAt(0) : 0;
+  return code2 === 67 || code2 === 99 ? 99 : code2 === 76 || code2 === 108 ? 108 : code2 === 82 || code2 === 114 ? 114 : 0;
+}
+function blockquote(node2, _, state, info) {
+  const exit2 = state.enter("blockquote");
+  const tracker = state.createTracker(info);
+  tracker.move("> ");
+  tracker.shift(2);
+  const value = state.indentLines(
+    state.containerFlow(node2, tracker.current()),
+    map$1
+  );
+  exit2();
+  return value;
+}
+function map$1(line, _, blank) {
+  return ">" + (blank ? "" : " ") + line;
+}
+function patternInScope(stack, pattern) {
+  return listInScope(stack, pattern.inConstruct, true) && !listInScope(stack, pattern.notInConstruct, false);
+}
+function listInScope(stack, list2, none2) {
+  if (typeof list2 === "string") {
+    list2 = [list2];
+  }
+  if (!list2 || list2.length === 0) {
+    return none2;
+  }
+  let index2 = -1;
+  while (++index2 < list2.length) {
+    if (stack.includes(list2[index2])) {
+      return true;
+    }
+  }
+  return false;
+}
+function hardBreak(_, _1, state, info) {
+  let index2 = -1;
+  while (++index2 < state.unsafe.length) {
+    if (state.unsafe[index2].character === "\n" && patternInScope(state.stack, state.unsafe[index2])) {
+      return /[ \t]/.test(info.before) ? "" : " ";
+    }
+  }
+  return "\\\n";
+}
+function longestStreak(value, substring) {
+  const source = String(value);
+  let index2 = source.indexOf(substring);
+  let expected = index2;
+  let count = 0;
+  let max = 0;
+  if (typeof substring !== "string") {
+    throw new TypeError("Expected substring");
+  }
+  while (index2 !== -1) {
+    if (index2 === expected) {
+      if (++count > max) {
+        max = count;
+      }
+    } else {
+      count = 1;
+    }
+    expected = index2 + substring.length;
+    index2 = source.indexOf(substring, expected);
+  }
+  return max;
+}
+function formatCodeAsIndented(node2, state) {
+  return Boolean(
+    state.options.fences === false && node2.value && // If there’s no info…
+    !node2.lang && // And there’s a non-whitespace character…
+    /[^ \r\n]/.test(node2.value) && // And the value doesn’t start or end in a blank…
+    !/^[\t ]*(?:[\r\n]|$)|(?:^|[\r\n])[\t ]*$/.test(node2.value)
+  );
+}
+function checkFence(state) {
+  const marker = state.options.fence || "`";
+  if (marker !== "`" && marker !== "~") {
+    throw new Error(
+      "Cannot serialize code with `" + marker + "` for `options.fence`, expected `` ` `` or `~`"
+    );
+  }
+  return marker;
+}
+function code$1(node2, _, state, info) {
+  const marker = checkFence(state);
+  const raw = node2.value || "";
+  const suffix = marker === "`" ? "GraveAccent" : "Tilde";
+  if (formatCodeAsIndented(node2, state)) {
+    const exit3 = state.enter("codeIndented");
+    const value2 = state.indentLines(raw, map);
+    exit3();
+    return value2;
+  }
+  const tracker = state.createTracker(info);
+  const sequence = marker.repeat(Math.max(longestStreak(raw, marker) + 1, 3));
+  const exit2 = state.enter("codeFenced");
+  let value = tracker.move(sequence);
+  if (node2.lang) {
+    const subexit = state.enter(`codeFencedLang${suffix}`);
+    value += tracker.move(
+      state.safe(node2.lang, {
+        before: value,
+        after: " ",
+        encode: ["`"],
+        ...tracker.current()
+      })
+    );
+    subexit();
+  }
+  if (node2.lang && node2.meta) {
+    const subexit = state.enter(`codeFencedMeta${suffix}`);
+    value += tracker.move(" ");
+    value += tracker.move(
+      state.safe(node2.meta, {
+        before: value,
+        after: "\n",
+        encode: ["`"],
+        ...tracker.current()
+      })
+    );
+    subexit();
+  }
+  value += tracker.move("\n");
+  if (raw) {
+    value += tracker.move(raw + "\n");
+  }
+  value += tracker.move(sequence);
+  exit2();
+  return value;
+}
+function map(line, _, blank) {
+  return (blank ? "" : "    ") + line;
+}
+function checkQuote(state) {
+  const marker = state.options.quote || '"';
+  if (marker !== '"' && marker !== "'") {
+    throw new Error(
+      "Cannot serialize title with `" + marker + "` for `options.quote`, expected `\"`, or `'`"
+    );
+  }
+  return marker;
+}
+function definition(node2, _, state, info) {
+  const quote = checkQuote(state);
+  const suffix = quote === '"' ? "Quote" : "Apostrophe";
+  const exit2 = state.enter("definition");
+  let subexit = state.enter("label");
+  const tracker = state.createTracker(info);
+  let value = tracker.move("[");
+  value += tracker.move(
+    state.safe(state.associationId(node2), {
+      before: value,
+      after: "]",
+      ...tracker.current()
+    })
+  );
+  value += tracker.move("]: ");
+  subexit();
+  if (
+    // If there’s no url, or…
+    !node2.url || // If there are control characters or whitespace.
+    /[\0- \u007F]/.test(node2.url)
+  ) {
+    subexit = state.enter("destinationLiteral");
+    value += tracker.move("<");
+    value += tracker.move(
+      state.safe(node2.url, { before: value, after: ">", ...tracker.current() })
+    );
+    value += tracker.move(">");
+  } else {
+    subexit = state.enter("destinationRaw");
+    value += tracker.move(
+      state.safe(node2.url, {
+        before: value,
+        after: node2.title ? " " : "\n",
+        ...tracker.current()
+      })
+    );
+  }
+  subexit();
+  if (node2.title) {
+    subexit = state.enter(`title${suffix}`);
+    value += tracker.move(" " + quote);
+    value += tracker.move(
+      state.safe(node2.title, {
+        before: value,
+        after: quote,
+        ...tracker.current()
+      })
+    );
+    value += tracker.move(quote);
+    subexit();
+  }
+  exit2();
+  return value;
+}
+function checkEmphasis(state) {
+  const marker = state.options.emphasis || "*";
+  if (marker !== "*" && marker !== "_") {
+    throw new Error(
+      "Cannot serialize emphasis with `" + marker + "` for `options.emphasis`, expected `*`, or `_`"
+    );
+  }
+  return marker;
+}
+function encodeCharacterReference(code2) {
+  return "&#x" + code2.toString(16).toUpperCase() + ";";
+}
+function encodeInfo(outside, inside, marker) {
+  const outsideKind = classifyCharacter(outside);
+  const insideKind = classifyCharacter(inside);
+  if (outsideKind === void 0) {
+    return insideKind === void 0 ? (
+      // Letter inside:
+      // we have to encode *both* letters for `_` as it is looser.
+      // it already forms for `*` (and GFMs `~`).
+      marker === "_" ? { inside: true, outside: true } : { inside: false, outside: false }
+    ) : insideKind === 1 ? (
+      // Whitespace inside: encode both (letter, whitespace).
+      { inside: true, outside: true }
+    ) : (
+      // Punctuation inside: encode outer (letter)
+      { inside: false, outside: true }
+    );
+  }
+  if (outsideKind === 1) {
+    return insideKind === void 0 ? (
+      // Letter inside: already forms.
+      { inside: false, outside: false }
+    ) : insideKind === 1 ? (
+      // Whitespace inside: encode both (whitespace).
+      { inside: true, outside: true }
+    ) : (
+      // Punctuation inside: already forms.
+      { inside: false, outside: false }
+    );
+  }
+  return insideKind === void 0 ? (
+    // Letter inside: already forms.
+    { inside: false, outside: false }
+  ) : insideKind === 1 ? (
+    // Whitespace inside: encode inner (whitespace).
+    { inside: true, outside: false }
+  ) : (
+    // Punctuation inside: already forms.
+    { inside: false, outside: false }
+  );
+}
+emphasis.peek = emphasisPeek;
+function emphasis(node2, _, state, info) {
+  const marker = checkEmphasis(state);
+  const exit2 = state.enter("emphasis");
+  const tracker = state.createTracker(info);
+  const before = tracker.move(marker);
+  let between = tracker.move(
+    state.containerPhrasing(node2, {
+      after: marker,
+      before,
+      ...tracker.current()
+    })
+  );
+  const betweenHead = between.charCodeAt(0);
+  const open = encodeInfo(
+    info.before.charCodeAt(info.before.length - 1),
+    betweenHead,
+    marker
+  );
+  if (open.inside) {
+    between = encodeCharacterReference(betweenHead) + between.slice(1);
+  }
+  const betweenTail = between.charCodeAt(between.length - 1);
+  const close = encodeInfo(info.after.charCodeAt(0), betweenTail, marker);
+  if (close.inside) {
+    between = between.slice(0, -1) + encodeCharacterReference(betweenTail);
+  }
+  const after = tracker.move(marker);
+  exit2();
+  state.attentionEncodeSurroundingInfo = {
+    after: close.outside,
+    before: open.outside
+  };
+  return before + between + after;
+}
+function emphasisPeek(_, _1, state) {
+  return state.options.emphasis || "*";
+}
+function formatHeadingAsSetext(node2, state) {
+  let literalWithBreak = false;
+  visit(node2, function(node3) {
+    if ("value" in node3 && /\r?\n|\r/.test(node3.value) || node3.type === "break") {
+      literalWithBreak = true;
+      return EXIT;
+    }
+  });
+  return Boolean(
+    (!node2.depth || node2.depth < 3) && toString$1(node2) && (state.options.setext || literalWithBreak)
+  );
+}
+function heading(node2, _, state, info) {
+  const rank = Math.max(Math.min(6, node2.depth || 1), 1);
+  const tracker = state.createTracker(info);
+  if (formatHeadingAsSetext(node2, state)) {
+    const exit3 = state.enter("headingSetext");
+    const subexit2 = state.enter("phrasing");
+    const value2 = state.containerPhrasing(node2, {
+      ...tracker.current(),
+      before: "\n",
+      after: "\n"
+    });
+    subexit2();
+    exit3();
+    return value2 + "\n" + (rank === 1 ? "=" : "-").repeat(
+      // The whole size…
+      value2.length - // Minus the position of the character after the last EOL (or
+      // 0 if there is none)…
+      (Math.max(value2.lastIndexOf("\r"), value2.lastIndexOf("\n")) + 1)
+    );
+  }
+  const sequence = "#".repeat(rank);
+  const exit2 = state.enter("headingAtx");
+  const subexit = state.enter("phrasing");
+  tracker.move(sequence + " ");
+  let value = state.containerPhrasing(node2, {
+    before: "# ",
+    after: "\n",
+    ...tracker.current()
+  });
+  if (/^[\t ]/.test(value)) {
+    value = encodeCharacterReference(value.charCodeAt(0)) + value.slice(1);
+  }
+  value = value ? sequence + " " + value : sequence;
+  if (state.options.closeAtx) {
+    value += " " + sequence;
+  }
+  subexit();
+  exit2();
+  return value;
+}
+html.peek = htmlPeek;
+function html(node2) {
+  return node2.value || "";
+}
+function htmlPeek() {
+  return "<";
+}
+image.peek = imagePeek;
+function image(node2, _, state, info) {
+  const quote = checkQuote(state);
+  const suffix = quote === '"' ? "Quote" : "Apostrophe";
+  const exit2 = state.enter("image");
+  let subexit = state.enter("label");
+  const tracker = state.createTracker(info);
+  let value = tracker.move("![");
+  value += tracker.move(
+    state.safe(node2.alt, { before: value, after: "]", ...tracker.current() })
+  );
+  value += tracker.move("](");
+  subexit();
+  if (
+    // If there’s no url but there is a title…
+    !node2.url && node2.title || // If there are control characters or whitespace.
+    /[\0- \u007F]/.test(node2.url)
+  ) {
+    subexit = state.enter("destinationLiteral");
+    value += tracker.move("<");
+    value += tracker.move(
+      state.safe(node2.url, { before: value, after: ">", ...tracker.current() })
+    );
+    value += tracker.move(">");
+  } else {
+    subexit = state.enter("destinationRaw");
+    value += tracker.move(
+      state.safe(node2.url, {
+        before: value,
+        after: node2.title ? " " : ")",
+        ...tracker.current()
+      })
+    );
+  }
+  subexit();
+  if (node2.title) {
+    subexit = state.enter(`title${suffix}`);
+    value += tracker.move(" " + quote);
+    value += tracker.move(
+      state.safe(node2.title, {
+        before: value,
+        after: quote,
+        ...tracker.current()
+      })
+    );
+    value += tracker.move(quote);
+    subexit();
+  }
+  value += tracker.move(")");
+  exit2();
+  return value;
+}
+function imagePeek() {
+  return "!";
+}
+imageReference.peek = imageReferencePeek;
+function imageReference(node2, _, state, info) {
+  const type = node2.referenceType;
+  const exit2 = state.enter("imageReference");
+  let subexit = state.enter("label");
+  const tracker = state.createTracker(info);
+  let value = tracker.move("![");
+  const alt = state.safe(node2.alt, {
+    before: value,
+    after: "]",
+    ...tracker.current()
+  });
+  value += tracker.move(alt + "][");
+  subexit();
+  const stack = state.stack;
+  state.stack = [];
+  subexit = state.enter("reference");
+  const reference = state.safe(state.associationId(node2), {
+    before: value,
+    after: "]",
+    ...tracker.current()
+  });
+  subexit();
+  state.stack = stack;
+  exit2();
+  if (type === "full" || !alt || alt !== reference) {
+    value += tracker.move(reference + "]");
+  } else if (type === "shortcut") {
+    value = value.slice(0, -1);
+  } else {
+    value += tracker.move("]");
+  }
+  return value;
+}
+function imageReferencePeek() {
+  return "!";
+}
+inlineCode.peek = inlineCodePeek;
+function inlineCode(node2, _, state) {
+  let value = node2.value || "";
+  let sequence = "`";
+  let index2 = -1;
+  while (new RegExp("(^|[^`])" + sequence + "([^`]|$)").test(value)) {
+    sequence += "`";
+  }
+  if (/[^ \r\n]/.test(value) && (/^[ \r\n]/.test(value) && /[ \r\n]$/.test(value) || /^`|`$/.test(value))) {
+    value = " " + value + " ";
+  }
+  while (++index2 < state.unsafe.length) {
+    const pattern = state.unsafe[index2];
+    const expression = state.compilePattern(pattern);
+    let match;
+    if (!pattern.atBreak) continue;
+    while (match = expression.exec(value)) {
+      let position2 = match.index;
+      if (value.charCodeAt(position2) === 10 && value.charCodeAt(position2 - 1) === 13) {
+        position2--;
+      }
+      value = value.slice(0, position2) + " " + value.slice(match.index + 1);
+    }
+  }
+  return sequence + value + sequence;
+}
+function inlineCodePeek() {
+  return "`";
+}
+function formatLinkAsAutolink(node2, state) {
+  const raw = toString$1(node2);
+  return Boolean(
+    !state.options.resourceLink && // If there’s a url…
+    node2.url && // And there’s a no title…
+    !node2.title && // And the content of `node` is a single text node…
+    node2.children && node2.children.length === 1 && node2.children[0].type === "text" && // And if the url is the same as the content…
+    (raw === node2.url || "mailto:" + raw === node2.url) && // And that starts w/ a protocol…
+    /^[a-z][a-z+.-]+:/i.test(node2.url) && // And that doesn’t contain ASCII control codes (character escapes and
+    // references don’t work), space, or angle brackets…
+    !/[\0- <>\u007F]/.test(node2.url)
+  );
+}
+link.peek = linkPeek;
+function link(node2, _, state, info) {
+  const quote = checkQuote(state);
+  const suffix = quote === '"' ? "Quote" : "Apostrophe";
+  const tracker = state.createTracker(info);
+  let exit2;
+  let subexit;
+  if (formatLinkAsAutolink(node2, state)) {
+    const stack = state.stack;
+    state.stack = [];
+    exit2 = state.enter("autolink");
+    let value2 = tracker.move("<");
+    value2 += tracker.move(
+      state.containerPhrasing(node2, {
+        before: value2,
+        after: ">",
+        ...tracker.current()
+      })
+    );
+    value2 += tracker.move(">");
+    exit2();
+    state.stack = stack;
+    return value2;
+  }
+  exit2 = state.enter("link");
+  subexit = state.enter("label");
+  let value = tracker.move("[");
+  value += tracker.move(
+    state.containerPhrasing(node2, {
+      before: value,
+      after: "](",
+      ...tracker.current()
+    })
+  );
+  value += tracker.move("](");
+  subexit();
+  if (
+    // If there’s no url but there is a title…
+    !node2.url && node2.title || // If there are control characters or whitespace.
+    /[\0- \u007F]/.test(node2.url)
+  ) {
+    subexit = state.enter("destinationLiteral");
+    value += tracker.move("<");
+    value += tracker.move(
+      state.safe(node2.url, { before: value, after: ">", ...tracker.current() })
+    );
+    value += tracker.move(">");
+  } else {
+    subexit = state.enter("destinationRaw");
+    value += tracker.move(
+      state.safe(node2.url, {
+        before: value,
+        after: node2.title ? " " : ")",
+        ...tracker.current()
+      })
+    );
+  }
+  subexit();
+  if (node2.title) {
+    subexit = state.enter(`title${suffix}`);
+    value += tracker.move(" " + quote);
+    value += tracker.move(
+      state.safe(node2.title, {
+        before: value,
+        after: quote,
+        ...tracker.current()
+      })
+    );
+    value += tracker.move(quote);
+    subexit();
+  }
+  value += tracker.move(")");
+  exit2();
+  return value;
+}
+function linkPeek(node2, _, state) {
+  return formatLinkAsAutolink(node2, state) ? "<" : "[";
+}
+linkReference.peek = linkReferencePeek;
+function linkReference(node2, _, state, info) {
+  const type = node2.referenceType;
+  const exit2 = state.enter("linkReference");
+  let subexit = state.enter("label");
+  const tracker = state.createTracker(info);
+  let value = tracker.move("[");
+  const text2 = state.containerPhrasing(node2, {
+    before: value,
+    after: "]",
+    ...tracker.current()
+  });
+  value += tracker.move(text2 + "][");
+  subexit();
+  const stack = state.stack;
+  state.stack = [];
+  subexit = state.enter("reference");
+  const reference = state.safe(state.associationId(node2), {
+    before: value,
+    after: "]",
+    ...tracker.current()
+  });
+  subexit();
+  state.stack = stack;
+  exit2();
+  if (type === "full" || !text2 || text2 !== reference) {
+    value += tracker.move(reference + "]");
+  } else if (type === "shortcut") {
+    value = value.slice(0, -1);
+  } else {
+    value += tracker.move("]");
+  }
+  return value;
+}
+function linkReferencePeek() {
+  return "[";
+}
+function checkBullet(state) {
+  const marker = state.options.bullet || "*";
+  if (marker !== "*" && marker !== "+" && marker !== "-") {
+    throw new Error(
+      "Cannot serialize items with `" + marker + "` for `options.bullet`, expected `*`, `+`, or `-`"
+    );
+  }
+  return marker;
+}
+function checkBulletOther(state) {
+  const bullet = checkBullet(state);
+  const bulletOther = state.options.bulletOther;
+  if (!bulletOther) {
+    return bullet === "*" ? "-" : "*";
+  }
+  if (bulletOther !== "*" && bulletOther !== "+" && bulletOther !== "-") {
+    throw new Error(
+      "Cannot serialize items with `" + bulletOther + "` for `options.bulletOther`, expected `*`, `+`, or `-`"
+    );
+  }
+  if (bulletOther === bullet) {
+    throw new Error(
+      "Expected `bullet` (`" + bullet + "`) and `bulletOther` (`" + bulletOther + "`) to be different"
+    );
+  }
+  return bulletOther;
+}
+function checkBulletOrdered(state) {
+  const marker = state.options.bulletOrdered || ".";
+  if (marker !== "." && marker !== ")") {
+    throw new Error(
+      "Cannot serialize items with `" + marker + "` for `options.bulletOrdered`, expected `.` or `)`"
+    );
+  }
+  return marker;
+}
+function checkRule(state) {
+  const marker = state.options.rule || "*";
+  if (marker !== "*" && marker !== "-" && marker !== "_") {
+    throw new Error(
+      "Cannot serialize rules with `" + marker + "` for `options.rule`, expected `*`, `-`, or `_`"
+    );
+  }
+  return marker;
+}
+function list(node2, parent, state, info) {
+  const exit2 = state.enter("list");
+  const bulletCurrent = state.bulletCurrent;
+  let bullet = node2.ordered ? checkBulletOrdered(state) : checkBullet(state);
+  const bulletOther = node2.ordered ? bullet === "." ? ")" : "." : checkBulletOther(state);
+  let useDifferentMarker = parent && state.bulletLastUsed ? bullet === state.bulletLastUsed : false;
+  if (!node2.ordered) {
+    const firstListItem = node2.children ? node2.children[0] : void 0;
+    if (
+      // Bullet could be used as a thematic break marker:
+      (bullet === "*" || bullet === "-") && // Empty first list item:
+      firstListItem && (!firstListItem.children || !firstListItem.children[0]) && // Directly in two other list items:
+      state.stack[state.stack.length - 1] === "list" && state.stack[state.stack.length - 2] === "listItem" && state.stack[state.stack.length - 3] === "list" && state.stack[state.stack.length - 4] === "listItem" && // That are each the first child.
+      state.indexStack[state.indexStack.length - 1] === 0 && state.indexStack[state.indexStack.length - 2] === 0 && state.indexStack[state.indexStack.length - 3] === 0
+    ) {
+      useDifferentMarker = true;
+    }
+    if (checkRule(state) === bullet && firstListItem) {
+      let index2 = -1;
+      while (++index2 < node2.children.length) {
+        const item = node2.children[index2];
+        if (item && item.type === "listItem" && item.children && item.children[0] && item.children[0].type === "thematicBreak") {
+          useDifferentMarker = true;
+          break;
+        }
+      }
+    }
+  }
+  if (useDifferentMarker) {
+    bullet = bulletOther;
+  }
+  state.bulletCurrent = bullet;
+  const value = state.containerFlow(node2, info);
+  state.bulletLastUsed = bullet;
+  state.bulletCurrent = bulletCurrent;
+  exit2();
+  return value;
+}
+function checkListItemIndent(state) {
+  const style2 = state.options.listItemIndent || "one";
+  if (style2 !== "tab" && style2 !== "one" && style2 !== "mixed") {
+    throw new Error(
+      "Cannot serialize items with `" + style2 + "` for `options.listItemIndent`, expected `tab`, `one`, or `mixed`"
+    );
+  }
+  return style2;
+}
+function listItem(node2, parent, state, info) {
+  const listItemIndent = checkListItemIndent(state);
+  let bullet = state.bulletCurrent || checkBullet(state);
+  if (parent && parent.type === "list" && parent.ordered) {
+    bullet = (typeof parent.start === "number" && parent.start > -1 ? parent.start : 1) + (state.options.incrementListMarker === false ? 0 : parent.children.indexOf(node2)) + bullet;
+  }
+  let size = bullet.length + 1;
+  if (listItemIndent === "tab" || listItemIndent === "mixed" && (parent && parent.type === "list" && parent.spread || node2.spread)) {
+    size = Math.ceil(size / 4) * 4;
+  }
+  const tracker = state.createTracker(info);
+  tracker.move(bullet + " ".repeat(size - bullet.length));
+  tracker.shift(size);
+  const exit2 = state.enter("listItem");
+  const value = state.indentLines(
+    state.containerFlow(node2, tracker.current()),
+    map2
+  );
+  exit2();
+  return value;
+  function map2(line, index2, blank) {
+    if (index2) {
+      return (blank ? "" : " ".repeat(size)) + line;
+    }
+    return (blank ? bullet : bullet + " ".repeat(size - bullet.length)) + line;
+  }
+}
+function paragraph(node2, _, state, info) {
+  const exit2 = state.enter("paragraph");
+  const subexit = state.enter("phrasing");
+  const value = state.containerPhrasing(node2, info);
+  subexit();
+  exit2();
+  return value;
+}
+const phrasing = (
+  /** @type {(node?: unknown) => node is Exclude<PhrasingContent, Html>} */
+  convert([
+    "break",
+    "delete",
+    "emphasis",
+    // To do: next major: removed since footnotes were added to GFM.
+    "footnote",
+    "footnoteReference",
+    "image",
+    "imageReference",
+    "inlineCode",
+    // Enabled by `mdast-util-math`:
+    "inlineMath",
+    "link",
+    "linkReference",
+    // Enabled by `mdast-util-mdx`:
+    "mdxJsxTextElement",
+    // Enabled by `mdast-util-mdx`:
+    "mdxTextExpression",
+    "strong",
+    "text",
+    // Enabled by `mdast-util-directive`:
+    "textDirective"
+  ])
+);
+function root(node2, _, state, info) {
+  const hasPhrasing = node2.children.some(function(d) {
+    return phrasing(d);
+  });
+  const container = hasPhrasing ? state.containerPhrasing : state.containerFlow;
+  return container.call(state, node2, info);
+}
+function checkStrong(state) {
+  const marker = state.options.strong || "*";
+  if (marker !== "*" && marker !== "_") {
+    throw new Error(
+      "Cannot serialize strong with `" + marker + "` for `options.strong`, expected `*`, or `_`"
+    );
+  }
+  return marker;
+}
+strong.peek = strongPeek;
+function strong(node2, _, state, info) {
+  const marker = checkStrong(state);
+  const exit2 = state.enter("strong");
+  const tracker = state.createTracker(info);
+  const before = tracker.move(marker + marker);
+  let between = tracker.move(
+    state.containerPhrasing(node2, {
+      after: marker,
+      before,
+      ...tracker.current()
+    })
+  );
+  const betweenHead = between.charCodeAt(0);
+  const open = encodeInfo(
+    info.before.charCodeAt(info.before.length - 1),
+    betweenHead,
+    marker
+  );
+  if (open.inside) {
+    between = encodeCharacterReference(betweenHead) + between.slice(1);
+  }
+  const betweenTail = between.charCodeAt(between.length - 1);
+  const close = encodeInfo(info.after.charCodeAt(0), betweenTail, marker);
+  if (close.inside) {
+    between = between.slice(0, -1) + encodeCharacterReference(betweenTail);
+  }
+  const after = tracker.move(marker + marker);
+  exit2();
+  state.attentionEncodeSurroundingInfo = {
+    after: close.outside,
+    before: open.outside
+  };
+  return before + between + after;
+}
+function strongPeek(_, _1, state) {
+  return state.options.strong || "*";
+}
+function text$1(node2, _, state, info) {
+  return state.safe(node2.value, info);
+}
+function checkRuleRepetition(state) {
+  const repetition = state.options.ruleRepetition || 3;
+  if (repetition < 3) {
+    throw new Error(
+      "Cannot serialize rules with repetition `" + repetition + "` for `options.ruleRepetition`, expected `3` or more"
+    );
+  }
+  return repetition;
+}
+function thematicBreak(_, _1, state) {
+  const value = (checkRule(state) + (state.options.ruleSpaces ? " " : "")).repeat(checkRuleRepetition(state));
+  return state.options.ruleSpaces ? value.slice(0, -1) : value;
+}
+const handle = {
+  blockquote,
+  break: hardBreak,
+  code: code$1,
+  definition,
+  emphasis,
+  hardBreak,
+  heading,
+  html,
+  image,
+  imageReference,
+  inlineCode,
+  link,
+  linkReference,
+  list,
+  listItem,
+  paragraph,
+  root,
+  strong,
+  text: text$1,
+  thematicBreak
+};
+function gfmTableFromMarkdown() {
+  return {
+    enter: {
+      table: enterTable,
+      tableData: enterCell,
+      tableHeader: enterCell,
+      tableRow: enterRow
+    },
+    exit: {
+      codeText: exitCodeText,
+      table: exitTable,
+      tableData: exit,
+      tableHeader: exit,
+      tableRow: exit
+    }
+  };
+}
+function enterTable(token) {
+  const align = token._align;
+  this.enter(
+    {
+      type: "table",
+      align: align.map(function(d) {
+        return d === "none" ? null : d;
+      }),
+      children: []
+    },
+    token
+  );
+  this.data.inTable = true;
+}
+function exitTable(token) {
+  this.exit(token);
+  this.data.inTable = void 0;
+}
+function enterRow(token) {
+  this.enter({ type: "tableRow", children: [] }, token);
+}
+function exit(token) {
+  this.exit(token);
+}
+function enterCell(token) {
+  this.enter({ type: "tableCell", children: [] }, token);
+}
+function exitCodeText(token) {
+  let value = this.resume();
+  if (this.data.inTable) {
+    value = value.replace(/\\([\\|])/g, replace);
+  }
+  const node2 = this.stack[this.stack.length - 1];
+  ok$1(node2.type === "inlineCode");
+  node2.value = value;
+  this.exit(token);
+}
+function replace($0, $1) {
+  return $1 === "|" ? $1 : $0;
+}
+function gfmTableToMarkdown(options) {
+  const settings = options || {};
+  const padding = settings.tableCellPadding;
+  const alignDelimiters = settings.tablePipeAlign;
+  const stringLength = settings.stringLength;
+  const around = padding ? " " : "|";
+  return {
+    unsafe: [
+      { character: "\r", inConstruct: "tableCell" },
+      { character: "\n", inConstruct: "tableCell" },
+      // A pipe, when followed by a tab or space (padding), or a dash or colon
+      // (unpadded delimiter row), could result in a table.
+      { atBreak: true, character: "|", after: "[	 :-]" },
+      // A pipe in a cell must be encoded.
+      { character: "|", inConstruct: "tableCell" },
+      // A colon must be followed by a dash, in which case it could start a
+      // delimiter row.
+      { atBreak: true, character: ":", after: "-" },
+      // A delimiter row can also start with a dash, when followed by more
+      // dashes, a colon, or a pipe.
+      // This is a stricter version than the built in check for lists, thematic
+      // breaks, and setex heading underlines though:
+      // <https://github.com/syntax-tree/mdast-util-to-markdown/blob/51a2038/lib/unsafe.js#L57>
+      { atBreak: true, character: "-", after: "[:|-]" }
+    ],
+    handlers: {
+      inlineCode: inlineCodeWithTable,
+      table: handleTable,
+      tableCell: handleTableCell,
+      tableRow: handleTableRow
+    }
+  };
+  function handleTable(node2, _, state, info) {
+    return serializeData(handleTableAsData(node2, state, info), node2.align);
+  }
+  function handleTableRow(node2, _, state, info) {
+    const row = handleTableRowAsData(node2, state, info);
+    const value = serializeData([row]);
+    return value.slice(0, value.indexOf("\n"));
+  }
+  function handleTableCell(node2, _, state, info) {
+    const exit2 = state.enter("tableCell");
+    const subexit = state.enter("phrasing");
+    const value = state.containerPhrasing(node2, {
+      ...info,
+      before: around,
+      after: around
+    });
+    subexit();
+    exit2();
+    return value;
+  }
+  function serializeData(matrix, align) {
+    return markdownTable(matrix, {
+      align,
+      // @ts-expect-error: `markdown-table` types should support `null`.
+      alignDelimiters,
+      // @ts-expect-error: `markdown-table` types should support `null`.
+      padding,
+      // @ts-expect-error: `markdown-table` types should support `null`.
+      stringLength
+    });
+  }
+  function handleTableAsData(node2, state, info) {
+    const children2 = node2.children;
+    let index2 = -1;
+    const result = [];
+    const subexit = state.enter("table");
+    while (++index2 < children2.length) {
+      result[index2] = handleTableRowAsData(children2[index2], state, info);
+    }
+    subexit();
+    return result;
+  }
+  function handleTableRowAsData(node2, state, info) {
+    const children2 = node2.children;
+    let index2 = -1;
+    const result = [];
+    const subexit = state.enter("tableRow");
+    while (++index2 < children2.length) {
+      result[index2] = handleTableCell(children2[index2], node2, state, info);
+    }
+    subexit();
+    return result;
+  }
+  function inlineCodeWithTable(node2, parent, state) {
+    let value = handle.inlineCode(node2, parent, state);
+    if (state.stack.includes("tableCell")) {
+      value = value.replace(/\|/g, "\\$&");
+    }
+    return value;
+  }
+}
+function gfmTaskListItemFromMarkdown() {
+  return {
+    exit: {
+      taskListCheckValueChecked: exitCheck,
+      taskListCheckValueUnchecked: exitCheck,
+      paragraph: exitParagraphWithTaskListItem
+    }
+  };
+}
+function gfmTaskListItemToMarkdown() {
+  return {
+    unsafe: [{ atBreak: true, character: "-", after: "[:|-]" }],
+    handlers: { listItem: listItemWithTaskListItem }
+  };
+}
+function exitCheck(token) {
+  const node2 = this.stack[this.stack.length - 2];
+  ok$1(node2.type === "listItem");
+  node2.checked = token.type === "taskListCheckValueChecked";
+}
+function exitParagraphWithTaskListItem(token) {
+  const parent = this.stack[this.stack.length - 2];
+  if (parent && parent.type === "listItem" && typeof parent.checked === "boolean") {
+    const node2 = this.stack[this.stack.length - 1];
+    ok$1(node2.type === "paragraph");
+    const head = node2.children[0];
+    if (head && head.type === "text") {
+      const siblings = parent.children;
+      let index2 = -1;
+      let firstParaghraph;
+      while (++index2 < siblings.length) {
+        const sibling = siblings[index2];
+        if (sibling.type === "paragraph") {
+          firstParaghraph = sibling;
+          break;
+        }
+      }
+      if (firstParaghraph === node2) {
+        head.value = head.value.slice(1);
+        if (head.value.length === 0) {
+          node2.children.shift();
+        } else if (node2.position && head.position && typeof head.position.start.offset === "number") {
+          head.position.start.column++;
+          head.position.start.offset++;
+          node2.position.start = Object.assign({}, head.position.start);
+        }
+      }
+    }
+  }
+  this.exit(token);
+}
+function listItemWithTaskListItem(node2, parent, state, info) {
+  const head = node2.children[0];
+  const checkable = typeof node2.checked === "boolean" && head && head.type === "paragraph";
+  const checkbox = "[" + (node2.checked ? "x" : " ") + "] ";
+  const tracker = state.createTracker(info);
+  if (checkable) {
+    tracker.move(checkbox);
+  }
+  let value = handle.listItem(node2, parent, state, {
+    ...info,
+    ...tracker.current()
+  });
+  if (checkable) {
+    value = value.replace(/^(?:[*+-]|\d+\.)([\r\n]| {1,3})/, check);
+  }
+  return value;
+  function check($0) {
+    return $0 + checkbox;
+  }
+}
+function gfmFromMarkdown() {
+  return [
+    gfmAutolinkLiteralFromMarkdown(),
+    gfmFootnoteFromMarkdown(),
+    gfmStrikethroughFromMarkdown(),
+    gfmTableFromMarkdown(),
+    gfmTaskListItemFromMarkdown()
+  ];
+}
+function gfmToMarkdown(options) {
+  return {
+    extensions: [
+      gfmAutolinkLiteralToMarkdown(),
+      gfmFootnoteToMarkdown(options),
+      gfmStrikethroughToMarkdown(),
+      gfmTableToMarkdown(options),
+      gfmTaskListItemToMarkdown()
+    ]
+  };
+}
+const wwwPrefix = {
+  tokenize: tokenizeWwwPrefix,
+  partial: true
+};
+const domain = {
+  tokenize: tokenizeDomain,
+  partial: true
+};
+const path = {
+  tokenize: tokenizePath,
+  partial: true
+};
+const trail = {
+  tokenize: tokenizeTrail,
+  partial: true
+};
+const emailDomainDotTrail = {
+  tokenize: tokenizeEmailDomainDotTrail,
+  partial: true
+};
+const wwwAutolink = {
+  name: "wwwAutolink",
+  tokenize: tokenizeWwwAutolink,
+  previous: previousWww
+};
+const protocolAutolink = {
+  name: "protocolAutolink",
+  tokenize: tokenizeProtocolAutolink,
+  previous: previousProtocol
+};
+const emailAutolink = {
+  name: "emailAutolink",
+  tokenize: tokenizeEmailAutolink,
+  previous: previousEmail
+};
+const text = {};
+function gfmAutolinkLiteral() {
+  return {
+    text
+  };
+}
+let code = 48;
+while (code < 123) {
+  text[code] = emailAutolink;
+  code++;
+  if (code === 58) code = 65;
+  else if (code === 91) code = 97;
+}
+text[43] = emailAutolink;
+text[45] = emailAutolink;
+text[46] = emailAutolink;
+text[95] = emailAutolink;
+text[72] = [emailAutolink, protocolAutolink];
+text[104] = [emailAutolink, protocolAutolink];
+text[87] = [emailAutolink, wwwAutolink];
+text[119] = [emailAutolink, wwwAutolink];
+function tokenizeEmailAutolink(effects, ok2, nok) {
+  const self2 = this;
+  let dot;
+  let data;
+  return start2;
+  function start2(code2) {
+    if (!gfmAtext(code2) || !previousEmail.call(self2, self2.previous) || previousUnbalanced(self2.events)) {
+      return nok(code2);
+    }
+    effects.enter("literalAutolink");
+    effects.enter("literalAutolinkEmail");
+    return atext(code2);
+  }
+  function atext(code2) {
+    if (gfmAtext(code2)) {
+      effects.consume(code2);
+      return atext;
+    }
+    if (code2 === 64) {
+      effects.consume(code2);
+      return emailDomain;
+    }
+    return nok(code2);
+  }
+  function emailDomain(code2) {
+    if (code2 === 46) {
+      return effects.check(emailDomainDotTrail, emailDomainAfter, emailDomainDot)(code2);
+    }
+    if (code2 === 45 || code2 === 95 || asciiAlphanumeric(code2)) {
+      data = true;
+      effects.consume(code2);
+      return emailDomain;
+    }
+    return emailDomainAfter(code2);
+  }
+  function emailDomainDot(code2) {
+    effects.consume(code2);
+    dot = true;
+    return emailDomain;
+  }
+  function emailDomainAfter(code2) {
+    if (data && dot && asciiAlpha(self2.previous)) {
+      effects.exit("literalAutolinkEmail");
+      effects.exit("literalAutolink");
+      return ok2(code2);
+    }
+    return nok(code2);
+  }
+}
+function tokenizeWwwAutolink(effects, ok2, nok) {
+  const self2 = this;
+  return wwwStart;
+  function wwwStart(code2) {
+    if (code2 !== 87 && code2 !== 119 || !previousWww.call(self2, self2.previous) || previousUnbalanced(self2.events)) {
+      return nok(code2);
+    }
+    effects.enter("literalAutolink");
+    effects.enter("literalAutolinkWww");
+    return effects.check(wwwPrefix, effects.attempt(domain, effects.attempt(path, wwwAfter), nok), nok)(code2);
+  }
+  function wwwAfter(code2) {
+    effects.exit("literalAutolinkWww");
+    effects.exit("literalAutolink");
+    return ok2(code2);
+  }
+}
+function tokenizeProtocolAutolink(effects, ok2, nok) {
+  const self2 = this;
+  let buffer = "";
+  let seen = false;
+  return protocolStart;
+  function protocolStart(code2) {
+    if ((code2 === 72 || code2 === 104) && previousProtocol.call(self2, self2.previous) && !previousUnbalanced(self2.events)) {
+      effects.enter("literalAutolink");
+      effects.enter("literalAutolinkHttp");
+      buffer += String.fromCodePoint(code2);
+      effects.consume(code2);
+      return protocolPrefixInside;
+    }
+    return nok(code2);
+  }
+  function protocolPrefixInside(code2) {
+    if (asciiAlpha(code2) && buffer.length < 5) {
+      buffer += String.fromCodePoint(code2);
+      effects.consume(code2);
+      return protocolPrefixInside;
+    }
+    if (code2 === 58) {
+      const protocol = buffer.toLowerCase();
+      if (protocol === "http" || protocol === "https") {
+        effects.consume(code2);
+        return protocolSlashesInside;
+      }
+    }
+    return nok(code2);
+  }
+  function protocolSlashesInside(code2) {
+    if (code2 === 47) {
+      effects.consume(code2);
+      if (seen) {
+        return afterProtocol;
+      }
+      seen = true;
+      return protocolSlashesInside;
+    }
+    return nok(code2);
+  }
+  function afterProtocol(code2) {
+    return code2 === null || asciiControl(code2) || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2) || unicodePunctuation(code2) ? nok(code2) : effects.attempt(domain, effects.attempt(path, protocolAfter), nok)(code2);
+  }
+  function protocolAfter(code2) {
+    effects.exit("literalAutolinkHttp");
+    effects.exit("literalAutolink");
+    return ok2(code2);
+  }
+}
+function tokenizeWwwPrefix(effects, ok2, nok) {
+  let size = 0;
+  return wwwPrefixInside;
+  function wwwPrefixInside(code2) {
+    if ((code2 === 87 || code2 === 119) && size < 3) {
+      size++;
+      effects.consume(code2);
+      return wwwPrefixInside;
+    }
+    if (code2 === 46 && size === 3) {
+      effects.consume(code2);
+      return wwwPrefixAfter;
+    }
+    return nok(code2);
+  }
+  function wwwPrefixAfter(code2) {
+    return code2 === null ? nok(code2) : ok2(code2);
+  }
+}
+function tokenizeDomain(effects, ok2, nok) {
+  let underscoreInLastSegment;
+  let underscoreInLastLastSegment;
+  let seen;
+  return domainInside;
+  function domainInside(code2) {
+    if (code2 === 46 || code2 === 95) {
+      return effects.check(trail, domainAfter, domainAtPunctuation)(code2);
+    }
+    if (code2 === null || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2) || code2 !== 45 && unicodePunctuation(code2)) {
+      return domainAfter(code2);
+    }
+    seen = true;
+    effects.consume(code2);
+    return domainInside;
+  }
+  function domainAtPunctuation(code2) {
+    if (code2 === 95) {
+      underscoreInLastSegment = true;
+    } else {
+      underscoreInLastLastSegment = underscoreInLastSegment;
+      underscoreInLastSegment = void 0;
+    }
+    effects.consume(code2);
+    return domainInside;
+  }
+  function domainAfter(code2) {
+    if (underscoreInLastLastSegment || underscoreInLastSegment || !seen) {
+      return nok(code2);
+    }
+    return ok2(code2);
+  }
+}
+function tokenizePath(effects, ok2) {
+  let sizeOpen = 0;
+  let sizeClose = 0;
+  return pathInside;
+  function pathInside(code2) {
+    if (code2 === 40) {
+      sizeOpen++;
+      effects.consume(code2);
+      return pathInside;
+    }
+    if (code2 === 41 && sizeClose < sizeOpen) {
+      return pathAtPunctuation(code2);
+    }
+    if (code2 === 33 || code2 === 34 || code2 === 38 || code2 === 39 || code2 === 41 || code2 === 42 || code2 === 44 || code2 === 46 || code2 === 58 || code2 === 59 || code2 === 60 || code2 === 63 || code2 === 93 || code2 === 95 || code2 === 126) {
+      return effects.check(trail, ok2, pathAtPunctuation)(code2);
+    }
+    if (code2 === null || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2)) {
+      return ok2(code2);
+    }
+    effects.consume(code2);
+    return pathInside;
+  }
+  function pathAtPunctuation(code2) {
+    if (code2 === 41) {
+      sizeClose++;
+    }
+    effects.consume(code2);
+    return pathInside;
+  }
+}
+function tokenizeTrail(effects, ok2, nok) {
+  return trail2;
+  function trail2(code2) {
+    if (code2 === 33 || code2 === 34 || code2 === 39 || code2 === 41 || code2 === 42 || code2 === 44 || code2 === 46 || code2 === 58 || code2 === 59 || code2 === 63 || code2 === 95 || code2 === 126) {
+      effects.consume(code2);
+      return trail2;
+    }
+    if (code2 === 38) {
+      effects.consume(code2);
+      return trailCharacterReferenceStart;
+    }
+    if (code2 === 93) {
+      effects.consume(code2);
+      return trailBracketAfter;
+    }
+    if (
+      // `<` is an end.
+      code2 === 60 || // So is whitespace.
+      code2 === null || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2)
+    ) {
+      return ok2(code2);
+    }
+    return nok(code2);
+  }
+  function trailBracketAfter(code2) {
+    if (code2 === null || code2 === 40 || code2 === 91 || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2)) {
+      return ok2(code2);
+    }
+    return trail2(code2);
+  }
+  function trailCharacterReferenceStart(code2) {
+    return asciiAlpha(code2) ? trailCharacterReferenceInside(code2) : nok(code2);
+  }
+  function trailCharacterReferenceInside(code2) {
+    if (code2 === 59) {
+      effects.consume(code2);
+      return trail2;
+    }
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      return trailCharacterReferenceInside;
+    }
+    return nok(code2);
+  }
+}
+function tokenizeEmailDomainDotTrail(effects, ok2, nok) {
+  return start2;
+  function start2(code2) {
+    effects.consume(code2);
+    return after;
+  }
+  function after(code2) {
+    return asciiAlphanumeric(code2) ? nok(code2) : ok2(code2);
+  }
+}
+function previousWww(code2) {
+  return code2 === null || code2 === 40 || code2 === 42 || code2 === 95 || code2 === 91 || code2 === 93 || code2 === 126 || markdownLineEndingOrSpace(code2);
+}
+function previousProtocol(code2) {
+  return !asciiAlpha(code2);
+}
+function previousEmail(code2) {
+  return !(code2 === 47 || gfmAtext(code2));
+}
+function gfmAtext(code2) {
+  return code2 === 43 || code2 === 45 || code2 === 46 || code2 === 95 || asciiAlphanumeric(code2);
+}
+function previousUnbalanced(events) {
+  let index2 = events.length;
+  let result = false;
+  while (index2--) {
+    const token = events[index2][1];
+    if ((token.type === "labelLink" || token.type === "labelImage") && !token._balanced) {
+      result = true;
+      break;
+    }
+    if (token._gfmAutolinkLiteralWalkedInto) {
+      result = false;
+      break;
+    }
+  }
+  if (events.length > 0 && !result) {
+    events[events.length - 1][1]._gfmAutolinkLiteralWalkedInto = true;
+  }
+  return result;
+}
+const indent = {
+  tokenize: tokenizeIndent,
+  partial: true
+};
+function gfmFootnote() {
+  return {
+    document: {
+      [91]: {
+        name: "gfmFootnoteDefinition",
+        tokenize: tokenizeDefinitionStart,
+        continuation: {
+          tokenize: tokenizeDefinitionContinuation
+        },
+        exit: gfmFootnoteDefinitionEnd
+      }
+    },
+    text: {
+      [91]: {
+        name: "gfmFootnoteCall",
+        tokenize: tokenizeGfmFootnoteCall
+      },
+      [93]: {
+        name: "gfmPotentialFootnoteCall",
+        add: "after",
+        tokenize: tokenizePotentialGfmFootnoteCall,
+        resolveTo: resolveToPotentialGfmFootnoteCall
+      }
+    }
+  };
+}
+function tokenizePotentialGfmFootnoteCall(effects, ok2, nok) {
+  const self2 = this;
+  let index2 = self2.events.length;
+  const defined = self2.parser.gfmFootnotes || (self2.parser.gfmFootnotes = []);
+  let labelStart;
+  while (index2--) {
+    const token = self2.events[index2][1];
+    if (token.type === "labelImage") {
+      labelStart = token;
+      break;
+    }
+    if (token.type === "gfmFootnoteCall" || token.type === "labelLink" || token.type === "label" || token.type === "image" || token.type === "link") {
+      break;
+    }
+  }
+  return start2;
+  function start2(code2) {
+    if (!labelStart || !labelStart._balanced) {
+      return nok(code2);
+    }
+    const id2 = normalizeIdentifier(self2.sliceSerialize({
+      start: labelStart.end,
+      end: self2.now()
+    }));
+    if (id2.codePointAt(0) !== 94 || !defined.includes(id2.slice(1))) {
+      return nok(code2);
+    }
+    effects.enter("gfmFootnoteCallLabelMarker");
+    effects.consume(code2);
+    effects.exit("gfmFootnoteCallLabelMarker");
+    return ok2(code2);
+  }
+}
+function resolveToPotentialGfmFootnoteCall(events, context) {
+  let index2 = events.length;
+  while (index2--) {
+    if (events[index2][1].type === "labelImage" && events[index2][0] === "enter") {
+      events[index2][1];
+      break;
+    }
+  }
+  events[index2 + 1][1].type = "data";
+  events[index2 + 3][1].type = "gfmFootnoteCallLabelMarker";
+  const call = {
+    type: "gfmFootnoteCall",
+    start: Object.assign({}, events[index2 + 3][1].start),
+    end: Object.assign({}, events[events.length - 1][1].end)
+  };
+  const marker = {
+    type: "gfmFootnoteCallMarker",
+    start: Object.assign({}, events[index2 + 3][1].end),
+    end: Object.assign({}, events[index2 + 3][1].end)
+  };
+  marker.end.column++;
+  marker.end.offset++;
+  marker.end._bufferIndex++;
+  const string2 = {
+    type: "gfmFootnoteCallString",
+    start: Object.assign({}, marker.end),
+    end: Object.assign({}, events[events.length - 1][1].start)
+  };
+  const chunk = {
+    type: "chunkString",
+    contentType: "string",
+    start: Object.assign({}, string2.start),
+    end: Object.assign({}, string2.end)
+  };
+  const replacement = [
+    // Take the `labelImageMarker` (now `data`, the `!`)
+    events[index2 + 1],
+    events[index2 + 2],
+    ["enter", call, context],
+    // The `[`
+    events[index2 + 3],
+    events[index2 + 4],
+    // The `^`.
+    ["enter", marker, context],
+    ["exit", marker, context],
+    // Everything in between.
+    ["enter", string2, context],
+    ["enter", chunk, context],
+    ["exit", chunk, context],
+    ["exit", string2, context],
+    // The ending (`]`, properly parsed and labelled).
+    events[events.length - 2],
+    events[events.length - 1],
+    ["exit", call, context]
+  ];
+  events.splice(index2, events.length - index2 + 1, ...replacement);
+  return events;
+}
+function tokenizeGfmFootnoteCall(effects, ok2, nok) {
+  const self2 = this;
+  const defined = self2.parser.gfmFootnotes || (self2.parser.gfmFootnotes = []);
+  let size = 0;
+  let data;
+  return start2;
+  function start2(code2) {
+    effects.enter("gfmFootnoteCall");
+    effects.enter("gfmFootnoteCallLabelMarker");
+    effects.consume(code2);
+    effects.exit("gfmFootnoteCallLabelMarker");
+    return callStart;
+  }
+  function callStart(code2) {
+    if (code2 !== 94) return nok(code2);
+    effects.enter("gfmFootnoteCallMarker");
+    effects.consume(code2);
+    effects.exit("gfmFootnoteCallMarker");
+    effects.enter("gfmFootnoteCallString");
+    effects.enter("chunkString").contentType = "string";
+    return callData;
+  }
+  function callData(code2) {
+    if (
+      // Too long.
+      size > 999 || // Closing brace with nothing.
+      code2 === 93 && !data || // Space or tab is not supported by GFM for some reason.
+      // `\n` and `[` not being supported makes sense.
+      code2 === null || code2 === 91 || markdownLineEndingOrSpace(code2)
+    ) {
+      return nok(code2);
+    }
+    if (code2 === 93) {
+      effects.exit("chunkString");
+      const token = effects.exit("gfmFootnoteCallString");
+      if (!defined.includes(normalizeIdentifier(self2.sliceSerialize(token)))) {
+        return nok(code2);
+      }
+      effects.enter("gfmFootnoteCallLabelMarker");
+      effects.consume(code2);
+      effects.exit("gfmFootnoteCallLabelMarker");
+      effects.exit("gfmFootnoteCall");
+      return ok2;
+    }
+    if (!markdownLineEndingOrSpace(code2)) {
+      data = true;
+    }
+    size++;
+    effects.consume(code2);
+    return code2 === 92 ? callEscape : callData;
+  }
+  function callEscape(code2) {
+    if (code2 === 91 || code2 === 92 || code2 === 93) {
+      effects.consume(code2);
+      size++;
+      return callData;
+    }
+    return callData(code2);
+  }
+}
+function tokenizeDefinitionStart(effects, ok2, nok) {
+  const self2 = this;
+  const defined = self2.parser.gfmFootnotes || (self2.parser.gfmFootnotes = []);
+  let identifier;
+  let size = 0;
+  let data;
+  return start2;
+  function start2(code2) {
+    effects.enter("gfmFootnoteDefinition")._container = true;
+    effects.enter("gfmFootnoteDefinitionLabel");
+    effects.enter("gfmFootnoteDefinitionLabelMarker");
+    effects.consume(code2);
+    effects.exit("gfmFootnoteDefinitionLabelMarker");
+    return labelAtMarker;
+  }
+  function labelAtMarker(code2) {
+    if (code2 === 94) {
+      effects.enter("gfmFootnoteDefinitionMarker");
+      effects.consume(code2);
+      effects.exit("gfmFootnoteDefinitionMarker");
+      effects.enter("gfmFootnoteDefinitionLabelString");
+      effects.enter("chunkString").contentType = "string";
+      return labelInside;
+    }
+    return nok(code2);
+  }
+  function labelInside(code2) {
+    if (
+      // Too long.
+      size > 999 || // Closing brace with nothing.
+      code2 === 93 && !data || // Space or tab is not supported by GFM for some reason.
+      // `\n` and `[` not being supported makes sense.
+      code2 === null || code2 === 91 || markdownLineEndingOrSpace(code2)
+    ) {
+      return nok(code2);
+    }
+    if (code2 === 93) {
+      effects.exit("chunkString");
+      const token = effects.exit("gfmFootnoteDefinitionLabelString");
+      identifier = normalizeIdentifier(self2.sliceSerialize(token));
+      effects.enter("gfmFootnoteDefinitionLabelMarker");
+      effects.consume(code2);
+      effects.exit("gfmFootnoteDefinitionLabelMarker");
+      effects.exit("gfmFootnoteDefinitionLabel");
+      return labelAfter;
+    }
+    if (!markdownLineEndingOrSpace(code2)) {
+      data = true;
+    }
+    size++;
+    effects.consume(code2);
+    return code2 === 92 ? labelEscape : labelInside;
+  }
+  function labelEscape(code2) {
+    if (code2 === 91 || code2 === 92 || code2 === 93) {
+      effects.consume(code2);
+      size++;
+      return labelInside;
+    }
+    return labelInside(code2);
+  }
+  function labelAfter(code2) {
+    if (code2 === 58) {
+      effects.enter("definitionMarker");
+      effects.consume(code2);
+      effects.exit("definitionMarker");
+      if (!defined.includes(identifier)) {
+        defined.push(identifier);
+      }
+      return factorySpace(effects, whitespaceAfter, "gfmFootnoteDefinitionWhitespace");
+    }
+    return nok(code2);
+  }
+  function whitespaceAfter(code2) {
+    return ok2(code2);
+  }
+}
+function tokenizeDefinitionContinuation(effects, ok2, nok) {
+  return effects.check(blankLine, ok2, effects.attempt(indent, ok2, nok));
+}
+function gfmFootnoteDefinitionEnd(effects) {
+  effects.exit("gfmFootnoteDefinition");
+}
+function tokenizeIndent(effects, ok2, nok) {
+  const self2 = this;
+  return factorySpace(effects, afterPrefix, "gfmFootnoteDefinitionIndent", 4 + 1);
+  function afterPrefix(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    return tail && tail[1].type === "gfmFootnoteDefinitionIndent" && tail[2].sliceSerialize(tail[1], true).length === 4 ? ok2(code2) : nok(code2);
+  }
+}
+function gfmStrikethrough(options) {
+  const options_ = options || {};
+  let single = options_.singleTilde;
+  const tokenizer = {
+    name: "strikethrough",
+    tokenize: tokenizeStrikethrough,
+    resolveAll: resolveAllStrikethrough
+  };
+  if (single === null || single === void 0) {
+    single = true;
+  }
+  return {
+    text: {
+      [126]: tokenizer
+    },
+    insideSpan: {
+      null: [tokenizer]
+    },
+    attentionMarkers: {
+      null: [126]
+    }
+  };
+  function resolveAllStrikethrough(events, context) {
+    let index2 = -1;
+    while (++index2 < events.length) {
+      if (events[index2][0] === "enter" && events[index2][1].type === "strikethroughSequenceTemporary" && events[index2][1]._close) {
+        let open = index2;
+        while (open--) {
+          if (events[open][0] === "exit" && events[open][1].type === "strikethroughSequenceTemporary" && events[open][1]._open && // If the sizes are the same:
+          events[index2][1].end.offset - events[index2][1].start.offset === events[open][1].end.offset - events[open][1].start.offset) {
+            events[index2][1].type = "strikethroughSequence";
+            events[open][1].type = "strikethroughSequence";
+            const strikethrough2 = {
+              type: "strikethrough",
+              start: Object.assign({}, events[open][1].start),
+              end: Object.assign({}, events[index2][1].end)
+            };
+            const text2 = {
+              type: "strikethroughText",
+              start: Object.assign({}, events[open][1].end),
+              end: Object.assign({}, events[index2][1].start)
+            };
+            const nextEvents = [["enter", strikethrough2, context], ["enter", events[open][1], context], ["exit", events[open][1], context], ["enter", text2, context]];
+            const insideSpan2 = context.parser.constructs.insideSpan.null;
+            if (insideSpan2) {
+              splice(nextEvents, nextEvents.length, 0, resolveAll(insideSpan2, events.slice(open + 1, index2), context));
+            }
+            splice(nextEvents, nextEvents.length, 0, [["exit", text2, context], ["enter", events[index2][1], context], ["exit", events[index2][1], context], ["exit", strikethrough2, context]]);
+            splice(events, open - 1, index2 - open + 3, nextEvents);
+            index2 = open + nextEvents.length - 2;
+            break;
+          }
+        }
+      }
+    }
+    index2 = -1;
+    while (++index2 < events.length) {
+      if (events[index2][1].type === "strikethroughSequenceTemporary") {
+        events[index2][1].type = "data";
+      }
+    }
+    return events;
+  }
+  function tokenizeStrikethrough(effects, ok2, nok) {
+    const previous2 = this.previous;
+    const events = this.events;
+    let size = 0;
+    return start2;
+    function start2(code2) {
+      if (previous2 === 126 && events[events.length - 1][1].type !== "characterEscape") {
+        return nok(code2);
+      }
+      effects.enter("strikethroughSequenceTemporary");
+      return more(code2);
+    }
+    function more(code2) {
+      const before = classifyCharacter(previous2);
+      if (code2 === 126) {
+        if (size > 1) return nok(code2);
+        effects.consume(code2);
+        size++;
+        return more;
+      }
+      if (size < 2 && !single) return nok(code2);
+      const token = effects.exit("strikethroughSequenceTemporary");
+      const after = classifyCharacter(code2);
+      token._open = !after || after === 2 && Boolean(before);
+      token._close = !before || before === 2 && Boolean(after);
+      return ok2(code2);
+    }
+  }
+}
+class EditMap {
+  /**
+   * Create a new edit map.
+   */
+  constructor() {
+    this.map = [];
+  }
+  /**
+   * Create an edit: a remove and/or add at a certain place.
+   *
+   * @param {number} index
+   * @param {number} remove
+   * @param {Array<Event>} add
+   * @returns {undefined}
+   */
+  add(index2, remove2, add) {
+    addImplementation(this, index2, remove2, add);
+  }
+  // To do: add this when moving to `micromark`.
+  // /**
+  //  * Create an edit: but insert `add` before existing additions.
+  //  *
+  //  * @param {number} index
+  //  * @param {number} remove
+  //  * @param {Array<Event>} add
+  //  * @returns {undefined}
+  //  */
+  // addBefore(index, remove, add) {
+  //   addImplementation(this, index, remove, add, true)
+  // }
+  /**
+   * Done, change the events.
+   *
+   * @param {Array<Event>} events
+   * @returns {undefined}
+   */
+  consume(events) {
+    this.map.sort(function(a, b) {
+      return a[0] - b[0];
+    });
+    if (this.map.length === 0) {
+      return;
+    }
+    let index2 = this.map.length;
+    const vecs = [];
+    while (index2 > 0) {
+      index2 -= 1;
+      vecs.push(events.slice(this.map[index2][0] + this.map[index2][1]), this.map[index2][2]);
+      events.length = this.map[index2][0];
+    }
+    vecs.push(events.slice());
+    events.length = 0;
+    let slice = vecs.pop();
+    while (slice) {
+      for (const element2 of slice) {
+        events.push(element2);
+      }
+      slice = vecs.pop();
+    }
+    this.map.length = 0;
+  }
+}
+function addImplementation(editMap, at, remove2, add) {
+  let index2 = 0;
+  if (remove2 === 0 && add.length === 0) {
+    return;
+  }
+  while (index2 < editMap.map.length) {
+    if (editMap.map[index2][0] === at) {
+      editMap.map[index2][1] += remove2;
+      editMap.map[index2][2].push(...add);
+      return;
+    }
+    index2 += 1;
+  }
+  editMap.map.push([at, remove2, add]);
+}
+function gfmTableAlign(events, index2) {
+  let inDelimiterRow = false;
+  const align = [];
+  while (index2 < events.length) {
+    const event = events[index2];
+    if (inDelimiterRow) {
+      if (event[0] === "enter") {
+        if (event[1].type === "tableContent") {
+          align.push(events[index2 + 1][1].type === "tableDelimiterMarker" ? "left" : "none");
+        }
+      } else if (event[1].type === "tableContent") {
+        if (events[index2 - 1][1].type === "tableDelimiterMarker") {
+          const alignIndex = align.length - 1;
+          align[alignIndex] = align[alignIndex] === "left" ? "center" : "right";
+        }
+      } else if (event[1].type === "tableDelimiterRow") {
+        break;
+      }
+    } else if (event[0] === "enter" && event[1].type === "tableDelimiterRow") {
+      inDelimiterRow = true;
+    }
+    index2 += 1;
+  }
+  return align;
+}
+function gfmTable() {
+  return {
+    flow: {
+      null: {
+        name: "table",
+        tokenize: tokenizeTable,
+        resolveAll: resolveTable
+      }
+    }
+  };
+}
+function tokenizeTable(effects, ok2, nok) {
+  const self2 = this;
+  let size = 0;
+  let sizeB = 0;
+  let seen;
+  return start2;
+  function start2(code2) {
+    let index2 = self2.events.length - 1;
+    while (index2 > -1) {
+      const type = self2.events[index2][1].type;
+      if (type === "lineEnding" || // Note: markdown-rs uses `whitespace` instead of `linePrefix`
+      type === "linePrefix") index2--;
+      else break;
+    }
+    const tail = index2 > -1 ? self2.events[index2][1].type : null;
+    const next = tail === "tableHead" || tail === "tableRow" ? bodyRowStart : headRowBefore;
+    if (next === bodyRowStart && self2.parser.lazy[self2.now().line]) {
+      return nok(code2);
+    }
+    return next(code2);
+  }
+  function headRowBefore(code2) {
+    effects.enter("tableHead");
+    effects.enter("tableRow");
+    return headRowStart(code2);
+  }
+  function headRowStart(code2) {
+    if (code2 === 124) {
+      return headRowBreak(code2);
+    }
+    seen = true;
+    sizeB += 1;
+    return headRowBreak(code2);
+  }
+  function headRowBreak(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      if (sizeB > 1) {
+        sizeB = 0;
+        self2.interrupt = true;
+        effects.exit("tableRow");
+        effects.enter("lineEnding");
+        effects.consume(code2);
+        effects.exit("lineEnding");
+        return headDelimiterStart;
+      }
+      return nok(code2);
+    }
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, headRowBreak, "whitespace")(code2);
+    }
+    sizeB += 1;
+    if (seen) {
+      seen = false;
+      size += 1;
+    }
+    if (code2 === 124) {
+      effects.enter("tableCellDivider");
+      effects.consume(code2);
+      effects.exit("tableCellDivider");
+      seen = true;
+      return headRowBreak;
+    }
+    effects.enter("data");
+    return headRowData(code2);
+  }
+  function headRowData(code2) {
+    if (code2 === null || code2 === 124 || markdownLineEndingOrSpace(code2)) {
+      effects.exit("data");
+      return headRowBreak(code2);
+    }
+    effects.consume(code2);
+    return code2 === 92 ? headRowEscape : headRowData;
+  }
+  function headRowEscape(code2) {
+    if (code2 === 92 || code2 === 124) {
+      effects.consume(code2);
+      return headRowData;
+    }
+    return headRowData(code2);
+  }
+  function headDelimiterStart(code2) {
+    self2.interrupt = false;
+    if (self2.parser.lazy[self2.now().line]) {
+      return nok(code2);
+    }
+    effects.enter("tableDelimiterRow");
+    seen = false;
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, headDelimiterBefore, "linePrefix", self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4)(code2);
+    }
+    return headDelimiterBefore(code2);
+  }
+  function headDelimiterBefore(code2) {
+    if (code2 === 45 || code2 === 58) {
+      return headDelimiterValueBefore(code2);
+    }
+    if (code2 === 124) {
+      seen = true;
+      effects.enter("tableCellDivider");
+      effects.consume(code2);
+      effects.exit("tableCellDivider");
+      return headDelimiterCellBefore;
+    }
+    return headDelimiterNok(code2);
+  }
+  function headDelimiterCellBefore(code2) {
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, headDelimiterValueBefore, "whitespace")(code2);
+    }
+    return headDelimiterValueBefore(code2);
+  }
+  function headDelimiterValueBefore(code2) {
+    if (code2 === 58) {
+      sizeB += 1;
+      seen = true;
+      effects.enter("tableDelimiterMarker");
+      effects.consume(code2);
+      effects.exit("tableDelimiterMarker");
+      return headDelimiterLeftAlignmentAfter;
+    }
+    if (code2 === 45) {
+      sizeB += 1;
+      return headDelimiterLeftAlignmentAfter(code2);
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      return headDelimiterCellAfter(code2);
+    }
+    return headDelimiterNok(code2);
+  }
+  function headDelimiterLeftAlignmentAfter(code2) {
+    if (code2 === 45) {
+      effects.enter("tableDelimiterFiller");
+      return headDelimiterFiller(code2);
+    }
+    return headDelimiterNok(code2);
+  }
+  function headDelimiterFiller(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return headDelimiterFiller;
+    }
+    if (code2 === 58) {
+      seen = true;
+      effects.exit("tableDelimiterFiller");
+      effects.enter("tableDelimiterMarker");
+      effects.consume(code2);
+      effects.exit("tableDelimiterMarker");
+      return headDelimiterRightAlignmentAfter;
+    }
+    effects.exit("tableDelimiterFiller");
+    return headDelimiterRightAlignmentAfter(code2);
+  }
+  function headDelimiterRightAlignmentAfter(code2) {
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, headDelimiterCellAfter, "whitespace")(code2);
+    }
+    return headDelimiterCellAfter(code2);
+  }
+  function headDelimiterCellAfter(code2) {
+    if (code2 === 124) {
+      return headDelimiterBefore(code2);
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      if (!seen || size !== sizeB) {
+        return headDelimiterNok(code2);
+      }
+      effects.exit("tableDelimiterRow");
+      effects.exit("tableHead");
+      return ok2(code2);
+    }
+    return headDelimiterNok(code2);
+  }
+  function headDelimiterNok(code2) {
+    return nok(code2);
+  }
+  function bodyRowStart(code2) {
+    effects.enter("tableRow");
+    return bodyRowBreak(code2);
+  }
+  function bodyRowBreak(code2) {
+    if (code2 === 124) {
+      effects.enter("tableCellDivider");
+      effects.consume(code2);
+      effects.exit("tableCellDivider");
+      return bodyRowBreak;
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("tableRow");
+      return ok2(code2);
+    }
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, bodyRowBreak, "whitespace")(code2);
+    }
+    effects.enter("data");
+    return bodyRowData(code2);
+  }
+  function bodyRowData(code2) {
+    if (code2 === null || code2 === 124 || markdownLineEndingOrSpace(code2)) {
+      effects.exit("data");
+      return bodyRowBreak(code2);
+    }
+    effects.consume(code2);
+    return code2 === 92 ? bodyRowEscape : bodyRowData;
+  }
+  function bodyRowEscape(code2) {
+    if (code2 === 92 || code2 === 124) {
+      effects.consume(code2);
+      return bodyRowData;
+    }
+    return bodyRowData(code2);
+  }
+}
+function resolveTable(events, context) {
+  let index2 = -1;
+  let inFirstCellAwaitingPipe = true;
+  let rowKind = 0;
+  let lastCell = [0, 0, 0, 0];
+  let cell = [0, 0, 0, 0];
+  let afterHeadAwaitingFirstBodyRow = false;
+  let lastTableEnd = 0;
+  let currentTable;
+  let currentBody;
+  let currentCell;
+  const map2 = new EditMap();
+  while (++index2 < events.length) {
+    const event = events[index2];
+    const token = event[1];
+    if (event[0] === "enter") {
+      if (token.type === "tableHead") {
+        afterHeadAwaitingFirstBodyRow = false;
+        if (lastTableEnd !== 0) {
+          flushTableEnd(map2, context, lastTableEnd, currentTable, currentBody);
+          currentBody = void 0;
+          lastTableEnd = 0;
+        }
+        currentTable = {
+          type: "table",
+          start: Object.assign({}, token.start),
+          // Note: correct end is set later.
+          end: Object.assign({}, token.end)
+        };
+        map2.add(index2, 0, [["enter", currentTable, context]]);
+      } else if (token.type === "tableRow" || token.type === "tableDelimiterRow") {
+        inFirstCellAwaitingPipe = true;
+        currentCell = void 0;
+        lastCell = [0, 0, 0, 0];
+        cell = [0, index2 + 1, 0, 0];
+        if (afterHeadAwaitingFirstBodyRow) {
+          afterHeadAwaitingFirstBodyRow = false;
+          currentBody = {
+            type: "tableBody",
+            start: Object.assign({}, token.start),
+            // Note: correct end is set later.
+            end: Object.assign({}, token.end)
+          };
+          map2.add(index2, 0, [["enter", currentBody, context]]);
+        }
+        rowKind = token.type === "tableDelimiterRow" ? 2 : currentBody ? 3 : 1;
+      } else if (rowKind && (token.type === "data" || token.type === "tableDelimiterMarker" || token.type === "tableDelimiterFiller")) {
+        inFirstCellAwaitingPipe = false;
+        if (cell[2] === 0) {
+          if (lastCell[1] !== 0) {
+            cell[0] = cell[1];
+            currentCell = flushCell(map2, context, lastCell, rowKind, void 0, currentCell);
+            lastCell = [0, 0, 0, 0];
+          }
+          cell[2] = index2;
+        }
+      } else if (token.type === "tableCellDivider") {
+        if (inFirstCellAwaitingPipe) {
+          inFirstCellAwaitingPipe = false;
+        } else {
+          if (lastCell[1] !== 0) {
+            cell[0] = cell[1];
+            currentCell = flushCell(map2, context, lastCell, rowKind, void 0, currentCell);
+          }
+          lastCell = cell;
+          cell = [lastCell[1], index2, 0, 0];
+        }
+      }
+    } else if (token.type === "tableHead") {
+      afterHeadAwaitingFirstBodyRow = true;
+      lastTableEnd = index2;
+    } else if (token.type === "tableRow" || token.type === "tableDelimiterRow") {
+      lastTableEnd = index2;
+      if (lastCell[1] !== 0) {
+        cell[0] = cell[1];
+        currentCell = flushCell(map2, context, lastCell, rowKind, index2, currentCell);
+      } else if (cell[1] !== 0) {
+        currentCell = flushCell(map2, context, cell, rowKind, index2, currentCell);
+      }
+      rowKind = 0;
+    } else if (rowKind && (token.type === "data" || token.type === "tableDelimiterMarker" || token.type === "tableDelimiterFiller")) {
+      cell[3] = index2;
+    }
+  }
+  if (lastTableEnd !== 0) {
+    flushTableEnd(map2, context, lastTableEnd, currentTable, currentBody);
+  }
+  map2.consume(context.events);
+  index2 = -1;
+  while (++index2 < context.events.length) {
+    const event = context.events[index2];
+    if (event[0] === "enter" && event[1].type === "table") {
+      event[1]._align = gfmTableAlign(context.events, index2);
+    }
+  }
+  return events;
+}
+function flushCell(map2, context, range, rowKind, rowEnd, previousCell) {
+  const groupName = rowKind === 1 ? "tableHeader" : rowKind === 2 ? "tableDelimiter" : "tableData";
+  const valueName = "tableContent";
+  if (range[0] !== 0) {
+    previousCell.end = Object.assign({}, getPoint(context.events, range[0]));
+    map2.add(range[0], 0, [["exit", previousCell, context]]);
+  }
+  const now2 = getPoint(context.events, range[1]);
+  previousCell = {
+    type: groupName,
+    start: Object.assign({}, now2),
+    // Note: correct end is set later.
+    end: Object.assign({}, now2)
+  };
+  map2.add(range[1], 0, [["enter", previousCell, context]]);
+  if (range[2] !== 0) {
+    const relatedStart = getPoint(context.events, range[2]);
+    const relatedEnd = getPoint(context.events, range[3]);
+    const valueToken = {
+      type: valueName,
+      start: Object.assign({}, relatedStart),
+      end: Object.assign({}, relatedEnd)
+    };
+    map2.add(range[2], 0, [["enter", valueToken, context]]);
+    if (rowKind !== 2) {
+      const start2 = context.events[range[2]];
+      const end = context.events[range[3]];
+      start2[1].end = Object.assign({}, end[1].end);
+      start2[1].type = "chunkText";
+      start2[1].contentType = "text";
+      if (range[3] > range[2] + 1) {
+        const a = range[2] + 1;
+        const b = range[3] - range[2] - 1;
+        map2.add(a, b, []);
+      }
+    }
+    map2.add(range[3] + 1, 0, [["exit", valueToken, context]]);
+  }
+  if (rowEnd !== void 0) {
+    previousCell.end = Object.assign({}, getPoint(context.events, rowEnd));
+    map2.add(rowEnd, 0, [["exit", previousCell, context]]);
+    previousCell = void 0;
+  }
+  return previousCell;
+}
+function flushTableEnd(map2, context, index2, table2, tableBody) {
+  const exits = [];
+  const related = getPoint(context.events, index2);
+  if (tableBody) {
+    tableBody.end = Object.assign({}, related);
+    exits.push(["exit", tableBody, context]);
+  }
+  table2.end = Object.assign({}, related);
+  exits.push(["exit", table2, context]);
+  map2.add(index2 + 1, 0, exits);
+}
+function getPoint(events, index2) {
+  const event = events[index2];
+  const side = event[0] === "enter" ? "start" : "end";
+  return event[1][side];
+}
+const tasklistCheck = {
+  name: "tasklistCheck",
+  tokenize: tokenizeTasklistCheck
+};
+function gfmTaskListItem() {
+  return {
+    text: {
+      [91]: tasklistCheck
+    }
+  };
+}
+function tokenizeTasklistCheck(effects, ok2, nok) {
+  const self2 = this;
+  return open;
+  function open(code2) {
+    if (
+      // Exit if there’s stuff before.
+      self2.previous !== null || // Exit if not in the first content that is the first child of a list
+      // item.
+      !self2._gfmTasklistFirstContentOfListItem
+    ) {
+      return nok(code2);
+    }
+    effects.enter("taskListCheck");
+    effects.enter("taskListCheckMarker");
+    effects.consume(code2);
+    effects.exit("taskListCheckMarker");
+    return inside;
+  }
+  function inside(code2) {
+    if (markdownLineEndingOrSpace(code2)) {
+      effects.enter("taskListCheckValueUnchecked");
+      effects.consume(code2);
+      effects.exit("taskListCheckValueUnchecked");
+      return close;
+    }
+    if (code2 === 88 || code2 === 120) {
+      effects.enter("taskListCheckValueChecked");
+      effects.consume(code2);
+      effects.exit("taskListCheckValueChecked");
+      return close;
+    }
+    return nok(code2);
+  }
+  function close(code2) {
+    if (code2 === 93) {
+      effects.enter("taskListCheckMarker");
+      effects.consume(code2);
+      effects.exit("taskListCheckMarker");
+      effects.exit("taskListCheck");
+      return after;
+    }
+    return nok(code2);
+  }
+  function after(code2) {
+    if (markdownLineEnding(code2)) {
+      return ok2(code2);
+    }
+    if (markdownSpace(code2)) {
+      return effects.check({
+        tokenize: spaceThenNonSpace
+      }, ok2, nok)(code2);
+    }
+    return nok(code2);
+  }
+}
+function spaceThenNonSpace(effects, ok2, nok) {
+  return factorySpace(effects, after, "whitespace");
+  function after(code2) {
+    return code2 === null ? nok(code2) : ok2(code2);
+  }
+}
+function gfm(options) {
+  return combineExtensions([
+    gfmAutolinkLiteral(),
+    gfmFootnote(),
+    gfmStrikethrough(options),
+    gfmTable(),
+    gfmTaskListItem()
+  ]);
+}
+const emptyOptions = {};
+function remarkGfm(options) {
+  const self2 = (
+    /** @type {Processor<Root>} */
+    this
+  );
+  const settings = options || emptyOptions;
+  const data = self2.data();
+  const micromarkExtensions = data.micromarkExtensions || (data.micromarkExtensions = []);
+  const fromMarkdownExtensions = data.fromMarkdownExtensions || (data.fromMarkdownExtensions = []);
+  const toMarkdownExtensions = data.toMarkdownExtensions || (data.toMarkdownExtensions = []);
+  micromarkExtensions.push(gfm(settings));
+  fromMarkdownExtensions.push(gfmFromMarkdown());
+  toMarkdownExtensions.push(gfmToMarkdown(settings));
+}
+const TimelineModal = ({
+  isOpen,
+  onClose,
+  selectedNode,
+  selectedNodeId,
+  getNodeById,
+  selectNode
+}) => {
+  const [highlightedNodeId, setHighlightedNodeId] = reactExports.useState(null);
+  reactExports.useEffect(() => {
+    if (isOpen) {
+      setHighlightedNodeId(null);
+    }
+  }, [isOpen]);
+  const timelineNodes = reactExports.useMemo(() => {
+    if (!selectedNode) return [];
+    const timeline = [];
+    const visited = /* @__PURE__ */ new Set();
+    let current = selectedNode;
+    while (current && !visited.has(current.id)) {
+      visited.add(current.id);
+      timeline.unshift(current);
+      const mainParentId = current.parentIds[0];
+      if (mainParentId) {
+        current = getNodeById(mainParentId);
+      } else {
+        break;
+      }
+    }
+    return timeline;
+  }, [selectedNode, getNodeById]);
+  const handleNodeClick2 = reactExports.useCallback((nodeId) => {
+    setHighlightedNodeId(nodeId);
+  }, []);
+  const handleNavigateToNode = reactExports.useCallback(() => {
+    if (highlightedNodeId) {
+      selectNode(highlightedNodeId);
+      onClose();
+    }
+  }, [highlightedNodeId, selectNode, onClose]);
+  const handleBackdropClick = reactExports.useCallback((e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  }, [onClose]);
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+  if (!isOpen) return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: backdropStyle, onClick: handleBackdropClick, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: modalStyle, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: headerStyle, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: { margin: 0, fontSize: "18px", display: "flex", alignItems: "center", gap: "8px" }, children: "🕒 タイムライン" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onClose, style: closeButtonStyle, children: "✕" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: contentStyle, children: timelineNodes.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "40px" }, children: "ノードを選択してください" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: timelineContainerStyle, children: timelineNodes.map((node2, index2) => {
+      const isCurrentNode = node2.id === selectedNodeId;
+      const isHighlighted = node2.id === highlightedNodeId;
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
+        {
+          style: {
+            ...nodeItemStyle,
+            background: isHighlighted ? "#3b4d6b" : isCurrentNode ? "#334155" : "#1e293b",
+            borderLeft: `4px solid ${getNodeColor(node2.type, node2.role)}`,
+            cursor: "pointer",
+            outline: isHighlighted ? "2px solid #6366f1" : "none",
+            outlineOffset: "-2px"
+          },
+          onClick: () => handleNodeClick2(node2.id),
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: nodeHeaderStyle, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", alignItems: "center", gap: "8px" }, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { fontSize: "16px" }, children: getNodeTypeIcon$1(node2.type) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#94a3b8", fontSize: "13px" }, children: getNodeTypeLabel$1(node2.type) }),
+                node2.role && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
+                  padding: "2px 8px",
+                  background: node2.role === "user" ? "#1e40af" : "#065f46",
+                  borderRadius: "4px",
+                  fontSize: "11px",
+                  fontWeight: 500
+                }, children: node2.role === "user" ? "ユーザー" : "AI" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { style: { color: "#475569", fontSize: "12px" }, children: [
+                "#",
+                index2 + 1
+              ] })
+            ] }),
+            node2.title && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: nodeTitleStyle, children: node2.title }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: nodeContentStyle, children: node2.role === "assistant" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "markdown-content", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Markdown,
+              {
+                remarkPlugins: [remarkGfm],
+                components: {
+                  p: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { marginBottom: "0.75em" }, children: children2 }),
+                  ul: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { style: { marginLeft: "1.5em", marginBottom: "0.75em" }, children: children2 }),
+                  ol: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { style: { marginLeft: "1.5em", marginBottom: "0.75em" }, children: children2 }),
+                  li: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { style: { marginBottom: "0.25em" }, children: children2 }),
+                  h1: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { style: { fontSize: "1.3em", fontWeight: 600, marginTop: "0.75em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
+                  h2: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: { fontSize: "1.2em", fontWeight: 600, marginTop: "0.75em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
+                  h3: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { fontSize: "1.1em", fontWeight: 600, marginTop: "0.75em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
+                  strong: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { style: { fontWeight: 600, color: "#f1f5f9" }, children: children2 }),
+                  code: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("code", { style: { background: "#334155", padding: "0.15em 0.4em", borderRadius: "4px", fontFamily: "monospace", fontSize: "0.9em" }, children: children2 })
+                },
+                children: node2.content
+              }
+            ) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { whiteSpace: "pre-wrap" }, children: node2.content || "(内容なし)" }) }),
+            index2 < timelineNodes.length - 1 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: connectorStyle, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: connectorLineStyle }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#475569", fontSize: "12px" }, children: "↓" })
+            ] })
+          ]
+        },
+        node2.id
+      );
+    }) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: footerStyle, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { style: { color: "#64748b", fontSize: "13px" }, children: [
+        timelineNodes.length,
+        " ノード",
+        highlightedNodeId && " • ノードを選択中"
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "8px" }, children: [
+        highlightedNodeId && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: handleNavigateToNode,
+            style: {
+              ...footerButtonStyle,
+              background: "#6366f1"
+            },
+            children: "📍 ノードに移動"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onClose, style: footerButtonStyle, children: "閉じる" })
+      ] })
+    ] })
+  ] }) });
+};
+function getNodeTypeIcon$1(type) {
+  switch (type) {
+    case "root":
+      return "📌";
+    case "message":
+      return "💬";
+    case "note":
+      return "📝";
+    case "topic":
+      return "💡";
+    default:
+      return "📄";
+  }
+}
+function getNodeTypeLabel$1(type) {
+  switch (type) {
+    case "root":
+      return "ルート";
+    case "message":
+      return "メッセージ";
+    case "note":
+      return "メモ";
+    case "topic":
+      return "トピック";
+    default:
+      return "ノード";
+  }
+}
+function getNodeColor(type, role) {
+  switch (type) {
+    case "root":
+      return "#f59e0b";
+    case "message":
+      return role === "user" ? "#3b82f6" : "#10b981";
+    case "note":
+      return "#a855f7";
+    case "topic":
+      return "#f59e0b";
+    default:
+      return "#64748b";
+  }
+}
+const backdropStyle = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  background: "rgba(0, 0, 0, 0.7)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 1e3
+};
+const modalStyle = {
+  background: "#0f172a",
+  borderRadius: "12px",
+  border: "1px solid #334155",
+  width: "90%",
+  maxWidth: "800px",
+  maxHeight: "85vh",
+  display: "flex",
+  flexDirection: "column",
+  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+};
+const headerStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "16px 20px",
+  borderBottom: "1px solid #334155",
+  color: "white"
+};
+const closeButtonStyle = {
+  background: "transparent",
+  border: "none",
+  color: "#94a3b8",
+  fontSize: "20px",
+  cursor: "pointer",
+  padding: "4px 8px",
+  borderRadius: "4px"
+};
+const contentStyle = {
+  flex: 1,
+  overflow: "auto",
+  padding: "20px"
+};
+const timelineContainerStyle = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "0"
+};
+const nodeItemStyle = {
+  padding: "16px",
+  borderRadius: "8px",
+  marginBottom: "8px",
+  transition: "background 0.2s"
+};
+const nodeHeaderStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: "8px"
+};
+const nodeTitleStyle = {
+  fontSize: "15px",
+  fontWeight: 600,
+  color: "#e2e8f0",
+  marginBottom: "8px"
+};
+const nodeContentStyle = {
+  fontSize: "14px",
+  color: "#cbd5e1",
+  lineHeight: "1.6",
+  wordBreak: "break-word"
+};
+const connectorStyle = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  padding: "8px 0",
+  marginTop: "8px"
+};
+const connectorLineStyle = {
+  width: "2px",
+  height: "16px",
+  background: "#334155"
+};
+const footerStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "12px 20px",
+  borderTop: "1px solid #334155"
+};
+const footerButtonStyle = {
+  padding: "8px 16px",
+  borderRadius: "6px",
+  border: "none",
+  background: "#334155",
+  color: "white",
+  fontSize: "14px",
+  cursor: "pointer"
+};
+const CreateTopicModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialContent = ""
+}) => {
+  const [title, setTitle] = reactExports.useState("");
+  const [content2, setContent] = reactExports.useState("");
+  const [importance, setImportance] = reactExports.useState(3);
+  const [tagInput, setTagInput] = reactExports.useState("");
+  const [tags, setTags] = reactExports.useState([]);
+  reactExports.useEffect(() => {
+    if (isOpen) {
+      setTitle("");
+      setContent(initialContent);
+      setImportance(3);
+      setTagInput("");
+      setTags([]);
+    }
+  }, [isOpen, initialContent]);
+  const handleAddTag = reactExports.useCallback(() => {
+    const trimmedTag = tagInput.trim();
+    if (trimmedTag && !tags.includes(trimmedTag)) {
+      setTags([...tags, trimmedTag]);
+      setTagInput("");
+    }
+  }, [tagInput, tags]);
+  const handleTagKeyDown = reactExports.useCallback((e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddTag();
+    }
+  }, [handleAddTag]);
+  const handleRemoveTag = reactExports.useCallback((tagToRemove) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  }, [tags]);
+  const handleSubmit = reactExports.useCallback(() => {
+    if (!title.trim()) {
+      alert("タイトルを入力してください");
+      return;
+    }
+    onSubmit({
+      title: title.trim(),
+      content: content2.trim() || title.trim(),
+      importance,
+      tags
+    });
+    onClose();
+  }, [title, content2, importance, tags, onSubmit, onClose]);
+  const handleKeyDown = reactExports.useCallback((e) => {
+    if (e.key === "Escape") {
+      onClose();
+    } else if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      handleSubmit();
+    }
+  }, [onClose, handleSubmit]);
+  if (!isOpen) return null;
+  const inputStyle2 = {
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: "8px",
+    border: "1px solid #475569",
+    background: "#0f172a",
+    color: "white",
+    fontSize: "14px",
+    boxSizing: "border-box"
+  };
+  const labelStyle = {
+    display: "block",
+    fontSize: "12px",
+    color: "#94a3b8",
+    marginBottom: "6px"
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      style: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: "rgba(0,0,0,0.6)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1e3
+      },
+      onClick: onClose,
+      onKeyDown: handleKeyDown,
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
+        {
+          style: {
+            background: "#1e293b",
+            borderRadius: "12px",
+            padding: "24px",
+            width: "480px",
+            maxWidth: "90%",
+            maxHeight: "80vh",
+            overflow: "auto",
+            color: "white",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.5)"
+          },
+          onClick: (e) => e.stopPropagation(),
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "20px"
+            }, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { style: { margin: 0, fontSize: "18px", display: "flex", alignItems: "center", gap: "8px" }, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "💡" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "トピックを作成" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  onClick: onClose,
+                  style: {
+                    background: "transparent",
+                    border: "none",
+                    color: "#94a3b8",
+                    fontSize: "24px",
+                    cursor: "pointer",
+                    padding: "0",
+                    width: "32px",
+                    height: "32px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  },
+                  children: "×"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { style: labelStyle, children: [
+                "タイトル ",
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#ef4444" }, children: "*" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "input",
+                {
+                  type: "text",
+                  value: title,
+                  onChange: (e) => setTitle(e.target.value),
+                  placeholder: "トピックのタイトル",
+                  style: inputStyle2,
+                  autoFocus: true
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: labelStyle, children: "説明" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "textarea",
+                {
+                  value: content2,
+                  onChange: (e) => setContent(e.target.value),
+                  placeholder: "トピックの詳細説明（任意）",
+                  rows: 4,
+                  style: {
+                    ...inputStyle2,
+                    resize: "vertical"
+                  }
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: labelStyle, children: "重要度" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { display: "flex", gap: "8px" }, children: [1, 2, 3, 4, 5].map((level) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  onClick: () => setImportance(level),
+                  style: {
+                    flex: 1,
+                    padding: "8px",
+                    borderRadius: "6px",
+                    border: importance === level ? "2px solid #8b5cf6" : "1px solid #475569",
+                    background: importance === level ? "#8b5cf620" : "#0f172a",
+                    color: importance === level ? "#c4b5fd" : "#94a3b8",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    transition: "all 0.2s"
+                  },
+                  children: [
+                    level,
+                    level >= 4 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { marginLeft: "2px" }, children: "★".repeat(level - 3) })
+                  ]
+                },
+                level
+              )) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontSize: "11px", color: "#64748b", marginTop: "4px" }, children: "1: 低 ～ 5: 高（重要度4以上は★マークが表示されます）" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "20px" }, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: labelStyle, children: "タグ" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "8px", marginBottom: "8px" }, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "text",
+                    value: tagInput,
+                    onChange: (e) => setTagInput(e.target.value),
+                    onKeyDown: handleTagKeyDown,
+                    placeholder: "タグを入力...",
+                    style: { ...inputStyle2, flex: 1 }
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "button",
+                  {
+                    onClick: handleAddTag,
+                    disabled: !tagInput.trim(),
+                    style: {
+                      padding: "8px 16px",
+                      borderRadius: "6px",
+                      border: "none",
+                      background: "#8b5cf6",
+                      color: "white",
+                      cursor: tagInput.trim() ? "pointer" : "not-allowed",
+                      opacity: tagInput.trim() ? 1 : 0.5,
+                      fontSize: "14px"
+                    },
+                    children: "追加"
+                  }
+                )
+              ] }),
+              tags.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: "6px" }, children: tags.map((tag) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "span",
+                {
+                  style: {
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    padding: "4px 8px",
+                    background: "#8b5cf630",
+                    color: "#c4b5fd",
+                    borderRadius: "4px",
+                    fontSize: "12px"
+                  },
+                  children: [
+                    tag,
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "button",
+                      {
+                        onClick: () => handleRemoveTag(tag),
+                        style: {
+                          background: "transparent",
+                          border: "none",
+                          color: "#94a3b8",
+                          cursor: "pointer",
+                          padding: "0",
+                          fontSize: "14px",
+                          lineHeight: 1
+                        },
+                        children: "×"
+                      }
+                    )
+                  ]
+                },
+                tag
+              )) })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "12px", justifyContent: "flex-end" }, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  onClick: onClose,
+                  style: {
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    border: "1px solid #475569",
+                    background: "transparent",
+                    color: "#94a3b8",
+                    cursor: "pointer",
+                    fontSize: "14px"
+                  },
+                  children: "キャンセル"
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  onClick: handleSubmit,
+                  disabled: !title.trim(),
+                  style: {
+                    padding: "10px 24px",
+                    borderRadius: "8px",
+                    border: "none",
+                    background: "#8b5cf6",
+                    color: "white",
+                    cursor: title.trim() ? "pointer" : "not-allowed",
+                    opacity: title.trim() ? 1 : 0.5,
+                    fontSize: "14px",
+                    fontWeight: "bold"
+                  },
+                  children: "作成"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+              marginTop: "16px",
+              fontSize: "11px",
+              color: "#64748b",
+              textAlign: "center"
+            }, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("kbd", { style: {
+                background: "#0f172a",
+                padding: "2px 6px",
+                borderRadius: "4px",
+                border: "1px solid #334155"
+              }, children: "⌘/Ctrl + Enter" }),
+              " で作成 ・",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("kbd", { style: {
+                background: "#0f172a",
+                padding: "2px 6px",
+                borderRadius: "4px",
+                border: "1px solid #334155"
+              }, children: "Esc" }),
+              " でキャンセル"
+            ] })
+          ]
+        }
+      )
+    }
+  );
+};
 const SidePanel = () => {
   const {
     board,
     nodes,
     selectedNodeId,
     getNodeById,
-    addNode,
+    addNode: addNode2,
     updateNode,
     addSummary,
     deleteNode,
     selectNode,
     isConnectingParent,
     startConnectingParent,
-    cancelConnectingParent
+    cancelConnectingParent,
+    removeParentChild,
+    setMainParent
   } = useBoardStore();
   const [questionInput, setQuestionInput] = reactExports.useState("");
   const [isLoading, setIsLoading] = reactExports.useState(false);
@@ -22521,71 +35762,104 @@ const SidePanel = () => {
   const [isEditing, setIsEditing] = reactExports.useState(false);
   const [editTitle, setEditTitle] = reactExports.useState("");
   const [editContent, setEditContent] = reactExports.useState("");
-  const [showTimeline, setShowTimeline] = reactExports.useState(false);
+  const [showTimelineModal, setShowTimelineModal] = reactExports.useState(false);
+  const [showCreateTopicModal, setShowCreateTopicModal] = reactExports.useState(false);
+  const [panelWidth, setPanelWidth] = reactExports.useState(320);
+  const [isResizing, setIsResizing] = reactExports.useState(false);
+  const panelRef = reactExports.useRef(null);
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
+  const handleResizeStart = reactExports.useCallback((e) => {
+    e.preventDefault();
+    setIsResizing(true);
+  }, []);
+  reactExports.useEffect(() => {
+    if (!isResizing) return;
+    const handleMouseMove = (e) => {
+      const newWidth = window.innerWidth - e.clientX;
+      setPanelWidth(Math.max(280, Math.min(600, newWidth)));
+    };
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isResizing]);
   reactExports.useEffect(() => {
     if (selectedNode) {
       setEditTitle(selectedNode.title || "");
       setEditContent(selectedNode.content || "");
+      if (selectedNode.type === "message" && selectedNode.role === "user") {
+        setQuestionInput(selectedNode.content || "");
+      } else {
+        setQuestionInput("");
+      }
     } else {
       setEditTitle("");
       setEditContent("");
+      setQuestionInput("");
     }
     setIsEditing(false);
   }, [selectedNode]);
   const handleSendQuestion = reactExports.useCallback(async () => {
     if (!questionInput.trim() || !selectedNode || !board) return;
+    if (selectedNode.type !== "message" || selectedNode.role !== "user") return;
     setIsLoading(true);
     try {
-      const questionNode = addNode({
-        boardId: board.id,
-        type: "message",
-        role: "user",
-        title: "",
-        content: questionInput.trim(),
-        parentIds: [selectedNode.id],
-        createdBy: "user",
-        position: {
-          x: selectedNode.position.x + 50,
-          y: selectedNode.position.y + 150
-        }
+      updateNode(selectedNode.id, {
+        content: questionInput.trim()
       });
-      const contextMessages = collectContext(nodes, selectedNode);
+      const contextResult = collectContextWithSubParents(nodes, selectedNode);
+      const mainContextWithoutSelf = contextResult.mainContext.slice(0, -1);
+      const contextMessages = formatContextForLLM({
+        mainContext: mainContextWithoutSelf,
+        subContexts: contextResult.subContexts
+      });
+      const llmMessages = [
+        {
+          role: "system",
+          content: `あなたは「${board.title}」というテーマについて、ユーザーの思考を整理する手助けをするアシスタントです。的確で具体的な回答を心がけてください。`
+        },
+        ...contextMessages,
+        {
+          role: "user",
+          content: questionInput.trim()
+        }
+      ];
+      console.log("[LLM Request] handleSendQuestion:", {
+        provider: board.settings.defaultProvider,
+        model: board.settings.defaultModel,
+        messages: llmMessages,
+        temperature: board.settings.temperature
+      });
       const response = await window.electronAPI.sendLLMRequest({
         provider: board.settings.defaultProvider,
         model: board.settings.defaultModel,
-        messages: [
-          {
-            role: "system",
-            content: `あなたは「${board.title}」というテーマについて、ユーザーの思考を整理する手助けをするアシスタントです。的確で具体的な回答を心がけてください。`
-          },
-          ...contextMessages,
-          {
-            role: "user",
-            content: questionInput.trim()
-          }
-        ],
+        messages: llmMessages,
         temperature: board.settings.temperature
       });
       const qaPairId = `qa-${Date.now()}`;
-      addNode({
+      addNode2({
         boardId: board.id,
         type: "message",
         role: "assistant",
         title: "",
         content: response.content,
-        parentIds: [questionNode.id],
+        parentIds: [selectedNode.id],
         provider: board.settings.defaultProvider,
         model: board.settings.defaultModel,
         usage: response.usage,
         createdBy: "ai",
         position: {
-          x: questionNode.position.x,
-          y: questionNode.position.y + 150
+          x: selectedNode.position.x,
+          y: selectedNode.position.y + 150
         },
         qaPairId
       });
-      updateNode(questionNode.id, { qaPairId });
+      updateNode(selectedNode.id, { qaPairId });
       setQuestionInput("");
     } catch (error) {
       console.error("Failed to send question:", error);
@@ -22593,10 +35867,10 @@ const SidePanel = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [questionInput, selectedNode, board, nodes, addNode, updateNode]);
+  }, [questionInput, selectedNode, board, nodes, getNodeById, addNode2, updateNode]);
   const handleCreateNote = reactExports.useCallback(() => {
     if (!selectedNode || !board) return;
-    addNode({
+    addNode2({
       boardId: board.id,
       type: "note",
       role: "user",
@@ -22609,7 +35883,7 @@ const SidePanel = () => {
         y: selectedNode.position.y + 50
       }
     });
-  }, [selectedNode, board, addNode]);
+  }, [selectedNode, board, addNode2]);
   const handleGenerateNote = reactExports.useCallback(async () => {
     if (!selectedNode || !board) return;
     setIsLoading(true);
@@ -22620,7 +35894,7 @@ const SidePanel = () => {
         content: selectedNode.content,
         context
       });
-      addNode({
+      addNode2({
         boardId: board.id,
         type: "note",
         role: "user",
@@ -22643,7 +35917,26 @@ const SidePanel = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedNode, board, nodes, addNode]);
+  }, [selectedNode, board, nodes, addNode2]);
+  const handleCreateQuestionFromTopic = reactExports.useCallback(() => {
+    if (!selectedNode || selectedNode.type !== "topic" || !board) return;
+    const questionNode = addNode2({
+      boardId: board.id,
+      type: "message",
+      role: "user",
+      title: "",
+      content: "",
+      parentIds: [selectedNode.id],
+      createdBy: "user",
+      position: {
+        x: selectedNode.position.x + 100,
+        y: selectedNode.position.y + 120
+      }
+    });
+    selectNode(questionNode.id);
+    setQuestionInput("");
+    setIsEditing(false);
+  }, [selectedNode, board, addNode2, selectNode]);
   const handleGenerateTopics = reactExports.useCallback(async () => {
     if (!selectedNode || !board) return;
     setIsLoading(true);
@@ -22656,7 +35949,7 @@ const SidePanel = () => {
         maxTopics: 5
       });
       topics.forEach((topic, index2) => {
-        addNode({
+        addNode2({
           boardId: board.id,
           type: "topic",
           role: "system",
@@ -22680,7 +35973,27 @@ const SidePanel = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedNode, board, nodes, addNode]);
+  }, [selectedNode, board, nodes, addNode2]);
+  const handleCreateTopic = reactExports.useCallback((data) => {
+    if (!selectedNode || !board) return;
+    addNode2({
+      boardId: board.id,
+      type: "topic",
+      role: "system",
+      title: data.title,
+      content: data.content,
+      parentIds: [selectedNode.id],
+      createdBy: "user",
+      position: {
+        x: selectedNode.position.x + 180,
+        y: selectedNode.position.y + 80
+      },
+      metadata: {
+        importance: data.importance,
+        tags: data.tags.length > 0 ? data.tags : void 0
+      }
+    });
+  }, [selectedNode, board, addNode2]);
   const handleGenerateSummary = reactExports.useCallback(async (scope) => {
     if (!board) return;
     setIsLoading(true);
@@ -22692,10 +36005,10 @@ const SidePanel = () => {
         const collectSubtree = (nodeId, visited = /* @__PURE__ */ new Set()) => {
           if (visited.has(nodeId)) return [];
           visited.add(nodeId);
-          const node = getNodeById(nodeId);
-          if (!node) return [];
-          const result = [node];
-          node.childrenIds.forEach((childId) => {
+          const node2 = getNodeById(nodeId);
+          if (!node2) return [];
+          const result = [node2];
+          node2.childrenIds.forEach((childId) => {
             result.push(...collectSubtree(childId, visited));
           });
           return result;
@@ -22757,7 +36070,7 @@ const SidePanel = () => {
   }, [selectedNode, getNodeById]);
   const handleForkQuestion = reactExports.useCallback(() => {
     if (!selectedNode || !board) return;
-    const forkedNode = addNode({
+    const forkedNode = addNode2({
       boardId: board.id,
       type: "message",
       role: "user",
@@ -22777,7 +36090,7 @@ const SidePanel = () => {
       setEditTitle(forkedNode.title || "");
       setEditContent(forkedNode.content);
     }, 100);
-  }, [selectedNode, board, addNode, selectNode]);
+  }, [selectedNode, board, addNode2, selectNode]);
   const handleCancelEdit = reactExports.useCallback(() => {
     if (!selectedNode) return;
     setIsEditing(false);
@@ -22798,7 +36111,7 @@ const SidePanel = () => {
       alert("ルートノードは削除できません");
       return;
     }
-    const confirmed = window.confirm("このノードと配下を削除しますか？\n!注意!のノードに繋がる下のノードもすべて削除されます。");
+    const confirmed = window.confirm("このノードと配下のノードを削除しますか？");
     if (!confirmed) return;
     deleteNode(selectedNode.id);
     setIsEditing(false);
@@ -22813,38 +36126,44 @@ const SidePanel = () => {
   const handleCancelConnectParent = reactExports.useCallback(() => {
     cancelConnectingParent();
   }, [cancelConnectingParent]);
-  const handleToggleTimeline = reactExports.useCallback(() => {
-    setShowTimeline(!showTimeline);
-  }, [showTimeline]);
-  const getTimelineNodes = reactExports.useCallback(() => {
-    if (!selectedNode) return [];
-    const timeline = [];
-    const visited = /* @__PURE__ */ new Set();
-    let current = selectedNode;
-    while (current && !visited.has(current.id)) {
-      visited.add(current.id);
-      timeline.unshift(current);
-      const mainParentId = current.parentIds[0];
-      if (mainParentId) {
-        current = getNodeById(mainParentId);
-      } else {
-        break;
-      }
-    }
-    return timeline;
-  }, [selectedNode, getNodeById]);
+  const handleOpenTimelineModal = reactExports.useCallback(() => {
+    setShowTimelineModal(true);
+  }, []);
+  const handleCloseTimelineModal = reactExports.useCallback(() => {
+    setShowTimelineModal(false);
+  }, []);
   if (!board) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: panelStyle, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { textAlign: "center", color: "#64748b", padding: "40px 20px" }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontSize: "48px", marginBottom: "16px" }, children: "🧠" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: { margin: "0 0 8px 0", color: "#e2e8f0" }, children: "Mind Digger" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { style: { margin: 0, fontSize: "14px" }, children: [
-        "ボードを作成または開いて、",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-        "思考の整理を始めましょう"
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: panelRef, style: { ...basePanelStyle, width: `${panelWidth}px` }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "div",
+        {
+          onMouseDown: handleResizeStart,
+          style: resizeHandleStyle,
+          onMouseEnter: (e) => e.currentTarget.style.background = "#6366f1",
+          onMouseLeave: (e) => e.currentTarget.style.background = "transparent"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { textAlign: "center", color: "#64748b", padding: "40px 20px" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontSize: "48px", marginBottom: "16px" }, children: "🧠" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: { margin: "0 0 8px 0", color: "#e2e8f0" }, children: "Mind Digger" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { style: { margin: 0, fontSize: "14px" }, children: [
+          "ボードを作成または開いて、",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+          "思考の整理を始めましょう"
+        ] })
       ] })
-    ] }) });
+    ] });
   }
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: panelStyle, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: panelRef, style: { ...basePanelStyle, width: `${panelWidth}px` }, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "div",
+      {
+        onMouseDown: handleResizeStart,
+        style: resizeHandleStyle,
+        onMouseEnter: (e) => e.currentTarget.style.background = "#6366f1",
+        onMouseLeave: (e) => e.currentTarget.style.background = "transparent"
+      }
+    ),
     showSummary && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
         display: "flex",
@@ -22874,11 +36193,27 @@ const SidePanel = () => {
         background: "#1e293b",
         borderRadius: "8px",
         fontSize: "13px",
-        maxHeight: "300px",
+        maxHeight: "400px",
         overflow: "auto",
-        whiteSpace: "pre-wrap",
         lineHeight: "1.6"
-      }, children: summary })
+      }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "markdown-content", style: { color: "#e2e8f0" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Markdown,
+        {
+          remarkPlugins: [remarkGfm],
+          components: {
+            p: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { marginBottom: "0.75em" }, children: children2 }),
+            ul: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { style: { marginLeft: "1.5em", marginBottom: "0.75em" }, children: children2 }),
+            ol: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { style: { marginLeft: "1.5em", marginBottom: "0.75em" }, children: children2 }),
+            li: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { style: { marginBottom: "0.25em" }, children: children2 }),
+            h1: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { style: { fontSize: "1.5em", fontWeight: 600, marginTop: "1em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
+            h2: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: { fontSize: "1.3em", fontWeight: 600, marginTop: "1em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
+            h3: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { fontSize: "1.15em", fontWeight: 600, marginTop: "1em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
+            strong: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { style: { fontWeight: 600, color: "#f1f5f9" }, children: children2 }),
+            code: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("code", { style: { background: "#334155", padding: "0.15em 0.4em", borderRadius: "4px", fontFamily: "monospace", fontSize: "0.9em" }, children: children2 })
+          },
+          children: summary
+        }
+      ) }) })
     ] }),
     !showSummary && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: "📊 サマリー生成" }),
@@ -22910,76 +36245,38 @@ const SidePanel = () => {
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { style: { border: "none", borderTop: "1px solid #334155", margin: "16px 0" } }),
-    selectedNode && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: 0, fontSize: "14px", color: "#94a3b8" }, children: "🕒 タイムライン" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            onClick: handleToggleTimeline,
-            style: {
-              ...actionButtonStyle,
-              padding: "4px 8px",
-              fontSize: "12px"
-            },
-            children: showTimeline ? "▼ 閉じる" : "▶ 表示"
-          }
-        )
-      ] }),
-      showTimeline && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-        maxHeight: "300px",
-        overflow: "auto",
-        background: "#1e293b",
-        borderRadius: "8px",
-        padding: "8px"
-      }, children: getTimelineNodes().map((node, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        "div",
-        {
-          style: {
-            marginBottom: "8px",
-            padding: "8px",
-            background: node.id === selectedNodeId ? "#334155" : "#0f172a",
-            borderRadius: "6px",
-            borderLeft: index2 === 0 ? "none" : "2px solid #475569",
-            marginLeft: index2 === 0 ? "0" : "12px"
-          },
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
-              fontSize: "11px",
-              color: "#64748b",
-              marginBottom: "4px",
-              display: "flex",
-              alignItems: "center",
-              gap: "4px"
-            }, children: [
-              getNodeTypeIcon(node.type),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: getNodeTypeLabel(node.type) }),
-              node.role && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
-                padding: "2px 6px",
-                background: node.role === "user" ? "#1e40af" : "#065f46",
-                borderRadius: "4px",
-                fontSize: "10px"
-              }, children: node.role })
-            ] }),
-            node.title && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-              fontSize: "13px",
-              fontWeight: "bold",
-              marginBottom: "4px",
-              color: "#e2e8f0"
-            }, children: node.title }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-              fontSize: "12px",
-              color: "#94a3b8",
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-              maxHeight: "100px",
-              overflow: "auto"
-            }, children: node.content.length > 200 ? node.content.slice(0, 200) + "..." : node.content })
-          ]
+    selectedNode && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { marginBottom: "16px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "button",
+      {
+        onClick: handleOpenTimelineModal,
+        style: {
+          ...actionButtonStyle,
+          width: "100%",
+          justifyContent: "center",
+          padding: "10px 12px"
         },
-        node.id
-      )) })
-    ] }),
+        children: "🕒 タイムラインを表示"
+      }
+    ) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      TimelineModal,
+      {
+        isOpen: showTimelineModal,
+        onClose: handleCloseTimelineModal,
+        selectedNode: selectedNode ?? null,
+        selectedNodeId,
+        getNodeById,
+        selectNode
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CreateTopicModal,
+      {
+        isOpen: showCreateTopicModal,
+        onClose: () => setShowCreateTopicModal(false),
+        onSubmit: handleCreateTopic
+      }
+    ),
     /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { style: { border: "none", borderTop: "1px solid #334155", margin: "16px 0" } }),
     selectedNode ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
@@ -23069,10 +36366,96 @@ const SidePanel = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
             color: "#94a3b8",
             fontSize: "13px",
-            maxHeight: "200px",
+            maxHeight: "400px",
             overflow: "auto"
-          }, children: selectedNode.content || "(内容なし)" })
+          }, children: selectedNode.role === "assistant" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "markdown-content", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Markdown, { remarkPlugins: [remarkGfm], children: selectedNode.content }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { whiteSpace: "pre-wrap" }, children: selectedNode.content || "(内容なし)" }) })
         ] })
+      ] }),
+      selectedNode.type === "message" && selectedNode.role === "user" && selectedNode.parentIds.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: [
+          "🔗 親ノード (",
+          selectedNode.parentIds.length,
+          ")"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { display: "flex", flexDirection: "column", gap: "4px" }, children: selectedNode.parentIds.map((parentId, index2) => {
+          const parent = getNodeById(parentId);
+          if (!parent) return null;
+          const isMainParent = index2 === 0;
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "div",
+            {
+              style: {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "8px 10px",
+                background: isMainParent ? "#1e3a5f" : "#1e293b",
+                borderRadius: "6px",
+                fontSize: "13px",
+                border: isMainParent ? "1px solid #3b82f6" : "1px solid transparent"
+              },
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  "span",
+                  {
+                    style: {
+                      flex: 1,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      cursor: "pointer"
+                    },
+                    onClick: () => selectNode(parentId),
+                    title: parent.title || parent.content,
+                    children: [
+                      isMainParent && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#fbbf24" }, children: "⭐ " }),
+                      getNodeTypeIcon(parent.type),
+                      " ",
+                      parent.title || parent.content.slice(0, 30)
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "4px", marginLeft: "8px" }, children: [
+                  !isMainParent && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "button",
+                    {
+                      onClick: () => setMainParent(selectedNode.id, parentId),
+                      title: "メイン親に設定",
+                      style: {
+                        background: "#475569",
+                        border: "none",
+                        borderRadius: "4px",
+                        padding: "4px 6px",
+                        cursor: "pointer",
+                        fontSize: "12px",
+                        color: "white"
+                      },
+                      children: "⬆️"
+                    }
+                  ),
+                  selectedNode.parentIds.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "button",
+                    {
+                      onClick: () => removeParentChild(parentId, selectedNode.id),
+                      title: "接続を削除",
+                      style: {
+                        background: "#7f1d1d",
+                        border: "none",
+                        borderRadius: "4px",
+                        padding: "4px 6px",
+                        cursor: "pointer",
+                        fontSize: "12px",
+                        color: "white"
+                      },
+                      children: "✕"
+                    }
+                  )
+                ] })
+              ]
+            },
+            parentId
+          );
+        }) })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: "⚡ アクション" }),
@@ -23088,8 +36471,9 @@ const SidePanel = () => {
               children: "❌ 親接続をキャンセル"
             }
           ) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            selectedNode.type === "topic" && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleCreateQuestionFromTopic, style: actionButtonStyle, children: "❓ 質問ノードを作成" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleCreateNote, style: actionButtonStyle, children: "📝 メモを追加" }),
-            selectedNode.type !== "root" && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleStartConnectParent, style: actionButtonStyle, children: "🔗 親ノード追加" })
+            selectedNode.type === "message" && selectedNode.role === "user" && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleStartConnectParent, style: actionButtonStyle, children: "🔗 親ノード追加" })
           ] }),
           selectedNode.type === "message" && selectedNode.role === "assistant" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -23102,6 +36486,14 @@ const SidePanel = () => {
                   opacity: isLoading ? 0.5 : 1
                 },
                 children: "💡 トピック生成"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                onClick: () => setShowCreateTopicModal(true),
+                style: actionButtonStyle,
+                children: "✏️ トピック作成"
               }
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -23120,14 +36512,14 @@ const SidePanel = () => {
         ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { style: { border: "none", borderTop: "1px solid #334155", margin: "16px 0" } }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      selectedNode.type === "message" && selectedNode.role === "user" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: "💬 質問する" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "textarea",
           {
             value: questionInput,
             onChange: (e) => setQuestionInput(e.target.value),
-            placeholder: "このノードについて質問...",
+            placeholder: "この質問を入力...",
             rows: 4,
             style: {
               width: "100%",
@@ -23159,21 +36551,63 @@ const SidePanel = () => {
             children: isLoading ? "⏳ 送信中..." : "🚀 送信"
           }
         )
-      ] })
+      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "12px", background: "#0f172a", borderRadius: "8px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontSize: "13px" }, children: "トピックを選択して「質問ノードを作成」した後、その質問ノードを選択して入力してください。" }) })
     ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "20px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "ノードを選択してください" }) })
   ] });
 };
-function collectContext(nodes, startNode) {
+function nodeToContextMessage(node2) {
+  if (node2.type === "message") {
+    return {
+      role: node2.role,
+      content: node2.content,
+      nodeType: "message"
+    };
+  } else if (node2.type === "topic") {
+    return {
+      role: "system",
+      content: `[トピック] ${node2.title || node2.content}`,
+      nodeType: "topic"
+    };
+  } else if (node2.type === "note") {
+    return {
+      role: "system",
+      content: `[メモ] ${node2.title ? node2.title + ": " : ""}${node2.content}`,
+      nodeType: "note"
+    };
+  }
+  return null;
+}
+function collectMainChain(nodes, startNode) {
+  const messages = [];
+  const visitedIds = /* @__PURE__ */ new Set();
+  let current = startNode;
+  while (current && !visitedIds.has(current.id)) {
+    visitedIds.add(current.id);
+    const msg = nodeToContextMessage(current);
+    if (msg) {
+      messages.unshift(msg);
+    }
+    const mainParentId = current.parentIds[0];
+    if (mainParentId) {
+      current = nodes.find((n) => n.id === mainParentId);
+    } else {
+      break;
+    }
+  }
+  return { messages, visitedIds };
+}
+function collectSubChain(nodes, subParentId, mainChainIds) {
   const messages = [];
   const visited = /* @__PURE__ */ new Set();
-  let current = startNode;
+  let current = nodes.find((n) => n.id === subParentId);
   while (current && !visited.has(current.id)) {
+    if (mainChainIds.has(current.id)) {
+      break;
+    }
     visited.add(current.id);
-    if (current.type === "message") {
-      messages.unshift({
-        role: current.role,
-        content: current.content
-      });
+    const msg = nodeToContextMessage(current);
+    if (msg) {
+      messages.unshift(msg);
     }
     const mainParentId = current.parentIds[0];
     if (mainParentId) {
@@ -23183,6 +36617,47 @@ function collectContext(nodes, startNode) {
     }
   }
   return messages;
+}
+function collectContextWithSubParents(nodes, startNode) {
+  const { messages: mainContext, visitedIds: mainChainIds } = collectMainChain(nodes, startNode);
+  const subContexts = [];
+  for (let i = 1; i < startNode.parentIds.length; i++) {
+    const subParentId = startNode.parentIds[i];
+    const subMessages = collectSubChain(nodes, subParentId, mainChainIds);
+    if (subMessages.length > 0) {
+      subContexts.push({
+        parentNodeId: subParentId,
+        messages: subMessages
+      });
+    }
+  }
+  return { mainContext, subContexts };
+}
+function formatContextForLLM(contextResult) {
+  const messages = [];
+  for (const msg of contextResult.mainContext) {
+    messages.push({ role: msg.role, content: msg.content });
+  }
+  if (contextResult.subContexts.length > 0) {
+    let subContextText = "--- 関連する別の議論 ---\n";
+    for (const sub of contextResult.subContexts) {
+      for (const msg of sub.messages) {
+        subContextText += `[${msg.role}] ${msg.content}
+
+`;
+      }
+    }
+    subContextText += "--- 関連議論ここまで ---";
+    messages.push({
+      role: "system",
+      content: subContextText
+    });
+  }
+  return messages;
+}
+function collectContext(nodes, startNode) {
+  const result = collectContextWithSubParents(nodes, startNode);
+  return formatContextForLLM(result);
 }
 function getNodeTypeIcon(type) {
   switch (type) {
@@ -23212,16 +36687,29 @@ function getNodeTypeLabel(type) {
       return "ノード";
   }
 }
-const panelStyle = {
-  width: "320px",
+const basePanelStyle = {
   height: "100%",
   background: "#0f172a",
   borderLeft: "1px solid #334155",
   padding: "16px",
   boxSizing: "border-box",
   overflow: "auto",
-  color: "white"
+  color: "white",
+  position: "relative"
 };
+const resizeHandleStyle = {
+  position: "absolute",
+  left: 0,
+  top: 0,
+  bottom: 0,
+  width: "4px",
+  cursor: "ew-resize",
+  background: "transparent",
+  zIndex: 10
+};
+({
+  ...resizeHandleStyle
+});
 const actionButtonStyle = {
   padding: "8px 12px",
   borderRadius: "6px",

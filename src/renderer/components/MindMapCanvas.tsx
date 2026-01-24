@@ -129,10 +129,8 @@ export const MindMapCanvas: React.FC = () => {
    */
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
-      console.log('[onNodeClick] isConnectingParent:', isConnectingParent, 'connectingFromNodeId:', connectingFromNodeId, 'clicked:', node.id);
       // 親ノード接続モードの場合は接続処理
       if (isConnectingParent && connectingFromNodeId) {
-        console.log('[onNodeClick] Connecting', connectingFromNodeId, 'to', node.id);
         connectToParent(connectingFromNodeId, node.id);
       } else {
         selectNode(node.id);
