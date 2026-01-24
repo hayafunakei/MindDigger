@@ -16,6 +16,7 @@ interface NoteNodeData extends MindNode {
 export const NoteNode: React.FC<NodeProps> = memo(({ data, selected }) => {
   const nodeData = data as unknown as NoteNodeData;
   const isPinned = nodeData.metadata?.pin;
+  const importance = nodeData.metadata?.importance || 3;
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -76,6 +77,11 @@ export const NoteNode: React.FC<NodeProps> = memo(({ data, selected }) => {
       }}>
         <span>📝</span>
         <span>メモ</span>
+        {importance >= 4 && (
+          <span style={{ color: '#78350f' }}>
+            {'★'.repeat(importance - 3)}
+          </span>
+        )}
         {nodeData.metadata?.tags?.includes('decision') && (
           <span style={{ 
             fontSize: '10px', 

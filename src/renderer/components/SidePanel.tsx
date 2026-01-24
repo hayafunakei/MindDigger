@@ -299,6 +299,10 @@ export const SidePanel: React.FC = () => {
       position: {
         x: selectedNode.position.x + 200,
         y: selectedNode.position.y + 50
+      },
+      metadata: {
+        importance: 3,
+        pin: false
       }
     });
   }, [selectedNode, board, addNode]);
@@ -334,7 +338,8 @@ export const SidePanel: React.FC = () => {
         },
         metadata: {
           tags: ['decision'],
-          importance: 4
+          importance: 3,
+          pin: true
         }
       });
     } catch (error) {
@@ -847,6 +852,9 @@ export const SidePanel: React.FC = () => {
                   >
                     📋 複製
                   </button>
+                ) : selectedNode.type === 'message' && selectedNode.role === 'assistant' ? (
+                  // AI回答ノードは編集不可
+                  null
                 ) : (
                   <button
                     onClick={handleStartEdit}
@@ -946,6 +954,89 @@ export const SidePanel: React.FC = () => {
                       {selectedNode.content || '(内容なし)'}
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* メタデータ編集セクション（note/topicノードのみ） */}
+            {(selectedNode.type === 'note' || selectedNode.type === 'topic') && !isEditing && (
+              <div style={{
+                marginTop: '12px',
+                padding: '12px',
+                background: '#1e293b',
+                borderRadius: '8px',
+                fontSize: '13px'
+              }}>
+                <h4 style={{ margin: '0 0 12px 0', fontSize: '13px', color: '#94a3b8' }}>
+                  ⚙️ メタデータ
+                </h4>
+                
+                {/* ピン留め */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '12px'
+                }}>
+                  <label style={{ color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    📌 決定事項としてピン留め
+                  </label>
+                  <input
+                    type="checkbox"
+                    checked={selectedNode.metadata?.pin || false}
+                    onChange={(e) => {
+                      updateNode(selectedNode.id, {
+                        metadata: {
+                          ...selectedNode.metadata,
+                          pin: e.target.checked
+                        }
+                      });
+                    }}
+                    style={{
+                      width: '18px',
+                      height: '18px',
+                      cursor: 'pointer',
+                      accentColor: '#f59e0b'
+                    }}
+                  />
+                </div>
+
+                {/* 重要度 */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}>
+                  <label style={{ color: '#e2e8f0' }}>
+                    ⭐ 重要度
+                  </label>
+                  <select
+                    value={selectedNode.metadata?.importance ?? 3}
+                    onChange={(e) => {
+                      const importance = parseInt(e.target.value) as 1 | 2 | 3 | 4 | 5;
+                      updateNode(selectedNode.id, {
+                        metadata: {
+                          ...selectedNode.metadata,
+                          importance
+                        }
+                      });
+                    }}
+                    style={{
+                      padding: '6px 10px',
+                      borderRadius: '6px',
+                      border: '1px solid #475569',
+                      background: '#0f172a',
+                      color: 'white',
+                      fontSize: '13px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <option value={1}>1 - 低</option>
+                    <option value={2}>2</option>
+                    <option value={3}>3 - 中</option>
+                    <option value={4}>4</option>
+                    <option value={5}>5 - 高</option>
+                  </select>
                 </div>
               </div>
             )}

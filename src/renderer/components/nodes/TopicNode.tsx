@@ -16,6 +16,7 @@ interface TopicNodeData extends MindNode {
 export const TopicNode: React.FC<NodeProps> = memo(({ data, selected }) => {
   const nodeData = data as unknown as TopicNodeData;
   const importance = nodeData.metadata?.importance || 3;
+  const isPinned = nodeData.metadata?.pin;
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -26,7 +27,9 @@ export const TopicNode: React.FC<NodeProps> = memo(({ data, selected }) => {
       style={{
         padding: '10px 14px',
         borderRadius: '20px',
-        background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+        background: isPinned
+          ? 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)'
+          : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
         color: 'white',
         fontSize: '13px',
         boxShadow: selected 
@@ -36,7 +39,8 @@ export const TopicNode: React.FC<NodeProps> = memo(({ data, selected }) => {
         maxWidth: '200px',
         cursor: 'pointer',
         transition: 'box-shadow 0.2s ease',
-        textAlign: 'center'
+        textAlign: 'center',
+        position: 'relative'
       }}
     >
       <Handle
@@ -44,6 +48,25 @@ export const TopicNode: React.FC<NodeProps> = memo(({ data, selected }) => {
         position={Position.Top}
         style={{ background: '#ddd6fe', width: 8, height: 8 }}
       />
+      
+      {isPinned && (
+        <div style={{
+          position: 'absolute',
+          top: '-8px',
+          right: '-8px',
+          background: '#dc2626',
+          color: 'white',
+          borderRadius: '50%',
+          width: '20px',
+          height: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '10px'
+        }}>
+          📌
+        </div>
+      )}
       
       <div style={{ 
         display: 'flex', 
