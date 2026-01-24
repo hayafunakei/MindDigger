@@ -183,14 +183,31 @@ export const SidePanel: React.FC = () => {
   }, [pendingFocusNodeId, selectedNodeId]);
 
   /**
-   * 質問を送信
+   * 質問を送信（新規送信または再送信）
+   * canResend状態の場合は既存の回答ノードを削除してから新しい回答を生成
    */
   const handleSendQuestion = useCallback(async () => {
     if (!questionInput.trim() || !selectedNode || !board) return;
     if (selectedNode.type !== 'message' || selectedNode.role !== 'user') return;
 
+    // 現在の編集状態を取得
+    const currentEditState = getQuestionEditState(selectedNode, nodes);
+
     setIsLoading(true);
     try {
+      // canResend状態の場合、既存の回答ノードを削除
+      if (currentEditState === 'canResend') {
+        const answerChildIds = selectedNode.childrenIds.filter(childId => {
+          const child = getNodeById(childId);
+          return child && child.type === 'message' && child.role === 'assistant';
+        });
+        
+        // 回答ノードを削除（配下のノードも含めて削除される）
+        for (const answerChildId of answerChildIds) {
+          deleteNode(answerChildId);
+        }
+      }
+
       // 質問ノードの内容を更新
       updateNode(selectedNode.id, {
         content: questionInput.trim()
@@ -263,7 +280,7 @@ export const SidePanel: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [questionInput, selectedNode, board, nodes, getNodeById, addNode, updateNode]);
+  }, [questionInput, selectedNode, board, nodes, getNodeById, addNode, updateNode, deleteNode]);
 
   /**
    * ノートを作成
@@ -899,6 +916,9 @@ export const SidePanel: React.FC = () => {
                   </button>
                 </div>
               </div>
+            ) : selectedNode.type === 'message' && selectedNode.role === 'user' ? (
+              // 質問ノードはメッセージ表示欄を非表示（質問欄と内容が同じため）
+              null
             ) : (
               <div style={{
                 padding: '12px',
@@ -1170,11 +1190,15 @@ export const SidePanel: React.FC = () => {
                       ...actionButtonStyle,
                       width: '100%',
                       justifyContent: 'center',
-                      background: '#6366f1',
+                      background: questionEditState === 'canResend' ? '#f59e0b' : '#6366f1',
                       opacity: questionInput.trim() && !isLoading ? 1 : 0.5
                     }}
                   >
-                    {isLoading ? '⏳ 送信中...' : '🚀 送信'}
+                    {isLoading 
+                      ? '⏳ 送信中...' 
+                      : questionEditState === 'canResend' 
+                        ? '🔄 再送信' 
+                        : '🚀 送信'}
                   </button>
                 </>
               )}
