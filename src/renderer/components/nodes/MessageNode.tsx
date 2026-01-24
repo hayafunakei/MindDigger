@@ -2,12 +2,20 @@
  * メッセージノードコンポーネント
  * ユーザーの質問とAIの回答を表示
  */
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useCallback } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
+import { useBoardStore } from '../../stores/boardStore';
 import type { MindNode } from '@shared/types';
 
 interface MessageNodeData extends MindNode {
   label: string;
+}
+
+/**
+ * 質問ノードかどうかを判定
+ */
+function isQuestionNode(node: MindNode): boolean {
+  return node.type === 'message' && node.role === 'user';
 }
 
 /**
@@ -17,6 +25,37 @@ export const MessageNode: React.FC<NodeProps> = memo(({ data, selected }) => {
   const nodeData = data as unknown as MessageNodeData;
   const isUser = nodeData.role === 'user';
   const [isHovered, setIsHovered] = useState(false);
+  
+  const { board, nodes, addNode, selectNode } = useBoardStore();
+  
+  // 質問ノードの場合は常に複製ボタンを表示
+  const showDuplicateButton = isQuestionNode(nodeData);
+
+  /**
+   * 質問ノードを複製（確認ダイアログなし）
+   */
+  const handleDuplicate = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation(); // ノードのクリックイベントを止める
+    
+    if (!board) return;
+    
+    const duplicatedNode = addNode({
+      boardId: board.id,
+      type: 'message',
+      role: 'user',
+      title: nodeData.title || '',
+      content: nodeData.content,
+      parentIds: nodeData.parentIds,
+      createdBy: 'user',
+      position: {
+        x: nodeData.position.x + 120,
+        y: nodeData.position.y + 60
+      }
+    });
+    
+    // 複製したノードを選択
+    selectNode(duplicatedNode.id);
+  }, [board, nodeData, addNode, selectNode]);
 
   return (
     <div
@@ -102,6 +141,37 @@ export const MessageNode: React.FC<NodeProps> = memo(({ data, selected }) => {
         }}>
           <span style={{ color: '#94a3b8' }}>サイドパネルで操作</span>
         </div>
+      )}
+
+      {/* 複製ボタン - 質問ノードで回答→質問の連鎖がある場合に表示 */}
+      {showDuplicateButton && (
+        <button
+          onClick={handleDuplicate}
+          style={{
+            position: 'absolute',
+            right: '-44px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            background: '#6366f1',
+            border: 'none',
+            borderRadius: '6px',
+            padding: '6px 8px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+            zIndex: 1000,
+            transition: 'background 0.2s ease'
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = '#4f46e5')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = '#6366f1')}
+          title="複製して質問"
+        >
+          📋
+        </button>
       )}
 
       <Handle

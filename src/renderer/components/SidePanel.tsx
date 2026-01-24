@@ -8,7 +8,78 @@ import remarkGfm from 'remark-gfm';
 import { useBoardStore } from '../stores/boardStore';
 import { TimelineModal } from './TimelineModal';
 import { CreateTopicModal } from './CreateTopicModal';
-import type { MindNode, NodeType, Role } from '@shared/types';
+import type { MindNode, NodeType, Role, NodeId } from '@shared/types';
+
+/**
+ * 指定ノードの子孫に質問ノード（role === 'user'）が存在するかを判定
+ * 末端まで再帰探索する
+ */
+function hasQuestionInDescendants(nodeId: NodeId, nodes: MindNode[]): boolean {
+  const node = nodes.find(n => n.id === nodeId);
+  if (!node) return false;
+
+  for (const childId of node.childrenIds) {
+    const child = nodes.find(n => n.id === childId);
+    if (!child) continue;
+
+    // 子が質問ノードなら true
+    if (child.type === 'message' && child.role === 'user') {
+      return true;
+    }
+
+    // 再帰探索
+    if (hasQuestionInDescendants(childId, nodes)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * 指定ノードに回答（role === 'assistant'）の子が存在するかを判定
+ */
+function hasAnswerChild(node: MindNode, nodes: MindNode[]): boolean {
+  return node.childrenIds.some(childId => {
+    const child = nodes.find(n => n.id === childId);
+    return child && child.type === 'message' && child.role === 'assistant';
+  });
+}
+
+/**
+ * 質問ノードの編集状態を判定
+ * @returns 'editable' | 'duplicateOnly' | 'canResend'
+ * - editable: 回答なし、自由に編集可能
+ * - duplicateOnly: 回答あり＆その先に質問あり、編集不可・複製のみ
+ * - canResend: 回答あり＆その先に質問なし、編集→再送信可能（将来実装）
+ */
+function getQuestionEditState(
+  node: MindNode,
+  nodes: MindNode[]
+): 'editable' | 'duplicateOnly' | 'canResend' {
+  if (node.type !== 'message' || node.role !== 'user') {
+    return 'editable';
+  }
+
+  const hasAnswer = hasAnswerChild(node, nodes);
+  if (!hasAnswer) {
+    return 'editable';
+  }
+
+  // 回答ノードの先に質問があるかチェック
+  const answerChildren = node.childrenIds
+    .map(id => nodes.find(n => n.id === id))
+    .filter((n): n is MindNode => n !== undefined && n.type === 'message' && n.role === 'assistant');
+
+  for (const answerNode of answerChildren) {
+    if (hasQuestionInDescendants(answerNode.id, nodes)) {
+      return 'duplicateOnly';
+    }
+  }
+
+  // 回答はあるが、その先に質問がない → 将来の再送信機能
+  return 'canResend';
+}
 
 /**
  * サイドパネル
@@ -42,8 +113,13 @@ export const SidePanel: React.FC = () => {
   const [panelWidth, setPanelWidth] = useState(320);
   const [isResizing, setIsResizing] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const questionInputRef = useRef<HTMLTextAreaElement>(null);
+  const [pendingFocusNodeId, setPendingFocusNodeId] = useState<NodeId | null>(null);
 
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
+
+  // 質問ノードの編集状態を判定
+  const questionEditState = selectedNode ? getQuestionEditState(selectedNode, nodes) : 'editable';
 
   /**
    * リサイズハンドルのマウスダウン
@@ -93,6 +169,18 @@ export const SidePanel: React.FC = () => {
     }
     setIsEditing(false);
   }, [selectedNode]);
+
+  // 複製後のフォーカス制御
+  useEffect(() => {
+    if (pendingFocusNodeId && selectedNodeId === pendingFocusNodeId) {
+      // 少し待ってからフォーカス（レンダリング完了を待つ）
+      const timer = setTimeout(() => {
+        questionInputRef.current?.focus();
+        setPendingFocusNodeId(null);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [pendingFocusNodeId, selectedNodeId]);
 
   /**
    * 質問を送信
@@ -472,6 +560,33 @@ export const SidePanel: React.FC = () => {
   }, [selectedNode, board, addNode, selectNode]);
 
   /**
+   * 質問ノードを複製して新しい質問を作成（確認ダイアログなし）
+   * 複製後は新ノードを選択し、質問入力欄にフォーカス
+   */
+  const handleDuplicateQuestion = useCallback(() => {
+    if (!selectedNode || !board) return;
+    if (selectedNode.type !== 'message' || selectedNode.role !== 'user') return;
+    
+    const duplicatedNode = addNode({
+      boardId: board.id,
+      type: 'message',
+      role: 'user',
+      title: selectedNode.title || '',
+      content: selectedNode.content,
+      parentIds: selectedNode.parentIds, // 同じ親ノード
+      createdBy: 'user',
+      position: {
+        x: selectedNode.position.x + 120,
+        y: selectedNode.position.y + 60
+      }
+    });
+    
+    // 複製したノードを選択し、質問入力欄にフォーカス
+    selectNode(duplicatedNode.id);
+    setPendingFocusNodeId(duplicatedNode.id);
+  }, [selectedNode, board, addNode, selectNode]);
+
+  /**
    * 編集をキャンセル
    */
   const handleCancelEdit = useCallback(() => {
@@ -707,13 +822,23 @@ export const SidePanel: React.FC = () => {
                 {getNodeTypeIcon(selectedNode.type)} 選択中のノード
               </h3>
               <div style={{ display: 'flex', gap: '6px' }}>
-                <button
-                  onClick={handleStartEdit}
-                  style={{ ...actionButtonStyle, padding: '6px 10px' }}
-                  disabled={isEditing}
-                >
-                  ✏️ 編集
-                </button>
+                {/* 質問ノードは編集不可、複製ボタンを表示 */}
+                {selectedNode.type === 'message' && selectedNode.role === 'user' ? (
+                  <button
+                    onClick={handleDuplicateQuestion}
+                    style={{ ...actionButtonStyle, padding: '6px 10px' }}
+                  >
+                    📋 複製
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleStartEdit}
+                    style={{ ...actionButtonStyle, padding: '6px 10px' }}
+                    disabled={isEditing}
+                  >
+                    ✏️ 編集
+                  </button>
+                )}
                 <button
                   onClick={handleDeleteNode}
                   style={{ ...actionButtonStyle, padding: '6px 10px', background: '#7f1d1d' }}
@@ -914,7 +1039,8 @@ export const SidePanel: React.FC = () => {
                   <button onClick={handleCreateNote} style={actionButtonStyle}>
                     📝 メモを追加
                   </button>
-                  {selectedNode.type === 'message' && selectedNode.role === 'user' && (
+                  {/* 親ノード追加はeditableとcanResendの時のみ */}
+                  {selectedNode.type === 'message' && selectedNode.role === 'user' && questionEditState !== 'duplicateOnly' && (
                     <button onClick={handleStartConnectParent} style={actionButtonStyle}>
                       🔗 親ノード追加
                     </button>
@@ -959,41 +1085,99 @@ export const SidePanel: React.FC = () => {
           {/* 質問入力（質問ノード選択時のみ） */}
           {selectedNode.type === 'message' && selectedNode.role === 'user' ? (
             <div>
-              <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#94a3b8' }}>
-                💬 質問する
-              </h3>
-              <textarea
-                value={questionInput}
-                onChange={(e) => setQuestionInput(e.target.value)}
-                placeholder="この質問を入力..."
-                rows={4}
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  borderRadius: '8px',
-                  border: '1px solid #475569',
-                  background: '#0f172a',
-                  color: 'white',
-                  fontSize: '14px',
-                  resize: 'vertical',
-                  boxSizing: 'border-box',
-                  marginBottom: '8px'
-                }}
-                disabled={isLoading}
-              />
-              <button
-                onClick={handleSendQuestion}
-                disabled={!questionInput.trim() || isLoading}
-                style={{
-                  ...actionButtonStyle,
-                  width: '100%',
-                  justifyContent: 'center',
-                  background: '#6366f1',
-                  opacity: questionInput.trim() && !isLoading ? 1 : 0.5
-                }}
-              >
-                {isLoading ? '⏳ 送信中...' : '🚀 送信'}
-              </button>
+              {questionEditState === 'duplicateOnly' ? (
+                // 回答あり＆その先に質問あり → 編集不可、複製のみ
+                <>
+                  <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#94a3b8' }}>
+                    💬 質問（編集不可）
+                  </h3>
+                  <div style={{
+                    padding: '12px',
+                    background: '#1e293b',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    color: '#94a3b8',
+                    marginBottom: '8px',
+                    border: '1px solid #475569'
+                  }}>
+                    <div style={{ whiteSpace: 'pre-wrap' }}>
+                      {selectedNode.content || '(内容なし)'}
+                    </div>
+                  </div>
+                  <div style={{
+                    padding: '10px 12px',
+                    background: '#1e3a5f',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    color: '#93c5fd',
+                    marginBottom: '12px'
+                  }}>
+                    この質問には回答があり、さらにその先に質問が続いています。<br />
+                    別の質問をしたい場合は「複製して質問」を使用してください。
+                  </div>
+                  <button
+                    onClick={handleDuplicateQuestion}
+                    style={{
+                      ...actionButtonStyle,
+                      width: '100%',
+                      justifyContent: 'center',
+                      background: '#6366f1'
+                    }}
+                  >
+                    📋 複製して質問
+                  </button>
+                </>
+              ) : (
+                // editable または canResend → 編集可能
+                <>
+                  <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#94a3b8' }}>
+                    💬 質問する
+                    {questionEditState === 'canResend' && (
+                      <span style={{ 
+                        fontSize: '11px', 
+                        color: '#fbbf24', 
+                        marginLeft: '8px',
+                        fontWeight: 'normal'
+                      }}>
+                        (再送信時は既存の回答が削除されます)
+                      </span>
+                    )}
+                  </h3>
+                  <textarea
+                    ref={questionInputRef}
+                    value={questionInput}
+                    onChange={(e) => setQuestionInput(e.target.value)}
+                    placeholder="この質問を入力..."
+                    rows={4}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      border: '1px solid #475569',
+                      background: '#0f172a',
+                      color: 'white',
+                      fontSize: '14px',
+                      resize: 'vertical',
+                      boxSizing: 'border-box',
+                      marginBottom: '8px'
+                    }}
+                    disabled={isLoading}
+                  />
+                  <button
+                    onClick={handleSendQuestion}
+                    disabled={!questionInput.trim() || isLoading}
+                    style={{
+                      ...actionButtonStyle,
+                      width: '100%',
+                      justifyContent: 'center',
+                      background: '#6366f1',
+                      opacity: questionInput.trim() && !isLoading ? 1 : 0.5
+                    }}
+                  >
+                    {isLoading ? '⏳ 送信中...' : '🚀 送信'}
+                  </button>
+                </>
+              )}
             </div>
           ) : (
             <div style={{ textAlign: 'center', color: '#64748b', padding: '12px', background: '#0f172a', borderRadius: '8px' }}>
