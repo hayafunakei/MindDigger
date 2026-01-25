@@ -12580,8 +12580,10 @@ const useBoardStore = create$2((set2, get2) => ({
   filePath: null,
   isDirty: false,
   isLoading: false,
+  isAiResponding: false,
   isConnectingParent: false,
   connectingFromNodeId: null,
+  pendingFocusNodeId: null,
   // アクション
   createBoard: (title, description) => {
     const now2 = (/* @__PURE__ */ new Date()).toISOString();
@@ -12763,6 +12765,9 @@ const useBoardStore = create$2((set2, get2) => ({
   setLoading: (loading) => {
     set2({ isLoading: loading });
   },
+  setAiResponding: (responding) => {
+    set2({ isAiResponding: responding });
+  },
   addSummary: (summaryData) => {
     const now2 = (/* @__PURE__ */ new Date()).toISOString();
     const summary = {
@@ -12880,6 +12885,18 @@ const useBoardStore = create$2((set2, get2) => ({
       }),
       isDirty: true
     }));
+  },
+  /**
+   * フォーカス予約をセット
+   */
+  setPendingFocusNodeId: (nodeId) => {
+    set2({ pendingFocusNodeId: nodeId });
+  },
+  /**
+   * フォーカス予約をクリア
+   */
+  clearPendingFocusNodeId: () => {
+    set2({ pendingFocusNodeId: null });
   }
 }));
 const useSettingsStore = create$2((set2, get2) => ({
@@ -13266,7 +13283,7 @@ const BoardSelectorDialog = ({ isOpen, onClose }) => {
   );
 };
 const Toolbar = () => {
-  const { board, isDirty, isLoading, setBoard, createBoard, clearBoard, getBoardData, setFilePath, markClean, setLoading } = useBoardStore();
+  const { board, isDirty, isLoading, isAiResponding, setBoard, createBoard, clearBoard, getBoardData, setFilePath, markClean, setLoading } = useBoardStore();
   const [showNewBoardDialog, setShowNewBoardDialog] = reactExports.useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = reactExports.useState(false);
   const [showBoardSelector, setShowBoardSelector] = reactExports.useState(false);
@@ -13337,7 +13354,12 @@ const Toolbar = () => {
         "button",
         {
           onClick: () => setShowNewBoardDialog(true),
-          style: buttonStyle,
+          disabled: isAiResponding,
+          style: {
+            ...buttonStyle,
+            opacity: isAiResponding ? 0.5 : 1,
+            cursor: isAiResponding ? "not-allowed" : "pointer"
+          },
           children: "➕ 新規ボード"
         }
       ),
@@ -13345,8 +13367,12 @@ const Toolbar = () => {
         "button",
         {
           onClick: handleOpenBoard,
-          disabled: isLoading,
-          style: buttonStyle,
+          disabled: isLoading || isAiResponding,
+          style: {
+            ...buttonStyle,
+            opacity: isLoading || isAiResponding ? 0.5 : 1,
+            cursor: isLoading || isAiResponding ? "not-allowed" : "pointer"
+          },
           children: "📂 開く"
         }
       ),
@@ -22161,10 +22187,51 @@ const RootNode = reactExports.memo(({ data, selected: selected2 }) => {
   );
 });
 RootNode.displayName = "RootNode";
+function isQuestionNode(node2) {
+  return node2.type === "message" && node2.role === "user";
+}
+const LoadingIndicator$1 = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loading-indicator", style: {
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+  padding: "8px 0"
+}, children: [
+  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loading-dots", style: {
+    display: "flex",
+    gap: "4px"
+  }, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loading-dot", style: { animationDelay: "0ms" } }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loading-dot", style: { animationDelay: "150ms" } }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loading-dot", style: { animationDelay: "300ms" } })
+  ] }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { fontSize: "12px", opacity: 0.8 }, children: "考え中..." })
+] });
 const MessageNode = reactExports.memo(({ data, selected: selected2 }) => {
   const nodeData = data;
   const isUser = nodeData.role === "user";
+  const isLoading = nodeData.isLoading === true;
   const [isHovered, setIsHovered] = reactExports.useState(false);
+  const { board, nodes, addNode: addNode2, selectNode, setPendingFocusNodeId, isAiResponding } = useBoardStore();
+  const showDuplicateButton = isQuestionNode(nodeData);
+  const handleDuplicate = reactExports.useCallback((e) => {
+    e.stopPropagation();
+    if (!board) return;
+    const duplicatedNode = addNode2({
+      boardId: board.id,
+      type: "message",
+      role: "user",
+      title: nodeData.title || "",
+      content: nodeData.content,
+      parentIds: nodeData.parentIds,
+      createdBy: "user",
+      position: {
+        x: nodeData.position.x + 120,
+        y: nodeData.position.y + 60
+      }
+    });
+    selectNode(duplicatedNode.id);
+    setPendingFocusNodeId(duplicatedNode.id);
+  }, [board, nodeData, addNode2, selectNode, setPendingFocusNodeId]);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
@@ -22210,7 +22277,7 @@ const MessageNode = reactExports.memo(({ data, selected: selected2 }) => {
           }, children: nodeData.model })
         ] }),
         nodeData.title && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontWeight: "bold", marginBottom: "4px" }, children: nodeData.title }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
+        isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoadingIndicator$1, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
           fontSize: "13px",
           lineHeight: "1.4",
           wordBreak: "break-word"
@@ -22229,6 +22296,37 @@ const MessageNode = reactExports.memo(({ data, selected: selected2 }) => {
           whiteSpace: "nowrap",
           zIndex: 1e3
         }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#94a3b8" }, children: "サイドパネルで操作" }) }),
+        showDuplicateButton && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: handleDuplicate,
+            disabled: isAiResponding,
+            style: {
+              position: "absolute",
+              right: "-44px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: isAiResponding ? "#4b5563" : "#6366f1",
+              border: "none",
+              borderRadius: "6px",
+              padding: "6px 8px",
+              cursor: isAiResponding ? "not-allowed" : "pointer",
+              fontSize: "14px",
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+              zIndex: 1e3,
+              transition: "background 0.2s ease",
+              opacity: isAiResponding ? 0.5 : 1
+            },
+            onMouseEnter: (e) => !isAiResponding && (e.currentTarget.style.background = "#4f46e5"),
+            onMouseLeave: (e) => !isAiResponding && (e.currentTarget.style.background = "#6366f1"),
+            title: isAiResponding ? "AI応答中は複製できません" : "複製して質問",
+            children: "📋"
+          }
+        ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           Handle,
           {
@@ -22245,6 +22343,7 @@ MessageNode.displayName = "MessageNode";
 const NoteNode = reactExports.memo(({ data, selected: selected2 }) => {
   const nodeData = data;
   const isPinned = nodeData.metadata?.pin;
+  const importance = nodeData.metadata?.importance || 3;
   const [isHovered, setIsHovered] = reactExports.useState(false);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
@@ -22298,6 +22397,7 @@ const NoteNode = reactExports.memo(({ data, selected: selected2 }) => {
         }, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "📝" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "メモ" }),
+          importance >= 4 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#78350f" }, children: "★".repeat(importance - 3) }),
           nodeData.metadata?.tags?.includes("decision") && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
             fontSize: "10px",
             background: "rgba(0,0,0,0.1)",
@@ -22324,9 +22424,27 @@ const NoteNode = reactExports.memo(({ data, selected: selected2 }) => {
   );
 });
 NoteNode.displayName = "NoteNode";
+const LoadingIndicator = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loading-indicator", style: {
+  display: "flex",
+  alignItems: "center",
+  gap: "6px",
+  padding: "4px 0"
+}, children: [
+  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loading-dots", style: {
+    display: "flex",
+    gap: "3px"
+  }, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loading-dot", style: { animationDelay: "0ms", width: "6px", height: "6px" } }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loading-dot", style: { animationDelay: "150ms", width: "6px", height: "6px" } }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loading-dot", style: { animationDelay: "300ms", width: "6px", height: "6px" } })
+  ] }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { fontSize: "11px", opacity: 0.9 }, children: "トピック抽出中..." })
+] });
 const TopicNode = reactExports.memo(({ data, selected: selected2 }) => {
   const nodeData = data;
   const importance = nodeData.metadata?.importance || 3;
+  const isPinned = nodeData.metadata?.pin;
+  const isLoading = nodeData.isLoading === true;
   const [isHovered, setIsHovered] = reactExports.useState(false);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
@@ -22337,7 +22455,7 @@ const TopicNode = reactExports.memo(({ data, selected: selected2 }) => {
       style: {
         padding: "10px 14px",
         borderRadius: "20px",
-        background: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+        background: isPinned ? "linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)" : "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
         color: "white",
         fontSize: "13px",
         boxShadow: selected2 ? "0 0 0 3px #ddd6fe, 0 4px 12px rgba(139, 92, 246, 0.3)" : "0 4px 12px rgba(139, 92, 246, 0.2)",
@@ -22345,7 +22463,8 @@ const TopicNode = reactExports.memo(({ data, selected: selected2 }) => {
         maxWidth: "200px",
         cursor: "pointer",
         transition: "box-shadow 0.2s ease",
-        textAlign: "center"
+        textAlign: "center",
+        position: "relative"
       },
       children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -22356,6 +22475,20 @@ const TopicNode = reactExports.memo(({ data, selected: selected2 }) => {
             style: { background: "#ddd6fe", width: 8, height: 8 }
           }
         ),
+        isPinned && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
+          position: "absolute",
+          top: "-8px",
+          right: "-8px",
+          background: "#dc2626",
+          color: "white",
+          borderRadius: "50%",
+          width: "20px",
+          height: "20px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "10px"
+        }, children: "📌" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
           display: "flex",
           alignItems: "center",
@@ -22369,12 +22502,12 @@ const TopicNode = reactExports.memo(({ data, selected: selected2 }) => {
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "トピック" }),
           importance >= 4 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#fde68a" }, children: "★".repeat(importance - 3) })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
+        isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoadingIndicator, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
           fontWeight: "bold",
           lineHeight: "1.3",
           wordBreak: "break-word"
         }, children: nodeData.title || nodeData.content }),
-        nodeData.metadata?.tags && nodeData.metadata.tags.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
+        !isLoading && nodeData.metadata?.tags && nodeData.metadata.tags.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
           marginTop: "6px",
           display: "flex",
           flexWrap: "wrap",
@@ -35738,7 +35871,47 @@ const CreateTopicModal = ({
     }
   );
 };
-const SidePanel = () => {
+function hasQuestionInDescendants(nodeId, nodes) {
+  const node2 = nodes.find((n) => n.id === nodeId);
+  if (!node2) return false;
+  for (const childId of node2.childrenIds) {
+    const child = nodes.find((n) => n.id === childId);
+    if (!child) continue;
+    if (child.type === "message" && child.role === "user") {
+      return true;
+    }
+    if (hasQuestionInDescendants(childId, nodes)) {
+      return true;
+    }
+  }
+  return false;
+}
+function hasAnswerChild(node2, nodes) {
+  return node2.childrenIds.some((childId) => {
+    const child = nodes.find((n) => n.id === childId);
+    return child && child.type === "message" && child.role === "assistant";
+  });
+}
+function getQuestionEditState(node2, nodes) {
+  if (node2.type !== "message" || node2.role !== "user") {
+    return "editable";
+  }
+  const hasAnswer = hasAnswerChild(node2, nodes);
+  if (!hasAnswer) {
+    return "editable";
+  }
+  const answerChildren = node2.childrenIds.map((id2) => nodes.find((n) => n.id === id2)).filter((n) => n !== void 0 && n.type === "message" && n.role === "assistant");
+  for (const answerNode of answerChildren) {
+    if (hasQuestionInDescendants(answerNode.id, nodes)) {
+      return "duplicateOnly";
+    }
+  }
+  return "canResend";
+}
+const NodeEditTab = ({
+  isAiResponding,
+  setIsAiResponding
+}) => {
   const {
     board,
     nodes,
@@ -35746,48 +35919,27 @@ const SidePanel = () => {
     getNodeById,
     addNode: addNode2,
     updateNode,
-    addSummary,
     deleteNode,
     selectNode,
     isConnectingParent,
     startConnectingParent,
     cancelConnectingParent,
     removeParentChild,
-    setMainParent
+    setMainParent,
+    pendingFocusNodeId,
+    setPendingFocusNodeId,
+    clearPendingFocusNodeId
   } = useBoardStore();
   const [questionInput, setQuestionInput] = reactExports.useState("");
   const [isLoading, setIsLoading] = reactExports.useState(false);
-  const [summary, setSummary] = reactExports.useState("");
-  const [showSummary, setShowSummary] = reactExports.useState(false);
   const [isEditing, setIsEditing] = reactExports.useState(false);
   const [editTitle, setEditTitle] = reactExports.useState("");
   const [editContent, setEditContent] = reactExports.useState("");
   const [showTimelineModal, setShowTimelineModal] = reactExports.useState(false);
   const [showCreateTopicModal, setShowCreateTopicModal] = reactExports.useState(false);
-  const [panelWidth, setPanelWidth] = reactExports.useState(320);
-  const [isResizing, setIsResizing] = reactExports.useState(false);
-  const panelRef = reactExports.useRef(null);
+  const questionInputRef = reactExports.useRef(null);
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
-  const handleResizeStart = reactExports.useCallback((e) => {
-    e.preventDefault();
-    setIsResizing(true);
-  }, []);
-  reactExports.useEffect(() => {
-    if (!isResizing) return;
-    const handleMouseMove = (e) => {
-      const newWidth = window.innerWidth - e.clientX;
-      setPanelWidth(Math.max(280, Math.min(600, newWidth)));
-    };
-    const handleMouseUp = () => {
-      setIsResizing(false);
-    };
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isResizing]);
+  const questionEditState = selectedNode ? getQuestionEditState(selectedNode, nodes) : "editable";
   reactExports.useEffect(() => {
     if (selectedNode) {
       setEditTitle(selectedNode.title || "");
@@ -35804,14 +35956,53 @@ const SidePanel = () => {
     }
     setIsEditing(false);
   }, [selectedNode]);
+  reactExports.useEffect(() => {
+    if (pendingFocusNodeId && selectedNodeId === pendingFocusNodeId) {
+      const timer2 = setTimeout(() => {
+        questionInputRef.current?.focus();
+        clearPendingFocusNodeId();
+      }, 100);
+      return () => clearTimeout(timer2);
+    }
+  }, [pendingFocusNodeId, selectedNodeId, clearPendingFocusNodeId]);
   const handleSendQuestion = reactExports.useCallback(async () => {
     if (!questionInput.trim() || !selectedNode || !board) return;
     if (selectedNode.type !== "message" || selectedNode.role !== "user") return;
+    const currentEditState = getQuestionEditState(selectedNode, nodes);
     setIsLoading(true);
+    setIsAiResponding(true);
     try {
+      if (currentEditState === "canResend") {
+        const answerChildIds = selectedNode.childrenIds.filter((childId) => {
+          const child = getNodeById(childId);
+          return child && child.type === "message" && child.role === "assistant";
+        });
+        for (const answerChildId of answerChildIds) {
+          deleteNode(answerChildId);
+        }
+      }
       updateNode(selectedNode.id, {
         content: questionInput.trim()
       });
+      const qaPairId = `qa-${Date.now()}`;
+      const loadingNode = addNode2({
+        boardId: board.id,
+        type: "message",
+        role: "assistant",
+        title: "",
+        content: "回答を生成中...",
+        parentIds: [selectedNode.id],
+        provider: board.settings.defaultProvider,
+        model: board.settings.defaultModel,
+        createdBy: "ai",
+        position: {
+          x: selectedNode.position.x,
+          y: selectedNode.position.y + 150
+        },
+        qaPairId,
+        isLoading: true
+      });
+      updateNode(selectedNode.id, { qaPairId });
       const contextResult = collectContextWithSubParents(nodes, selectedNode);
       const mainContextWithoutSelf = contextResult.mainContext.slice(0, -1);
       const contextMessages = formatContextForLLM({
@@ -35821,7 +36012,7 @@ const SidePanel = () => {
       const llmMessages = [
         {
           role: "system",
-          content: `「${board.title}」というテーマについて、ユーザーの思考を整理する手助けをするアシスタントです。的確で具体的な回答を心がけてください。`
+          content: `あなたは「${board.title}」というテーマについて、ユーザーの思考を整理する手助けをするアシスタントです。的確で具体的な回答を心がけてください。`
         },
         ...contextMessages,
         {
@@ -35841,33 +36032,76 @@ const SidePanel = () => {
         messages: llmMessages,
         temperature: board.settings.temperature
       });
-      const qaPairId = `qa-${Date.now()}`;
-      addNode2({
-        boardId: board.id,
-        type: "message",
-        role: "assistant",
-        title: "",
+      updateNode(loadingNode.id, {
         content: response.content,
-        parentIds: [selectedNode.id],
-        provider: board.settings.defaultProvider,
-        model: board.settings.defaultModel,
         usage: response.usage,
+        isLoading: false
+      });
+      const topicLoadingNode = addNode2({
+        boardId: board.id,
+        type: "topic",
+        role: "system",
+        title: "",
+        content: "トピック抽出中...",
+        parentIds: [loadingNode.id],
         createdBy: "ai",
         position: {
-          x: selectedNode.position.x,
-          y: selectedNode.position.y + 150
+          x: loadingNode.position.x,
+          y: loadingNode.position.y + 150
         },
-        qaPairId
+        isLoading: true
       });
-      updateNode(selectedNode.id, { qaPairId });
+      try {
+        const topicContext = [
+          ...contextMessages.map((m) => `${m.role}: ${m.content}`),
+          `user: ${questionInput.trim()}`,
+          `assistant: ${response.content}`
+        ].join("\n\n");
+        const topics = await window.electronAPI.generateTopics({
+          content: response.content,
+          context: topicContext,
+          maxTopics: 5
+        });
+        deleteNode(topicLoadingNode.id);
+        topics.forEach((topic, index2) => {
+          addNode2({
+            boardId: board.id,
+            type: "topic",
+            role: "system",
+            title: topic.title,
+            content: topic.description || topic.title,
+            parentIds: [loadingNode.id],
+            createdBy: "ai",
+            position: {
+              x: loadingNode.position.x + (index2 - Math.floor(topics.length / 2)) * 150,
+              y: loadingNode.position.y + 150
+            },
+            metadata: {
+              importance: topic.importance,
+              tags: topic.tags
+            }
+          });
+        });
+      } catch (topicError) {
+        deleteNode(topicLoadingNode.id);
+        console.warn("Failed to auto-generate topics:", topicError);
+      }
       setQuestionInput("");
     } catch (error) {
       console.error("Failed to send question:", error);
+      const state = useBoardStore.getState();
+      const loadingNodes = state.nodes.filter(
+        (n) => n.parentIds.includes(selectedNode.id) && n.isLoading === true
+      );
+      for (const loadingNode of loadingNodes) {
+        deleteNode(loadingNode.id);
+      }
       alert(`エラーが発生しました: ${error instanceof Error ? error.message : "不明なエラー"}`);
     } finally {
       setIsLoading(false);
+      setIsAiResponding(false);
     }
-  }, [questionInput, selectedNode, board, nodes, getNodeById, addNode2, updateNode]);
+  }, [questionInput, selectedNode, board, nodes, getNodeById, addNode2, updateNode, deleteNode, setIsAiResponding]);
   const handleCreateNote = reactExports.useCallback(() => {
     if (!selectedNode || !board) return;
     addNode2({
@@ -35881,12 +36115,17 @@ const SidePanel = () => {
       position: {
         x: selectedNode.position.x + 200,
         y: selectedNode.position.y + 50
+      },
+      metadata: {
+        importance: 3,
+        pin: false
       }
     });
   }, [selectedNode, board, addNode2]);
   const handleGenerateNote = reactExports.useCallback(async () => {
     if (!selectedNode || !board) return;
     setIsLoading(true);
+    setIsAiResponding(true);
     try {
       const contextMessages = collectContext(nodes, selectedNode);
       const context = contextMessages.map((m) => `${m.role}: ${m.content}`).join("\n\n");
@@ -35908,7 +36147,8 @@ const SidePanel = () => {
         },
         metadata: {
           tags: ["decision"],
-          importance: 4
+          importance: 3,
+          pin: true
         }
       });
     } catch (error) {
@@ -35916,8 +36156,9 @@ const SidePanel = () => {
       alert(`ノート生成に失敗しました: ${error instanceof Error ? error.message : "不明なエラー"}`);
     } finally {
       setIsLoading(false);
+      setIsAiResponding(false);
     }
-  }, [selectedNode, board, nodes, addNode2]);
+  }, [selectedNode, board, nodes, addNode2, setIsAiResponding]);
   const handleCreateQuestionFromTopic = reactExports.useCallback(() => {
     if (!selectedNode || selectedNode.type !== "topic" || !board) return;
     const questionNode = addNode2({
@@ -35934,12 +36175,14 @@ const SidePanel = () => {
       }
     });
     selectNode(questionNode.id);
+    setPendingFocusNodeId(questionNode.id);
     setQuestionInput("");
     setIsEditing(false);
-  }, [selectedNode, board, addNode2, selectNode]);
+  }, [selectedNode, board, addNode2, selectNode, setPendingFocusNodeId]);
   const handleGenerateTopics = reactExports.useCallback(async () => {
     if (!selectedNode || !board) return;
     setIsLoading(true);
+    setIsAiResponding(true);
     try {
       const contextMessages = collectContext(nodes, selectedNode);
       const context = contextMessages.map((m) => `${m.role}: ${m.content}`).join("\n\n");
@@ -35972,8 +36215,9 @@ const SidePanel = () => {
       alert(`トピック生成に失敗しました: ${error instanceof Error ? error.message : "不明なエラー"}`);
     } finally {
       setIsLoading(false);
+      setIsAiResponding(false);
     }
-  }, [selectedNode, board, nodes, addNode2]);
+  }, [selectedNode, board, nodes, addNode2, setIsAiResponding]);
   const handleCreateTopic = reactExports.useCallback((data) => {
     if (!selectedNode || !board) return;
     addNode2({
@@ -35994,59 +36238,6 @@ const SidePanel = () => {
       }
     });
   }, [selectedNode, board, addNode2]);
-  const handleGenerateSummary = reactExports.useCallback(async (scope) => {
-    if (!board) return;
-    setIsLoading(true);
-    try {
-      let targetNodes = [];
-      if (scope === "board") {
-        targetNodes = nodes.filter((n) => n.type !== "root");
-      } else if (scope === "nodeSubtree" && selectedNode) {
-        const collectSubtree = (nodeId, visited = /* @__PURE__ */ new Set()) => {
-          if (visited.has(nodeId)) return [];
-          visited.add(nodeId);
-          const node2 = getNodeById(nodeId);
-          if (!node2) return [];
-          const result = [node2];
-          node2.childrenIds.forEach((childId) => {
-            result.push(...collectSubtree(childId, visited));
-          });
-          return result;
-        };
-        targetNodes = collectSubtree(selectedNode.id);
-      }
-      const summaryContent = await window.electronAPI.generateSummary({
-        boardId: board.id,
-        scope,
-        targetNodeId: scope === "nodeSubtree" ? selectedNode?.id : void 0,
-        nodes: targetNodes.map((n) => ({
-          id: n.id,
-          type: n.type,
-          role: n.role,
-          title: n.title,
-          content: n.content,
-          importance: n.metadata?.importance,
-          pin: n.metadata?.pin,
-          tags: n.metadata?.tags
-        }))
-      });
-      setSummary(summaryContent);
-      setShowSummary(true);
-      addSummary({
-        boardId: board.id,
-        scope,
-        targetNodeId: scope === "nodeSubtree" ? selectedNode?.id : void 0,
-        content: summaryContent,
-        provider: board.settings.defaultProvider,
-        model: board.settings.defaultModel
-      });
-    } catch (error) {
-      console.error("Failed to generate summary:", error);
-      alert(`サマリー生成に失敗しました: ${error instanceof Error ? error.message : "不明なエラー"}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [board, nodes, selectedNode, getNodeById, addSummary]);
   const handleStartEdit = reactExports.useCallback(() => {
     if (!selectedNode) return;
     if (selectedNode.type === "message" && selectedNode.role === "user") {
@@ -36091,6 +36282,26 @@ const SidePanel = () => {
       setEditContent(forkedNode.content);
     }, 100);
   }, [selectedNode, board, addNode2, selectNode]);
+  const handleDuplicateQuestion = reactExports.useCallback(() => {
+    if (!selectedNode || !board) return;
+    if (selectedNode.type !== "message" || selectedNode.role !== "user") return;
+    const duplicatedNode = addNode2({
+      boardId: board.id,
+      type: "message",
+      role: "user",
+      title: selectedNode.title || "",
+      content: selectedNode.content,
+      parentIds: selectedNode.parentIds,
+      // 同じ親ノード
+      createdBy: "user",
+      position: {
+        x: selectedNode.position.x + 120,
+        y: selectedNode.position.y + 60
+      }
+    });
+    selectNode(duplicatedNode.id);
+    setPendingFocusNodeId(duplicatedNode.id);
+  }, [selectedNode, board, addNode2, selectNode, setPendingFocusNodeId]);
   const handleCancelEdit = reactExports.useCallback(() => {
     if (!selectedNode) return;
     setIsEditing(false);
@@ -36111,7 +36322,20 @@ const SidePanel = () => {
       alert("ルートノードは削除できません");
       return;
     }
-    const confirmed = window.confirm("このノードと配下のノードを削除しますか？");
+    const typeLabels = {
+      question: "質問",
+      answer: "回答",
+      topic: "トピック",
+      note: "メモ"
+    };
+    const typeLabel = typeLabels[selectedNode.type] || selectedNode.type;
+    const title = selectedNode.title || "(無題)";
+    const contentPreview = selectedNode.content ? selectedNode.content.slice(0, 30) + (selectedNode.content.length > 30 ? "..." : "") : "";
+    const nodeDescription = contentPreview ? `${title}（${contentPreview}）` : title;
+    const confirmMessage = `（${typeLabel}）「${nodeDescription}」ノードを削除します。
+
+⚠️ 注意：この配下にあるノードも全て削除されます！`;
+    const confirmed = window.confirm(confirmMessage);
     if (!confirmed) return;
     deleteNode(selectedNode.id);
     setIsEditing(false);
@@ -36133,137 +36357,31 @@ const SidePanel = () => {
     setShowTimelineModal(false);
   }, []);
   if (!board) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: panelRef, style: { ...basePanelStyle, width: `${panelWidth}px` }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "div",
-        {
-          onMouseDown: handleResizeStart,
-          style: resizeHandleStyle,
-          onMouseEnter: (e) => e.currentTarget.style.background = "#6366f1",
-          onMouseLeave: (e) => e.currentTarget.style.background = "transparent"
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { textAlign: "center", color: "#64748b", padding: "40px 20px" }, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontSize: "48px", marginBottom: "16px" }, children: "🧠" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: { margin: "0 0 8px 0", color: "#e2e8f0" }, children: "Mind Digger" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { style: { margin: 0, fontSize: "14px" }, children: [
-          "ボードを作成または開いて、",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-          "思考の整理を始めましょう"
-        ] })
-      ] })
-    ] });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "20px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "ボードを開いてください" }) });
   }
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: panelRef, style: { ...basePanelStyle, width: `${panelWidth}px` }, children: [
+  if (!selectedNode) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "20px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "ノードを選択してください" }) });
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", flexDirection: "column", gap: "16px" }, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "div",
-      {
-        onMouseDown: handleResizeStart,
-        style: resizeHandleStyle,
-        onMouseEnter: (e) => e.currentTarget.style.background = "#6366f1",
-        onMouseLeave: (e) => e.currentTarget.style.background = "transparent"
-      }
-    ),
-    showSummary && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: "8px"
-      }, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: 0, fontSize: "14px", color: "#94a3b8" }, children: "📊 サマリー" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            onClick: () => setShowSummary(false),
-            style: {
-              background: "transparent",
-              border: "none",
-              color: "#64748b",
-              fontSize: "18px",
-              cursor: "pointer",
-              padding: "0"
-            },
-            children: "×"
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-        padding: "12px",
-        background: "#1e293b",
-        borderRadius: "8px",
-        fontSize: "13px",
-        maxHeight: "400px",
-        overflow: "auto",
-        lineHeight: "1.6"
-      }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "markdown-content", style: { color: "#e2e8f0" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Markdown,
-        {
-          remarkPlugins: [remarkGfm],
-          components: {
-            p: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { marginBottom: "0.75em" }, children: children2 }),
-            ul: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { style: { marginLeft: "1.5em", marginBottom: "0.75em" }, children: children2 }),
-            ol: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { style: { marginLeft: "1.5em", marginBottom: "0.75em" }, children: children2 }),
-            li: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { style: { marginBottom: "0.25em" }, children: children2 }),
-            h1: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { style: { fontSize: "1.5em", fontWeight: 600, marginTop: "1em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
-            h2: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: { fontSize: "1.3em", fontWeight: 600, marginTop: "1em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
-            h3: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { fontSize: "1.15em", fontWeight: 600, marginTop: "1em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
-            strong: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { style: { fontWeight: 600, color: "#f1f5f9" }, children: children2 }),
-            code: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("code", { style: { background: "#334155", padding: "0.15em 0.4em", borderRadius: "4px", fontFamily: "monospace", fontSize: "0.9em" }, children: children2 })
-          },
-          children: summary
-        }
-      ) }) })
-    ] }),
-    !showSummary && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: "📊 サマリー生成" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap" }, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            onClick: () => handleGenerateSummary("board"),
-            disabled: isLoading,
-            style: {
-              ...actionButtonStyle,
-              opacity: isLoading ? 0.5 : 1
-            },
-            children: "📋 全体"
-          }
-        ),
-        selectedNode && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            onClick: () => handleGenerateSummary("nodeSubtree"),
-            disabled: isLoading,
-            style: {
-              ...actionButtonStyle,
-              opacity: isLoading ? 0.5 : 1
-            },
-            children: "🌳 配下"
-          }
-        )
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { style: { border: "none", borderTop: "1px solid #334155", margin: "16px 0" } }),
-    selectedNode && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { marginBottom: "16px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       "button",
       {
         onClick: handleOpenTimelineModal,
         style: {
-          ...actionButtonStyle,
+          ...actionButtonStyle$1,
           width: "100%",
           justifyContent: "center",
           padding: "10px 12px"
         },
         children: "🕒 タイムラインを表示"
       }
-    ) }),
+    ),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       TimelineModal,
       {
         isOpen: showTimelineModal,
         onClose: handleCloseTimelineModal,
-        selectedNode: selectedNode ?? null,
+        selectedNode,
         selectedNodeId,
         getNodeById,
         selectNode
@@ -36277,246 +36395,401 @@ const SidePanel = () => {
         onSubmit: handleCreateTopic
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { style: { border: "none", borderTop: "1px solid #334155", margin: "16px 0" } }),
-    selectedNode ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px", marginBottom: "8px" }, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { style: { margin: 0, fontSize: "14px", color: "#94a3b8" }, children: [
-            getNodeTypeIcon(selectedNode.type),
-            " 選択中のノード"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "6px" }, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                onClick: handleStartEdit,
-                style: { ...actionButtonStyle, padding: "6px 10px" },
-                disabled: isEditing,
-                children: "✏️ 編集"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                onClick: handleDeleteNode,
-                style: { ...actionButtonStyle, padding: "6px 10px", background: "#7f1d1d" },
-                disabled: selectedNode.type === "root",
-                children: "🗑️ 削除"
-              }
-            )
-          ] })
+    /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { style: { border: "none", borderTop: "1px solid #334155", margin: "0" } }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px", marginBottom: "8px" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { style: { margin: 0, fontSize: "14px", color: "#94a3b8" }, children: [
+          getNodeTypeIcon(selectedNode.type),
+          " 選択中のノード"
         ] }),
-        isEditing ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
-          padding: "12px",
-          background: "#1e293b",
-          borderRadius: "8px",
-          fontSize: "14px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px"
-        }, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "input",
-            {
-              value: editTitle,
-              onChange: (e) => setEditTitle(e.target.value),
-              placeholder: "タイトル",
-              style: {
-                width: "100%",
-                padding: "8px 10px",
-                borderRadius: "6px",
-                border: "1px solid #475569",
-                background: "#0f172a",
-                color: "white",
-                fontSize: "14px"
-              }
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "textarea",
-            {
-              value: editContent,
-              onChange: (e) => setEditContent(e.target.value),
-              placeholder: "内容",
-              rows: 5,
-              style: {
-                width: "100%",
-                padding: "10px 12px",
-                borderRadius: "6px",
-                border: "1px solid #475569",
-                background: "#0f172a",
-                color: "white",
-                fontSize: "14px",
-                resize: "vertical",
-                boxSizing: "border-box"
-              }
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" }, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleCancelEdit, style: { ...actionButtonStyle, padding: "6px 12px" }, children: "キャンセル" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleSaveEdit, style: { ...actionButtonStyle, padding: "6px 12px", background: "#22c55e" }, children: "保存" })
-          ] })
-        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
-          padding: "12px",
-          background: "#1e293b",
-          borderRadius: "8px",
-          fontSize: "14px"
-        }, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontWeight: "bold", marginBottom: "4px" }, children: selectedNode.title || getNodeTypeLabel(selectedNode.type) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-            color: "#94a3b8",
-            fontSize: "13px",
-            maxHeight: "400px",
-            overflow: "auto"
-          }, children: selectedNode.role === "assistant" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "markdown-content", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Markdown, { remarkPlugins: [remarkGfm], children: selectedNode.content }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { whiteSpace: "pre-wrap" }, children: selectedNode.content || "(内容なし)" }) })
-        ] })
-      ] }),
-      selectedNode.type === "message" && selectedNode.role === "user" && selectedNode.parentIds.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: [
-          "🔗 親ノード (",
-          selectedNode.parentIds.length,
-          ")"
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { display: "flex", flexDirection: "column", gap: "4px" }, children: selectedNode.parentIds.map((parentId, index2) => {
-          const parent = getNodeById(parentId);
-          if (!parent) return null;
-          const isMainParent = index2 === 0;
-          return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "div",
-            {
-              style: {
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "8px 10px",
-                background: isMainParent ? "#1e3a5f" : "#1e293b",
-                borderRadius: "6px",
-                fontSize: "13px",
-                border: isMainParent ? "1px solid #3b82f6" : "1px solid transparent"
-              },
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "span",
-                  {
-                    style: {
-                      flex: 1,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      cursor: "pointer"
-                    },
-                    onClick: () => selectNode(parentId),
-                    title: parent.title || parent.content,
-                    children: [
-                      isMainParent && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#fbbf24" }, children: "⭐ " }),
-                      getNodeTypeIcon(parent.type),
-                      " ",
-                      parent.title || parent.content.slice(0, 30)
-                    ]
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "4px", marginLeft: "8px" }, children: [
-                  !isMainParent && /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "button",
-                    {
-                      onClick: () => setMainParent(selectedNode.id, parentId),
-                      title: "メイン親に設定",
-                      style: {
-                        background: "#475569",
-                        border: "none",
-                        borderRadius: "4px",
-                        padding: "4px 6px",
-                        cursor: "pointer",
-                        fontSize: "12px",
-                        color: "white"
-                      },
-                      children: "⬆️"
-                    }
-                  ),
-                  selectedNode.parentIds.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "button",
-                    {
-                      onClick: () => removeParentChild(parentId, selectedNode.id),
-                      title: "接続を削除",
-                      style: {
-                        background: "#7f1d1d",
-                        border: "none",
-                        borderRadius: "4px",
-                        padding: "4px 6px",
-                        cursor: "pointer",
-                        fontSize: "12px",
-                        color: "white"
-                      },
-                      children: "✕"
-                    }
-                  )
-                ] })
-              ]
-            },
-            parentId
-          );
-        }) })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "16px" }, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: "⚡ アクション" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap" }, children: [
-          isConnectingParent ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "6px" }, children: [
+          selectedNode.type === "message" && selectedNode.role === "user" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
-              onClick: handleCancelConnectParent,
+              onClick: handleDuplicateQuestion,
               style: {
-                ...actionButtonStyle,
-                background: "#dc2626"
+                ...actionButtonStyle$1,
+                padding: "6px 10px",
+                opacity: isAiResponding ? 0.5 : 1,
+                cursor: isAiResponding ? "not-allowed" : "pointer"
               },
-              children: "❌ 親接続をキャンセル"
+              disabled: isAiResponding,
+              children: "📋 複製"
             }
-          ) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            selectedNode.type === "topic" && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleCreateQuestionFromTopic, style: actionButtonStyle, children: "❓ 質問ノードを作成" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleCreateNote, style: actionButtonStyle, children: "📝 メモを追加" }),
-            selectedNode.type === "message" && selectedNode.role === "user" && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleStartConnectParent, style: actionButtonStyle, children: "🔗 親ノード追加" })
-          ] }),
-          selectedNode.type === "message" && selectedNode.role === "assistant" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                onClick: handleGenerateTopics,
-                disabled: isLoading,
-                style: {
-                  ...actionButtonStyle,
-                  opacity: isLoading ? 0.5 : 1
-                },
-                children: "💡 トピック生成"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                onClick: () => setShowCreateTopicModal(true),
-                style: actionButtonStyle,
-                children: "✏️ トピック作成"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                onClick: handleGenerateNote,
-                disabled: isLoading,
-                style: {
-                  ...actionButtonStyle,
-                  opacity: isLoading ? 0.5 : 1
-                },
-                children: "✨ AI下書き"
-              }
-            )
-          ] })
+          ) : selectedNode.type === "message" && selectedNode.role === "assistant" ? (
+            // AI回答ノードは編集不可
+            null
+          ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              onClick: handleStartEdit,
+              style: {
+                ...actionButtonStyle$1,
+                padding: "6px 10px",
+                opacity: isEditing || isAiResponding ? 0.5 : 1,
+                cursor: isEditing || isAiResponding ? "not-allowed" : "pointer"
+              },
+              disabled: isEditing || isAiResponding,
+              children: "✏️ 編集"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              onClick: handleDeleteNode,
+              style: {
+                ...actionButtonStyle$1,
+                padding: "6px 10px",
+                background: "#7f1d1d",
+                opacity: selectedNode.type === "root" || isAiResponding ? 0.5 : 1,
+                cursor: selectedNode.type === "root" || isAiResponding ? "not-allowed" : "pointer"
+              },
+              disabled: selectedNode.type === "root" || isAiResponding,
+              children: "🗑️ 削除"
+            }
+          )
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { style: { border: "none", borderTop: "1px solid #334155", margin: "16px 0" } }),
-      selectedNode.type === "message" && selectedNode.role === "user" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: "💬 質問する" }),
+      isEditing ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+        padding: "12px",
+        background: "#1e293b",
+        borderRadius: "8px",
+        fontSize: "14px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px"
+      }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "input",
+          {
+            value: editTitle,
+            onChange: (e) => setEditTitle(e.target.value),
+            placeholder: "タイトル",
+            style: {
+              width: "100%",
+              padding: "8px 10px",
+              borderRadius: "6px",
+              border: "1px solid #475569",
+              background: "#0f172a",
+              color: "white",
+              fontSize: "14px"
+            }
+          }
+        ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "textarea",
           {
+            value: editContent,
+            onChange: (e) => setEditContent(e.target.value),
+            placeholder: "内容",
+            rows: 5,
+            style: {
+              width: "100%",
+              padding: "10px 12px",
+              borderRadius: "6px",
+              border: "1px solid #475569",
+              background: "#0f172a",
+              color: "white",
+              fontSize: "14px",
+              resize: "vertical",
+              boxSizing: "border-box"
+            }
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" }, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleCancelEdit, style: { ...actionButtonStyle$1, padding: "6px 12px" }, children: "キャンセル" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleSaveEdit, style: { ...actionButtonStyle$1, padding: "6px 12px", background: "#22c55e" }, children: "保存" })
+        ] })
+      ] }) : selectedNode.type === "message" && selectedNode.role === "user" ? (
+        // 質問ノードはメッセージ表示欄を非表示（質問欄と内容が同じため）
+        null
+      ) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+        padding: "12px",
+        background: "#1e293b",
+        borderRadius: "8px",
+        fontSize: "14px"
+      }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontWeight: "bold", marginBottom: "4px" }, children: selectedNode.title || getNodeTypeLabel(selectedNode.type) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
+          color: "#94a3b8",
+          fontSize: "13px",
+          maxHeight: "400px",
+          overflow: "auto"
+        }, children: selectedNode.role === "assistant" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "markdown-content", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Markdown, { remarkPlugins: [remarkGfm], children: selectedNode.content }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { whiteSpace: "pre-wrap" }, children: selectedNode.content || "(内容なし)" }) })
+      ] }),
+      (selectedNode.type === "note" || selectedNode.type === "topic") && !isEditing && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+        marginTop: "12px",
+        padding: "12px",
+        background: "#1e293b",
+        borderRadius: "8px",
+        fontSize: "13px"
+      }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { style: { margin: "0 0 12px 0", fontSize: "13px", color: "#94a3b8" }, children: "⚙️ メタデータ" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: "12px"
+        }, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: { color: "#e2e8f0", display: "flex", alignItems: "center", gap: "6px" }, children: "📌 決定事項としてピン留め" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              type: "checkbox",
+              checked: selectedNode.metadata?.pin || false,
+              onChange: (e) => {
+                updateNode(selectedNode.id, {
+                  metadata: {
+                    ...selectedNode.metadata,
+                    pin: e.target.checked
+                  }
+                });
+              },
+              style: {
+                width: "18px",
+                height: "18px",
+                cursor: "pointer",
+                accentColor: "#f59e0b"
+              }
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between"
+        }, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: { color: "#e2e8f0" }, children: "⭐ 重要度" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "select",
+            {
+              value: selectedNode.metadata?.importance ?? 3,
+              onChange: (e) => {
+                const importance = parseInt(e.target.value);
+                updateNode(selectedNode.id, {
+                  metadata: {
+                    ...selectedNode.metadata,
+                    importance
+                  }
+                });
+              },
+              style: {
+                padding: "6px 10px",
+                borderRadius: "6px",
+                border: "1px solid #475569",
+                background: "#0f172a",
+                color: "white",
+                fontSize: "13px",
+                cursor: "pointer"
+              },
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: 1, children: "1 - 低" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: 2, children: "2" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: 3, children: "3 - 中" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: 4, children: "4" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: 5, children: "5 - 高" })
+              ]
+            }
+          )
+        ] })
+      ] })
+    ] }),
+    selectedNode.type === "message" && selectedNode.role === "user" && selectedNode.parentIds.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: [
+        "🔗 親ノード (",
+        selectedNode.parentIds.length,
+        ")"
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { display: "flex", flexDirection: "column", gap: "4px" }, children: selectedNode.parentIds.map((parentId, index2) => {
+        const parent = getNodeById(parentId);
+        if (!parent) return null;
+        const isMainParent = index2 === 0;
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "div",
+          {
+            style: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "8px 10px",
+              background: isMainParent ? "#1e3a5f" : "#1e293b",
+              borderRadius: "6px",
+              fontSize: "13px",
+              border: isMainParent ? "1px solid #3b82f6" : "1px solid transparent"
+            },
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "span",
+                {
+                  style: {
+                    flex: 1,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    cursor: "pointer"
+                  },
+                  onClick: () => selectNode(parentId),
+                  title: parent.title || parent.content,
+                  children: [
+                    isMainParent && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#fbbf24" }, children: "⭐ " }),
+                    getNodeTypeIcon(parent.type),
+                    " ",
+                    parent.title || parent.content.slice(0, 30)
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "4px", marginLeft: "8px" }, children: [
+                !isMainParent && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "button",
+                  {
+                    onClick: () => setMainParent(selectedNode.id, parentId),
+                    title: "メイン親に設定",
+                    style: {
+                      background: "#475569",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "4px 6px",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                      color: "white"
+                    },
+                    children: "⬆️"
+                  }
+                ),
+                selectedNode.parentIds.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "button",
+                  {
+                    onClick: () => removeParentChild(parentId, selectedNode.id),
+                    title: "接続を削除",
+                    style: {
+                      background: "#7f1d1d",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "4px 6px",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                      color: "white"
+                    },
+                    children: "✕"
+                  }
+                )
+              ] })
+            ]
+          },
+          parentId
+        );
+      }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: "⚡ アクション" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap" }, children: [
+        isConnectingParent ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: handleCancelConnectParent,
+            style: {
+              ...actionButtonStyle$1,
+              background: "#dc2626"
+            },
+            children: "❌ 親接続をキャンセル"
+          }
+        ) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          selectedNode.type === "topic" && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleCreateQuestionFromTopic, style: actionButtonStyle$1, children: "❓ 質問ノードを作成" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleCreateNote, style: actionButtonStyle$1, children: "📝 メモを追加" }),
+          selectedNode.type === "message" && selectedNode.role === "user" && questionEditState !== "duplicateOnly" && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleStartConnectParent, style: actionButtonStyle$1, children: "🔗 親ノード追加" })
+        ] }),
+        selectedNode.type === "message" && selectedNode.role === "assistant" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              onClick: handleGenerateTopics,
+              disabled: isLoading || isAiResponding,
+              style: {
+                ...actionButtonStyle$1,
+                opacity: isLoading || isAiResponding ? 0.5 : 1
+              },
+              children: "💡 トピック生成"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              onClick: () => setShowCreateTopicModal(true),
+              style: actionButtonStyle$1,
+              children: "✏️ トピック作成"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              onClick: handleGenerateNote,
+              disabled: isLoading || isAiResponding,
+              style: {
+                ...actionButtonStyle$1,
+                opacity: isLoading || isAiResponding ? 0.5 : 1
+              },
+              children: "✨ AI下書き"
+            }
+          )
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { style: { border: "none", borderTop: "1px solid #334155", margin: "0" } }),
+    selectedNode.type === "message" && selectedNode.role === "user" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: questionEditState === "duplicateOnly" ? (
+      // 回答あり＆その先に質問あり → 編集不可、複製のみ
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: "💬 質問（編集不可）" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
+          padding: "12px",
+          background: "#1e293b",
+          borderRadius: "8px",
+          fontSize: "13px",
+          color: "#94a3b8",
+          marginBottom: "8px",
+          border: "1px solid #475569"
+        }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { whiteSpace: "pre-wrap" }, children: selectedNode.content || "(内容なし)" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+          padding: "10px 12px",
+          background: "#1e3a5f",
+          borderRadius: "8px",
+          fontSize: "12px",
+          color: "#93c5fd",
+          marginBottom: "12px"
+        }, children: [
+          "この質問には回答があり、さらにその先に質問が続いています。",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+          "別の質問をしたい場合は「複製して質問」を使用してください。"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: handleDuplicateQuestion,
+            style: {
+              ...actionButtonStyle$1,
+              width: "100%",
+              justifyContent: "center",
+              background: "#6366f1"
+            },
+            children: "📋 複製して質問"
+          }
+        )
+      ] })
+    ) : (
+      // editable または canResend → 編集可能
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { style: { margin: "0 0 8px 0", fontSize: "14px", color: "#94a3b8" }, children: [
+          "💬 質問する",
+          questionEditState === "canResend" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
+            fontSize: "11px",
+            color: "#fbbf24",
+            marginLeft: "8px",
+            fontWeight: "normal"
+          }, children: "(再送信時は既存の回答が削除されます)" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "textarea",
+          {
+            ref: questionInputRef,
             value: questionInput,
             onChange: (e) => setQuestionInput(e.target.value),
             placeholder: "この質問を入力...",
@@ -36533,26 +36806,26 @@ const SidePanel = () => {
               boxSizing: "border-box",
               marginBottom: "8px"
             },
-            disabled: isLoading
+            disabled: isLoading || isAiResponding
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             onClick: handleSendQuestion,
-            disabled: !questionInput.trim() || isLoading,
+            disabled: !questionInput.trim() || isLoading || isAiResponding,
             style: {
-              ...actionButtonStyle,
+              ...actionButtonStyle$1,
               width: "100%",
               justifyContent: "center",
-              background: "#6366f1",
-              opacity: questionInput.trim() && !isLoading ? 1 : 0.5
+              background: questionEditState === "canResend" ? "#f59e0b" : "#6366f1",
+              opacity: questionInput.trim() && !isLoading && !isAiResponding ? 1 : 0.5
             },
-            children: isLoading ? "⏳ 送信中..." : "🚀 送信"
+            children: isLoading ? "⏳ 送信中..." : questionEditState === "canResend" ? "🔄 再送信" : "🚀 送信"
           }
         )
-      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "12px", background: "#0f172a", borderRadius: "8px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontSize: "13px" }, children: "トピックを選択して「質問ノードを作成」した後、その質問ノードを選択して入力してください。" }) })
-    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "20px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "ノードを選択してください" }) })
+      ] })
+    ) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "12px", background: "#0f172a", borderRadius: "8px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontSize: "13px" }, children: "トピックを選択して「質問ノードを作成」した後、その質問ノードを選択して入力してください。" }) })
   ] });
 };
 function nodeToContextMessage(node2) {
@@ -36687,29 +36960,224 @@ function getNodeTypeLabel(type) {
       return "ノード";
   }
 }
-const basePanelStyle = {
-  height: "100%",
-  background: "#0f172a",
-  borderLeft: "1px solid #334155",
-  padding: "16px",
-  boxSizing: "border-box",
-  overflow: "auto",
+const actionButtonStyle$1 = {
+  padding: "8px 12px",
+  borderRadius: "6px",
+  border: "none",
+  background: "#334155",
   color: "white",
-  position: "relative"
+  fontSize: "13px",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  gap: "4px"
 };
-const resizeHandleStyle = {
-  position: "absolute",
-  left: 0,
-  top: 0,
-  bottom: 0,
-  width: "4px",
-  cursor: "ew-resize",
-  background: "transparent",
-  zIndex: 10
+const SummaryTab = ({
+  isAiResponding,
+  setIsAiResponding
+}) => {
+  const {
+    board,
+    nodes,
+    selectedNodeId,
+    getNodeById,
+    addSummary
+  } = useBoardStore();
+  const [summary, setSummary] = reactExports.useState("");
+  const [showSummary, setShowSummary] = reactExports.useState(false);
+  const [isLoading, setIsLoading] = reactExports.useState(false);
+  const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
+  const handleGenerateSummary = reactExports.useCallback(async (scope) => {
+    if (!board) return;
+    setIsLoading(true);
+    setIsAiResponding(true);
+    try {
+      let targetNodes = [];
+      if (scope === "board") {
+        targetNodes = nodes.filter((n) => n.type !== "root");
+      } else if (scope === "nodeSubtree" && selectedNode) {
+        const collectSubtree = (nodeId, visited = /* @__PURE__ */ new Set()) => {
+          if (visited.has(nodeId)) return [];
+          visited.add(nodeId);
+          const node2 = getNodeById(nodeId);
+          if (!node2) return [];
+          const result = [node2];
+          node2.childrenIds.forEach((childId) => {
+            result.push(...collectSubtree(childId, visited));
+          });
+          return result;
+        };
+        targetNodes = collectSubtree(selectedNode.id);
+      }
+      const summaryRequest = {
+        boardId: board.id,
+        scope,
+        targetNodeId: scope === "nodeSubtree" ? selectedNode?.id : void 0,
+        nodes: targetNodes.map((n) => ({
+          id: n.id,
+          type: n.type,
+          role: n.role,
+          title: n.title,
+          content: n.content,
+          importance: n.metadata?.importance,
+          pin: n.metadata?.pin,
+          tags: n.metadata?.tags
+        }))
+      };
+      console.group("📋 Summary Generation Request");
+      console.log("Scope:", scope);
+      console.log("Target Node ID:", summaryRequest.targetNodeId);
+      console.log("Total Nodes:", summaryRequest.nodes.length);
+      console.table(summaryRequest.nodes.map((n) => ({
+        id: n.id.substring(0, 8) + "...",
+        type: n.type,
+        role: n.role || "-",
+        title: n.title?.substring(0, 30) || "-",
+        content: n.content.substring(0, 50) + (n.content.length > 50 ? "..." : ""),
+        importance: n.importance ?? "-",
+        pin: n.pin ? "📌" : "-",
+        tags: n.tags?.join(",") || "-"
+      })));
+      console.log("Full Request:", summaryRequest);
+      console.groupEnd();
+      const summaryContent = await window.electronAPI.generateSummary(summaryRequest);
+      setSummary(summaryContent);
+      setShowSummary(true);
+      addSummary({
+        boardId: board.id,
+        scope,
+        targetNodeId: scope === "nodeSubtree" ? selectedNode?.id : void 0,
+        content: summaryContent,
+        provider: board.settings.defaultProvider,
+        model: board.settings.defaultModel
+      });
+    } catch (error) {
+      console.error("Failed to generate summary:", error);
+      alert(`サマリー生成に失敗しました: ${error instanceof Error ? error.message : "不明なエラー"}`);
+    } finally {
+      setIsLoading(false);
+      setIsAiResponding(false);
+    }
+  }, [board, nodes, selectedNode, getNodeById, addSummary, setIsAiResponding]);
+  if (!board) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "20px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "ボードを開いてください" }) });
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", flexDirection: "column", gap: "16px" }, children: [
+    showSummary && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: "8px"
+      }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: 0, fontSize: "14px", color: "#94a3b8" }, children: "📊 サマリー" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: () => setShowSummary(false),
+            style: {
+              background: "transparent",
+              border: "none",
+              color: "#64748b",
+              fontSize: "18px",
+              cursor: "pointer",
+              padding: "0"
+            },
+            children: "×"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
+        padding: "12px",
+        background: "#1e293b",
+        borderRadius: "8px",
+        fontSize: "13px",
+        maxHeight: "500px",
+        overflow: "auto",
+        lineHeight: "1.6"
+      }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "markdown-content", style: { color: "#e2e8f0" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Markdown,
+        {
+          remarkPlugins: [remarkGfm],
+          components: {
+            p: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { marginBottom: "0.75em" }, children: children2 }),
+            ul: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { style: { marginLeft: "1.5em", marginBottom: "0.75em" }, children: children2 }),
+            ol: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { style: { marginLeft: "1.5em", marginBottom: "0.75em" }, children: children2 }),
+            li: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { style: { marginBottom: "0.25em" }, children: children2 }),
+            h1: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { style: { fontSize: "1.5em", fontWeight: 600, marginTop: "1em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
+            h2: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: { fontSize: "1.3em", fontWeight: 600, marginTop: "1em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
+            h3: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { fontSize: "1.15em", fontWeight: 600, marginTop: "1em", marginBottom: "0.5em", color: "#f1f5f9" }, children: children2 }),
+            strong: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { style: { fontWeight: 600, color: "#f1f5f9" }, children: children2 }),
+            code: ({ children: children2 }) => /* @__PURE__ */ jsxRuntimeExports.jsx("code", { style: { background: "#334155", padding: "0.15em 0.4em", borderRadius: "4px", fontFamily: "monospace", fontSize: "0.9em" }, children: children2 })
+          },
+          children: summary
+        }
+      ) }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: "0 0 12px 0", fontSize: "14px", color: "#94a3b8" }, children: "📊 サマリー生成" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", flexDirection: "column", gap: "8px" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: () => handleGenerateSummary("board"),
+            disabled: isLoading || isAiResponding,
+            style: {
+              ...actionButtonStyle,
+              width: "100%",
+              justifyContent: "center",
+              padding: "12px",
+              opacity: isLoading || isAiResponding ? 0.5 : 1
+            },
+            children: isLoading ? "⏳ 生成中..." : "📋 ボード全体のサマリー"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: () => handleGenerateSummary("nodeSubtree"),
+            disabled: isLoading || isAiResponding || !selectedNode,
+            style: {
+              ...actionButtonStyle,
+              width: "100%",
+              justifyContent: "center",
+              padding: "12px",
+              opacity: isLoading || isAiResponding || !selectedNode ? 0.5 : 1
+            },
+            children: isLoading ? "⏳ 生成中..." : "🌳 選択ノード配下のサマリー"
+          }
+        ),
+        !selectedNode && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
+          fontSize: "12px",
+          color: "#64748b",
+          textAlign: "center",
+          padding: "8px"
+        }, children: "ノードを選択すると、その配下のサマリーを生成できます" })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+      padding: "12px",
+      background: "#1e293b",
+      borderRadius: "8px",
+      fontSize: "12px",
+      color: "#94a3b8",
+      lineHeight: "1.6"
+    }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { style: { margin: "0 0 8px 0", color: "#e2e8f0", fontSize: "13px" }, children: "💡 サマリー機能について" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { style: { margin: 0, paddingLeft: "16px" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "ボード全体" }),
+          ": 全ノードから重要な論点・決定事項・課題を抽出"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "ノード配下" }),
+          ": 選択ノード以下の議論を要約"
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { marginTop: "8px", color: "#64748b" }, children: "※ ピン留め・重要度の高いノードが優先的にサマリーに含まれます" })
+    ] })
+  ] });
 };
-({
-  ...resizeHandleStyle
-});
 const actionButtonStyle = {
   padding: "8px 12px",
   borderRadius: "6px",
@@ -36721,6 +37189,187 @@ const actionButtonStyle = {
   display: "flex",
   alignItems: "center",
   gap: "4px"
+};
+const SidePanel = () => {
+  const {
+    board,
+    selectedNodeId,
+    isAiResponding,
+    setAiResponding
+  } = useBoardStore();
+  const [activeTab, setActiveTab] = reactExports.useState("node");
+  const [panelWidth, setPanelWidth] = reactExports.useState(320);
+  const [isResizing, setIsResizing] = reactExports.useState(false);
+  const panelRef = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    if (selectedNodeId) {
+      setActiveTab("node");
+    } else {
+      setActiveTab("summary");
+    }
+  }, [selectedNodeId]);
+  const handleResizeStart = reactExports.useCallback((e) => {
+    e.preventDefault();
+    setIsResizing(true);
+  }, []);
+  reactExports.useEffect(() => {
+    if (!isResizing) return;
+    const handleMouseMove = (e) => {
+      const newWidth = window.innerWidth - e.clientX;
+      setPanelWidth(Math.max(280, Math.min(600, newWidth)));
+    };
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isResizing]);
+  if (!board) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: panelRef, style: { ...basePanelStyle, width: `${panelWidth}px` }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "div",
+        {
+          onMouseDown: handleResizeStart,
+          style: resizeHandleStyle,
+          onMouseEnter: (e) => e.currentTarget.style.background = "#6366f1",
+          onMouseLeave: (e) => e.currentTarget.style.background = "transparent"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { textAlign: "center", color: "#64748b", padding: "40px 20px" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontSize: "48px", marginBottom: "16px" }, children: "🧠" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: { margin: "0 0 8px 0", color: "#e2e8f0" }, children: "Mind Digger" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { style: { margin: 0, fontSize: "14px" }, children: [
+          "ボードを作成または開いて、",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+          "思考の整理を始めましょう"
+        ] })
+      ] })
+    ] });
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: panelRef, style: { ...basePanelStyle, width: `${panelWidth}px` }, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "div",
+      {
+        onMouseDown: handleResizeStart,
+        style: resizeHandleStyle,
+        onMouseEnter: (e) => e.currentTarget.style.background = "#6366f1",
+        onMouseLeave: (e) => e.currentTarget.style.background = "transparent"
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: tabHeaderStyle, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          onClick: () => setActiveTab("node"),
+          style: {
+            ...tabButtonStyle,
+            ...activeTab === "node" ? activeTabButtonStyle : inactiveTabButtonStyle
+          },
+          children: "📝 ノード編集"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          onClick: () => setActiveTab("summary"),
+          style: {
+            ...tabButtonStyle,
+            ...activeTab === "summary" ? activeTabButtonStyle : inactiveTabButtonStyle
+          },
+          children: "📊 サマリー"
+        }
+      )
+    ] }),
+    isAiResponding && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: loadingIndicatorStyle, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { animation: "pulse 1.5s infinite" }, children: "⏳" }),
+      "AI処理中..."
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: tabContentStyle, children: activeTab === "node" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+      NodeEditTab,
+      {
+        isAiResponding,
+        setIsAiResponding: setAiResponding
+      }
+    ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+      SummaryTab,
+      {
+        isAiResponding,
+        setIsAiResponding: setAiResponding
+      }
+    ) })
+  ] });
+};
+const basePanelStyle = {
+  height: "100%",
+  background: "#0f172a",
+  borderLeft: "1px solid #334155",
+  boxSizing: "border-box",
+  overflow: "hidden",
+  color: "white",
+  position: "relative",
+  display: "flex",
+  flexDirection: "column"
+};
+const resizeHandleStyle = {
+  position: "absolute",
+  left: 0,
+  top: 0,
+  bottom: 0,
+  width: "4px",
+  cursor: "ew-resize",
+  background: "transparent",
+  zIndex: 10
+};
+const tabHeaderStyle = {
+  display: "flex",
+  borderBottom: "1px solid #334155",
+  background: "#1e293b",
+  flexShrink: 0
+};
+const tabButtonStyle = {
+  flex: 1,
+  padding: "12px 16px",
+  border: "none",
+  background: "transparent",
+  color: "white",
+  fontSize: "13px",
+  fontWeight: 500,
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "6px",
+  transition: "all 0.2s ease"
+};
+const activeTabButtonStyle = {
+  background: "#0f172a",
+  borderBottom: "2px solid #6366f1",
+  color: "#e2e8f0"
+};
+const inactiveTabButtonStyle = {
+  background: "#1e293b",
+  borderBottom: "2px solid transparent",
+  color: "#94a3b8"
+};
+const loadingIndicatorStyle = {
+  padding: "8px 16px",
+  background: "#1e3a5f",
+  color: "#93c5fd",
+  fontSize: "12px",
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+  borderBottom: "1px solid #334155",
+  flexShrink: 0
+};
+const tabContentStyle = {
+  flex: 1,
+  overflow: "auto",
+  padding: "16px"
 };
 const BoardInfoModal = ({ isOpen, onClose }) => {
   const { board } = useBoardStore();
