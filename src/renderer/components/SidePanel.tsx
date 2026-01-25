@@ -282,6 +282,66 @@ export const SidePanel: React.FC = () => {
         isLoading: false
       });
 
+      // 回答からトピックを自動生成
+      // まずローディング用の仮トピックノードを作成
+      const topicLoadingNode = addNode({
+        boardId: board.id,
+        type: 'topic',
+        role: 'system',
+        title: '',
+        content: 'トピック抽出中...',
+        parentIds: [loadingNode.id],
+        createdBy: 'ai',
+        position: {
+          x: loadingNode.position.x,
+          y: loadingNode.position.y + 150
+        },
+        isLoading: true
+      });
+
+      try {
+        // コンテキストを収集（回答を含む）
+        const topicContext = [
+          ...contextMessages.map(m => `${m.role}: ${m.content}`),
+          `user: ${questionInput.trim()}`,
+          `assistant: ${response.content}`
+        ].join('\n\n');
+
+        const topics = await window.electronAPI.generateTopics({
+          content: response.content,
+          context: topicContext,
+          maxTopics: 5
+        });
+
+        // ローディングノードを削除
+        deleteNode(topicLoadingNode.id);
+
+        // 生成されたトピックをノードとして追加（回答ノードの子として）
+        topics.forEach((topic, index) => {
+          addNode({
+            boardId: board.id,
+            type: 'topic',
+            role: 'system',
+            title: topic.title,
+            content: topic.description || topic.title,
+            parentIds: [loadingNode.id],
+            createdBy: 'ai',
+            position: {
+              x: loadingNode.position.x + (index - Math.floor(topics.length / 2)) * 150,
+              y: loadingNode.position.y + 150
+            },
+            metadata: {
+              importance: topic.importance,
+              tags: topic.tags
+            }
+          });
+        });
+      } catch (topicError) {
+        // トピック生成に失敗した場合はローディングノードを削除
+        deleteNode(topicLoadingNode.id);
+        console.warn('Failed to auto-generate topics:', topicError);
+      }
+
       setQuestionInput('');
     } catch (error) {
       console.error('Failed to send question:', error);
@@ -681,7 +741,24 @@ export const SidePanel: React.FC = () => {
       alert('ルートノードは削除できません');
       return;
     }
-    const confirmed = window.confirm('このノードと配下のノードを削除しますか？');
+    // ノードタイプの日本語ラベル
+    const typeLabels: Record<string, string> = {
+      question: '質問',
+      answer: '回答',
+      topic: 'トピック',
+      note: 'メモ'
+    };
+    const typeLabel = typeLabels[selectedNode.type] || selectedNode.type;
+    
+    // 削除確認メッセージの作成
+    const title = selectedNode.title || '(無題)';
+    const contentPreview = selectedNode.content
+      ? selectedNode.content.slice(0, 30) + (selectedNode.content.length > 30 ? '...' : '')
+      : '';
+    const nodeDescription = contentPreview ? `${title}（${contentPreview}）` : title;
+    const confirmMessage = `（${typeLabel}）「${nodeDescription}」ノードを削除します。\n\n⚠️ 注意：この配下にあるノードも全て削除されます！`;
+    
+    const confirmed = window.confirm(confirmMessage);
     if (!confirmed) return;
     deleteNode(selectedNode.id);
     setIsEditing(false);

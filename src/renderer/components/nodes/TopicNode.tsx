@@ -11,12 +11,35 @@ interface TopicNodeData extends MindNode {
 }
 
 /**
+ * ローディングインジケーターコンポーネント
+ */
+const LoadingIndicator: React.FC = () => (
+  <div className="loading-indicator" style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '4px 0'
+  }}>
+    <div className="loading-dots" style={{
+      display: 'flex',
+      gap: '3px'
+    }}>
+      <span className="loading-dot" style={{ animationDelay: '0ms', width: '6px', height: '6px' }} />
+      <span className="loading-dot" style={{ animationDelay: '150ms', width: '6px', height: '6px' }} />
+      <span className="loading-dot" style={{ animationDelay: '300ms', width: '6px', height: '6px' }} />
+    </div>
+    <span style={{ fontSize: '11px', opacity: 0.9 }}>トピック抽出中...</span>
+  </div>
+);
+
+/**
  * トピックノード - 検討すべき論点を表示
  */
 export const TopicNode: React.FC<NodeProps> = memo(({ data, selected }) => {
   const nodeData = data as unknown as TopicNodeData;
   const importance = nodeData.metadata?.importance || 3;
   const isPinned = nodeData.metadata?.pin;
+  const isLoading = nodeData.isLoading === true;
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -86,15 +109,20 @@ export const TopicNode: React.FC<NodeProps> = memo(({ data, selected }) => {
         )}
       </div>
       
-      <div style={{ 
-        fontWeight: 'bold',
-        lineHeight: '1.3',
-        wordBreak: 'break-word'
-      }}>
-        {nodeData.title || nodeData.content}
-      </div>
+      {/* ローディング時はアニメーション表示、それ以外は通常のコンテンツ表示 */}
+      {isLoading ? (
+        <LoadingIndicator />
+      ) : (
+        <div style={{ 
+          fontWeight: 'bold',
+          lineHeight: '1.3',
+          wordBreak: 'break-word'
+        }}>
+          {nodeData.title || nodeData.content}
+        </div>
+      )}
 
-      {nodeData.metadata?.tags && nodeData.metadata.tags.length > 0 && (
+      {!isLoading && nodeData.metadata?.tags && nodeData.metadata.tags.length > 0 && (
         <div style={{
           marginTop: '6px',
           display: 'flex',
