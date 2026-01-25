@@ -955,6 +955,131 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
                 <option value={5}>5 - 高</option>
               </select>
             </div>
+
+            {/* タグ */}
+            <div style={{ marginTop: '12px' }}>
+              <label style={{ color: '#e2e8f0', display: 'block', marginBottom: '8px' }}>
+                🏷️ タグ
+              </label>
+              
+              {/* 既存タグの表示 */}
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '6px',
+                marginBottom: '8px'
+              }}>
+                {(selectedNode.metadata?.tags || []).map((tag, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '4px 8px',
+                      background: '#3b82f6',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                      color: 'white'
+                    }}
+                  >
+                    {tag}
+                    <button
+                      onClick={() => {
+                        const currentTags = selectedNode.metadata?.tags || [];
+                        const newTags = currentTags.filter((_, i) => i !== index);
+                        updateNode(selectedNode.id, {
+                          metadata: {
+                            ...selectedNode.metadata,
+                            tags: newTags.length > 0 ? newTags : undefined
+                          }
+                        });
+                      }}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'white',
+                        cursor: 'pointer',
+                        padding: '0',
+                        fontSize: '14px',
+                        lineHeight: '1',
+                        opacity: 0.7
+                      }}
+                      title="タグを削除"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+                {(!selectedNode.metadata?.tags || selectedNode.metadata.tags.length === 0) && (
+                  <span style={{ color: '#64748b', fontSize: '12px' }}>タグなし</span>
+                )}
+              </div>
+              
+              {/* 新規タグ追加 */}
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <input
+                  type="text"
+                  placeholder="新しいタグを入力..."
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const input = e.currentTarget;
+                      const newTag = input.value.trim();
+                      if (newTag) {
+                        const currentTags = selectedNode.metadata?.tags || [];
+                        if (!currentTags.includes(newTag)) {
+                          updateNode(selectedNode.id, {
+                            metadata: {
+                              ...selectedNode.metadata,
+                              tags: [...currentTags, newTag]
+                            }
+                          });
+                        }
+                        input.value = '';
+                      }
+                    }
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: '6px 10px',
+                    borderRadius: '6px',
+                    border: '1px solid #475569',
+                    background: '#0f172a',
+                    color: 'white',
+                    fontSize: '12px'
+                  }}
+                />
+                <button
+                  onClick={(e) => {
+                    const input = e.currentTarget.previousElementSibling as HTMLInputElement;
+                    const newTag = input.value.trim();
+                    if (newTag) {
+                      const currentTags = selectedNode.metadata?.tags || [];
+                      if (!currentTags.includes(newTag)) {
+                        updateNode(selectedNode.id, {
+                          metadata: {
+                            ...selectedNode.metadata,
+                            tags: [...currentTags, newTag]
+                          }
+                        });
+                      }
+                      input.value = '';
+                    }
+                  }}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: '#3b82f6',
+                    color: 'white',
+                    fontSize: '12px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  追加
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

@@ -239,11 +239,16 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
       const nodeToDelete = state.nodes.find((n) => n.id === nodeId);
       if (!nodeToDelete) return state;
 
-      // 子孫ノードを収集
+      // 子孫ノードを収集（メイン親として登録されている子のみ再帰対象）
       const getDescendants = (id: NodeId): NodeId[] => {
         const node = state.nodes.find((n) => n.id === id);
         if (!node) return [];
-        return [id, ...node.childrenIds.flatMap(getDescendants)];
+        // メイン親（parentIds[0]）が自分であるchildrenのみ再帰対象
+        const mainChildren = node.childrenIds.filter((childId) => {
+          const child = state.nodes.find((n) => n.id === childId);
+          return child && child.parentIds[0] === id;
+        });
+        return [id, ...mainChildren.flatMap(getDescendants)];
       };
 
       const nodesToDelete = new Set(getDescendants(nodeId));
