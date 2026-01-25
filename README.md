@@ -9,23 +9,27 @@
 - 特徴
   - 中央にテーマを置き、AIとの質疑応答をツリー状に展開。
   - 回答から自動生成される **topic ノード** をたどりながら論点を深掘り。
-  - **note ノード** に決定事項をまとめ、右カラムでサマリー表示。
+  - **note ノード** に決定事項をまとめ、サイドパネルでサマリー表示。
   - 複数の親ノード（複数文脈）を許容し、1つの回答を別の論点からも再利用可能。
 
 ### 1.2 技術スタック
 
-- デスクトップアプリ: Electron
-- フロントエンド: React + （ノードベースUIライブラリ：React Flow 想定）
-- LLM接続: OpenAI / Anthropic / Google / Local 等（APIキーをユーザーが設定）
+- デスクトップアプリ: Electron（electron-vite）
+- フロントエンド: React + TypeScript + @xyflow/react（React Flow v11+）
+- 状態管理: Zustand
+- LLM接続: OpenAI（APIキーをユーザーが設定）
 - データ保存: ローカルディレクトリに JSON ファイルとして保存（Git 管理も想定）
 
 ***
 
 ## 2. データモデル仕様
 
+> 📁 **実装ファイル**: [src/shared/types.ts](src/shared/types.ts)
+
 ### 2.1 ID・基本型
 
 ```ts
+// 型定義では4種類定義済み、現在はOpenAIのみ対応
 type Provider = 'openai' | 'anthropic' | 'google' | 'local';
 type Role = 'user' | 'assistant' | 'system';
 type NodeType = 'root' | 'message' | 'note' | 'topic';
@@ -60,15 +64,13 @@ interface BoardSettings {
 
 ### 2.3 NodeMetadata
 
-ノードの重要度・見た目・決定事項などのメタ情報。
+ノードの重要度・決定事項などのメタ情報。
 
 ```ts
 interface NodeMetadata {
   importance?: 1 | 2 | 3 | 4 | 5; // 重要度（AI提案＋手動編集）
   tags?: string[];                // "risk", "idea", "UI" など
-  color?: string;                 // ノード色
   pin?: boolean;                  // 決定事項や特に重要なノード（サマリや表示で必ず扱う）
-  collapsed?: boolean;           // 子ノードをUI上で畳むかどうか
 }
 ```
 
@@ -81,13 +83,29 @@ interface NodeMetadata {
   - pin: 「必ず含めるべきノード」  
   として扱う。
 
-### 2.4 Node
+### 2.4 MindNode
 
 マインドマップ上の1つのノード。  
 1ノード＝1メッセージ（or 1メモ）の単位。
 
+> ※ DOMの`Node`との衝突を避けるため`MindNode`という名前を使用
+
 ```ts
-interface Node {
+// トークン使用量
+interface TokenUsage {
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+  costJPY?: number;  // 将来実装予定
+}
+
+// ノード位置
+interface NodePosition {
+  x: number;
+  y: number;
+}
+
+interface MindNode {
   id: NodeId;
   boardId: BoardId;
 
@@ -103,21 +121,13 @@ interface Node {
   // LLM 呼び出し情報（assistant message ノード中心）
   provider?: Provider;
   model?: string;
-  usage?: {
-    promptTokens: number;
-    completionTokens: number;
-    totalTokens: number;
-    costJPY?: number;
-  };
+  usage?: TokenUsage;
 
   createdBy: 'user' | 'ai';
   createdAt: string;
   updatedAt: string;
 
-  position: {
-    x: number;
-    y: number;
-  };
+  position: NodePosition;
 
   metadata?: NodeMetadata;
 
@@ -151,11 +161,36 @@ interface Node {
   - `board.json`  
     - `Board` 1件
   - `nodes.json`  
-    - `Node[]`（ノード一覧）
+    - `MindNode[]`（ノード一覧）
   - `summaries.json`  
     - `Summary[]`（サマリー履歴）
 
-※アプリ全体設定（APIキーなど）は別ファイル想定。
+### 3.1 BoardData
+
+ボードの読み込み・保存時に使用する統合型。
+
+```ts
+interface BoardData {
+  board: Board;
+  nodes: MindNode[];
+  summaries: Summary[];
+}
+```
+
+### 3.2 AppSettings
+
+アプリ全体設定（`settings.json`に保存）。
+
+```ts
+interface AppSettings {
+  openaiApiKey?: string;
+  anthropicApiKey?: string;   // 将来対応予定
+  googleApiKey?: string;      // 将来対応予定
+  localEndpoint?: string;     // 将来対応予定
+  theme?: 'light' | 'dark' | 'system';
+  parentFolderPath?: string;  // ボード保存先の親フォルダ
+}
+```
 
 ***
 
@@ -203,6 +238,7 @@ interface Summary {
   - `rootNodeId` を持つ `root` ノードを同時に作成。
   - root ノードの `content` にテーマ・悩み全文を保存。  
   - `metadata.pin = true` / `importance = 5` 等。
+  - **初期質問ノードも自動作成**: `type: 'message', role: 'user'` の空の質問ノードを root の子として作成。ユーザーはすぐに質問を入力可能。
 
 #### 5.2.2 最初の質問（root 直下）
 
@@ -335,7 +371,7 @@ interface Summary {
   - `type == 'topic'` なら +5
 
 - コンテキストに含めるノード数を制限するため、  
-  - スコア順にソート → 上位 N 件を LLM への入力に使用。
+  - スコア順にソート → 上位 **20件** を LLM への入力に使用。
 
 ### 8.5 プロンプト構成
 
@@ -367,8 +403,99 @@ interface Summary {
    - Board.settings の provider / model を基本に実行。
 6. 結果保存
    - 生成されたテキストを `Summary` として `summaries.json` に保存。
-   - UI では最新の Summary を右ペインに表示。  
+   - UI では最新の Summary をサイドパネルに表示。  
    - 再生成時は新しい Summary として追加（履歴管理は今後検討）。
 
 ***
 
+## 9. UI機能
+
+### 9.1 メインレイアウト
+
+- **ツールバー**: 新規ボード作成、ボードを開く、保存、設定ボタン
+- **マインドマップキャンバス**: React Flow使用、ドラッグ、ズーム、MiniMap、Controls
+- **サイドパネル**: リサイズ可能（280px〜600px）、選択ノードの詳細・操作を表示
+- **ボード情報ボタン**: 左下に常時表示、クリックでボード詳細モーダルを表示
+
+### 9.2 ノード表示
+
+- **root**: ボードテーマを表示、質問開始の起点
+- **message (user)**: 質問テキスト、編集可能（条件付き）
+- **message (assistant)**: 回答テキスト、使用モデル表示、複製ボタン
+- **note**: ピン表示、importance星表示、decisionタグ表示
+- **topic**: タグ表示、importance表示、ピン対応
+
+### 9.3 エッジ表示
+
+- メイン親（`parentIds[0]`）→ 太線で接続
+- サブ親（`parentIds[1+]`）→ 細線＋アニメーションで接続
+
+### 9.4 モーダル・ダイアログ
+
+- **設定ダイアログ**: OpenAI APIキー入力、親フォルダ選択
+- **ボード選択ダイアログ**: 親フォルダ内のボード一覧表示・選択
+- **ボード情報モーダル**: ボード詳細表示（タイトル、説明、設定、作成日時）
+- **タイムラインモーダル**: メイン親チェーン表示、Markdown対応、ノードナビゲート、ESCキーで閉じる
+- **トピック作成モーダル**: 手動トピック作成（タイトル、importance、tags）
+
+### 9.5 質問ノードの操作
+
+- **複製ボタン**: 回答済み質問をホバーすると表示、質問をフォーク可能
+- **親ノード接続モード**: 接続モードを開始 → キャンバス上で他のtopicをクリック → 複数親として接続
+- **質問フォーク機能**: 回答済み質問の編集時に「フォーク」を提案、新しい質問ノードとして複製
+
+### 9.6 コンテキスト収集
+
+- メイン親チェーン（`parentIds[0]`を辿ってrootまで）を収集
+- サブ親チェーン（`parentIds[1+]`）も含めて文脈を構築
+- 収集したノードをLLMプロンプトに含めて回答を生成
+
+***
+
+## 10. 将来対応予定
+
+以下の機能は将来のバージョンで実装予定です。
+
+### 10.1 追加LLMプロバイダ
+
+現在はOpenAIのみ対応ですが、以下のプロバイダへの対応を予定しています：
+
+```ts
+// 将来対応予定
+type Provider = 'openai' | 'anthropic' | 'google' | 'local';
+```
+
+- **Anthropic**: Claude モデルへの対応
+- **Google**: Gemini モデルへの対応
+- **Local**: ローカルLLM（Ollama等）への対応
+
+### 10.2 トピック/ノート生成のモデル選択
+
+現在、トピック生成とノート生成は `gpt-4o-mini` 固定で実行されます。
+
+将来的には以下のように選択可能にする予定：
+
+- **トピック生成**: `gpt-4o-mini` など低コストモデル固定（大量生成のため）
+- **ノート生成**: `Board.settings.defaultModel` を使用（ユーザーが選択可能）
+
+### 10.3 トークン使用量・コスト表示
+
+現在、トークン使用量（`usage`）はデータとして保存されていますが、UIには表示されていません。
+
+将来的に以下の機能を追加予定：
+
+- ノード単位のトークン使用量表示
+- ボード全体のトークン累計表示
+- コスト計算（`costJPY`）と表示
+
+```ts
+// 現在は型定義のみ
+interface TokenUsage {
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+  costJPY?: number;  // 将来実装予定
+}
+```
+
+***

@@ -484,7 +484,7 @@ export const SidePanel: React.FC = () => {
         targetNodes = collectSubtree(selectedNode.id);
       }
 
-      const summaryContent = await window.electronAPI.generateSummary({
+      const summaryRequest = {
         boardId: board.id,
         scope,
         targetNodeId: scope === 'nodeSubtree' ? selectedNode?.id : undefined,
@@ -498,7 +498,27 @@ export const SidePanel: React.FC = () => {
           pin: n.metadata?.pin,
           tags: n.metadata?.tags
         }))
-      });
+      };
+
+      // デバッグ用: LLMに渡すサマリーリクエストをログ出力
+      console.group('📋 Summary Generation Request');
+      console.log('Scope:', scope);
+      console.log('Target Node ID:', summaryRequest.targetNodeId);
+      console.log('Total Nodes:', summaryRequest.nodes.length);
+      console.table(summaryRequest.nodes.map(n => ({
+        id: n.id.substring(0, 8) + '...',
+        type: n.type,
+        role: n.role || '-',
+        title: n.title?.substring(0, 30) || '-',
+        content: n.content.substring(0, 50) + (n.content.length > 50 ? '...' : ''),
+        importance: n.importance ?? '-',
+        pin: n.pin ? '📌' : '-',
+        tags: n.tags?.join(',') || '-'
+      })));
+      console.log('Full Request:', summaryRequest);
+      console.groupEnd();
+
+      const summaryContent = await window.electronAPI.generateSummary(summaryRequest);
 
       setSummary(summaryContent);
       setShowSummary(true);

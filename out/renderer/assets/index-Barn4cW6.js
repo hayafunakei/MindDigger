@@ -35821,7 +35821,7 @@ const SidePanel = () => {
       const llmMessages = [
         {
           role: "system",
-          content: `あなたは「${board.title}」というテーマについて、ユーザーの思考を整理する手助けをするアシスタントです。的確で具体的な回答を心がけてください。`
+          content: `「${board.title}」というテーマについて、ユーザーの思考を整理する手助けをするアシスタントです。的確で具体的な回答を心がけてください。`
         },
         ...contextMessages,
         {

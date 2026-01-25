@@ -135,10 +135,12 @@ export class OpenAIProvider {
     const systemPrompt = `あなたは思考整理の専門家です。与えられたノード情報から、以下の観点で要約を作成してください：
 
 1. **重要な論点**: 検討されている主要なテーマ
-2. **決定事項**: pin付きノードやnoteノードから抽出
-3. **未解決の課題**: topicノードから抽出
-4. **次のアクション**: 今後検討すべき事項
+2. **決定事項**: 📌ピン留めされたノードから抽出（ピン留め = 確定・決定を意味する）
+3. **メモ・検討内容**: noteノードの内容を要約
+4. **未解決の課題**: topicノードから抽出
+5. **次のアクション**: 今後検討すべき事項
 
+各セクションは該当する情報がある場合のみ出力してください。
 簡潔で分かりやすいMarkdown形式で出力してください。
 重要: \`\`\`markdown などのコードブロックで囲まないでください。直接Markdownを出力してください。`;
 
@@ -161,6 +163,17 @@ ${metadata.length > 0 ? `**メタ情報**: ${metadata.join(' / ')}\n` : ''}
     const userPrompt = `${scopeDescription}の情報から要約を作成してください：
 
 ${nodesInfo}`;
+
+    // デバッグ用: LLMに送るプロンプトをログ出力
+    console.group('📋 [Main] Summary LLM Request');
+    console.log('Scope:', request.scope);
+    console.log('Original Nodes Count:', request.nodes.length);
+    console.log('Top Nodes Count (after scoring):', topNodes.length);
+    console.log('--- System Prompt ---');
+    console.log(systemPrompt);
+    console.log('--- User Prompt ---');
+    console.log(userPrompt);
+    console.groupEnd();
 
     const response = await this.client.chat.completions.create({
       model: 'gpt-4o-mini',

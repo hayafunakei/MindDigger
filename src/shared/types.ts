@@ -54,12 +54,8 @@ export interface NodeMetadata {
   importance?: 1 | 2 | 3 | 4 | 5;
   /** タグ（"risk", "idea", "UI" など） */
   tags?: string[];
-  /** ノード色 */
-  color?: string;
   /** ピン留め（決定事項や特に重要なノード） */
   pin?: boolean;
-  /** 子ノードをUI上で畳むかどうか */
-  collapsed?: boolean;
 }
 
 /**
