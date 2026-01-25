@@ -2,7 +2,7 @@
  * タイムラインモーダルコンポーネント
  * 選択ノードからルートまでの会話履歴を表示
  */
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { MindNode, NodeType } from '@shared/types';
@@ -29,6 +29,9 @@ export const TimelineModal: React.FC<TimelineModalProps> = ({
 }) => {
   // モーダル内でハイライトされているノードID（実際の選択とは別）
   const [highlightedNodeId, setHighlightedNodeId] = useState<string | null>(null);
+
+  // スクロールコンテナへの参照
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // モーダルが開いたときにハイライトをリセット
   useEffect(() => {
@@ -61,6 +64,13 @@ export const TimelineModal: React.FC<TimelineModalProps> = ({
     
     return timeline;
   }, [selectedNode, getNodeById]);
+
+  // モーダルが開いたときにスクロールを最下部に移動（最新のノードを表示）
+  useEffect(() => {
+    if (isOpen && contentRef.current) {
+      contentRef.current.scrollTop = contentRef.current.scrollHeight;
+    }
+  }, [isOpen, timelineNodes]);
 
   /**
    * ノードをクリックしてハイライト（まだ実際の選択はしない）
@@ -117,7 +127,7 @@ export const TimelineModal: React.FC<TimelineModalProps> = ({
         </div>
 
         {/* コンテンツ */}
-        <div style={contentStyle}>
+        <div ref={contentRef} style={contentStyle}>
           {timelineNodes.length === 0 ? (
             <div style={{ textAlign: 'center', color: '#64748b', padding: '40px' }}>
               ノードを選択してください
