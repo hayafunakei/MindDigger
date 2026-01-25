@@ -24,6 +24,8 @@ interface BoardState {
   isConnectingParent: boolean;
   /** 接続元ノードID */
   connectingFromNodeId: NodeId | null;
+  /** フォーカス予約中のノードID（質問ノード作成時に入力欄へフォーカス） */
+  pendingFocusNodeId: NodeId | null;
 }
 
 interface BoardActions {
@@ -67,6 +69,10 @@ interface BoardActions {
   removeParentChild: (parentId: NodeId, childId: NodeId) => void;
   /** メイン親を変更（parentIds[0]を入れ替え） */
   setMainParent: (nodeId: NodeId, newMainParentId: NodeId) => void;
+  /** フォーカス予約をセット */
+  setPendingFocusNodeId: (nodeId: NodeId) => void;
+  /** フォーカス予約をクリア */
+  clearPendingFocusNodeId: () => void;
 }
 
 export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
@@ -80,6 +86,7 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
   isLoading: false,
   isConnectingParent: false,
   connectingFromNodeId: null,
+  pendingFocusNodeId: null,
 
   // アクション
   createBoard: (title, description) => {
@@ -439,5 +446,19 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
       }),
       isDirty: true
     }));
+  },
+
+  /**
+   * フォーカス予約をセット
+   */
+  setPendingFocusNodeId: (nodeId) => {
+    set({ pendingFocusNodeId: nodeId });
+  },
+
+  /**
+   * フォーカス予約をクリア
+   */
+  clearPendingFocusNodeId: () => {
+    set({ pendingFocusNodeId: null });
   }
 }));

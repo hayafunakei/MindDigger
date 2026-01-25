@@ -99,7 +99,10 @@ export const SidePanel: React.FC = () => {
     startConnectingParent,
     cancelConnectingParent,
     removeParentChild,
-    setMainParent
+    setMainParent,
+    pendingFocusNodeId,
+    setPendingFocusNodeId,
+    clearPendingFocusNodeId
   } = useBoardStore();
   const [questionInput, setQuestionInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -114,7 +117,6 @@ export const SidePanel: React.FC = () => {
   const [isResizing, setIsResizing] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const questionInputRef = useRef<HTMLTextAreaElement>(null);
-  const [pendingFocusNodeId, setPendingFocusNodeId] = useState<NodeId | null>(null);
 
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
 
@@ -170,17 +172,17 @@ export const SidePanel: React.FC = () => {
     setIsEditing(false);
   }, [selectedNode]);
 
-  // 複製後のフォーカス制御
+  // 質問ノード作成・複製後のフォーカス制御
   useEffect(() => {
     if (pendingFocusNodeId && selectedNodeId === pendingFocusNodeId) {
       // 少し待ってからフォーカス（レンダリング完了を待つ）
       const timer = setTimeout(() => {
         questionInputRef.current?.focus();
-        setPendingFocusNodeId(null);
+        clearPendingFocusNodeId();
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [pendingFocusNodeId, selectedNodeId]);
+  }, [pendingFocusNodeId, selectedNodeId, clearPendingFocusNodeId]);
 
   /**
    * 質問を送信（新規送信または再送信）
@@ -371,9 +373,10 @@ export const SidePanel: React.FC = () => {
     });
 
     selectNode(questionNode.id);
+    setPendingFocusNodeId(questionNode.id);
     setQuestionInput('');
     setIsEditing(false);
-  }, [selectedNode, board, addNode, selectNode]);
+  }, [selectedNode, board, addNode, selectNode, setPendingFocusNodeId]);
 
   /**
    * トピックを生成

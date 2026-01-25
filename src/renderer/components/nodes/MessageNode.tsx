@@ -26,7 +26,7 @@ export const MessageNode: React.FC<NodeProps> = memo(({ data, selected }) => {
   const isUser = nodeData.role === 'user';
   const [isHovered, setIsHovered] = useState(false);
   
-  const { board, nodes, addNode, selectNode } = useBoardStore();
+  const { board, nodes, addNode, selectNode, setPendingFocusNodeId } = useBoardStore();
   
   // 質問ノードの場合は常に複製ボタンを表示
   const showDuplicateButton = isQuestionNode(nodeData);
@@ -53,9 +53,10 @@ export const MessageNode: React.FC<NodeProps> = memo(({ data, selected }) => {
       }
     });
     
-    // 複製したノードを選択
+    // 複製したノードを選択し、質問入力欄にフォーカス
     selectNode(duplicatedNode.id);
-  }, [board, nodeData, addNode, selectNode]);
+    setPendingFocusNodeId(duplicatedNode.id);
+  }, [board, nodeData, addNode, selectNode, setPendingFocusNodeId]);
 
   return (
     <div
