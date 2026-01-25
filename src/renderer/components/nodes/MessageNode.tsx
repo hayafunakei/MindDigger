@@ -49,7 +49,7 @@ export const MessageNode: React.FC<NodeProps> = memo(({ data, selected }) => {
   const isLoading = nodeData.isLoading === true;
   const [isHovered, setIsHovered] = useState(false);
   
-  const { board, nodes, addNode, selectNode, setPendingFocusNodeId } = useBoardStore();
+  const { board, nodes, addNode, selectNode, setPendingFocusNodeId, isAiResponding } = useBoardStore();
   
   // 質問ノードの場合は常に複製ボタンを表示
   const showDuplicateButton = isQuestionNode(nodeData);
@@ -176,16 +176,17 @@ export const MessageNode: React.FC<NodeProps> = memo(({ data, selected }) => {
       {showDuplicateButton && (
         <button
           onClick={handleDuplicate}
+          disabled={isAiResponding}
           style={{
             position: 'absolute',
             right: '-44px',
             top: '50%',
             transform: 'translateY(-50%)',
-            background: '#6366f1',
+            background: isAiResponding ? '#4b5563' : '#6366f1',
             border: 'none',
             borderRadius: '6px',
             padding: '6px 8px',
-            cursor: 'pointer',
+            cursor: isAiResponding ? 'not-allowed' : 'pointer',
             fontSize: '14px',
             color: 'white',
             display: 'flex',
@@ -193,11 +194,12 @@ export const MessageNode: React.FC<NodeProps> = memo(({ data, selected }) => {
             justifyContent: 'center',
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
             zIndex: 1000,
-            transition: 'background 0.2s ease'
+            transition: 'background 0.2s ease',
+            opacity: isAiResponding ? 0.5 : 1
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = '#4f46e5')}
-          onMouseLeave={(e) => (e.currentTarget.style.background = '#6366f1')}
-          title="複製して質問"
+          onMouseEnter={(e) => !isAiResponding && (e.currentTarget.style.background = '#4f46e5')}
+          onMouseLeave={(e) => !isAiResponding && (e.currentTarget.style.background = '#6366f1')}
+          title={isAiResponding ? 'AI応答中は複製できません' : '複製して質問'}
         >
           📋
         </button>

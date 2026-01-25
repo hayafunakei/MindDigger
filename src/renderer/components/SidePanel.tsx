@@ -102,7 +102,9 @@ export const SidePanel: React.FC = () => {
     setMainParent,
     pendingFocusNodeId,
     setPendingFocusNodeId,
-    clearPendingFocusNodeId
+    clearPendingFocusNodeId,
+    isAiResponding,
+    setAiResponding
   } = useBoardStore();
   const [questionInput, setQuestionInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -196,6 +198,7 @@ export const SidePanel: React.FC = () => {
     const currentEditState = getQuestionEditState(selectedNode, nodes);
 
     setIsLoading(true);
+    setAiResponding(true);
     try {
       // canResend状態の場合、既存の回答ノードを削除
       if (currentEditState === 'canResend') {
@@ -360,8 +363,9 @@ export const SidePanel: React.FC = () => {
       alert(`エラーが発生しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
     } finally {
       setIsLoading(false);
+      setAiResponding(false);
     }
-  }, [questionInput, selectedNode, board, nodes, getNodeById, addNode, updateNode, deleteNode]);
+  }, [questionInput, selectedNode, board, nodes, getNodeById, addNode, updateNode, deleteNode, setAiResponding]);
 
   /**
    * ノートを作成
@@ -395,6 +399,7 @@ export const SidePanel: React.FC = () => {
     if (!selectedNode || !board) return;
 
     setIsLoading(true);
+    setAiResponding(true);
     try {
       // コンテキストを収集
       const contextMessages = collectContext(nodes, selectedNode);
@@ -428,6 +433,7 @@ export const SidePanel: React.FC = () => {
       alert(`ノート生成に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
     } finally {
       setIsLoading(false);
+      setAiResponding(false);
     }
   }, [selectedNode, board, nodes, addNode]);
 
@@ -464,6 +470,7 @@ export const SidePanel: React.FC = () => {
     if (!selectedNode || !board) return;
 
     setIsLoading(true);
+    setAiResponding(true);
     try {
       // コンテキストを収集
       const contextMessages = collectContext(nodes, selectedNode);
@@ -500,8 +507,9 @@ export const SidePanel: React.FC = () => {
       alert(`トピック生成に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
     } finally {
       setIsLoading(false);
+      setAiResponding(false);
     }
-  }, [selectedNode, board, nodes, addNode]);
+  }, [selectedNode, board, nodes, addNode, setAiResponding]);
 
   /**
    * 手動でトピックを作成
@@ -540,6 +548,7 @@ export const SidePanel: React.FC = () => {
     if (!board) return;
 
     setIsLoading(true);
+    setAiResponding(true);
     try {
       // ノード情報を収集
       let targetNodes: MindNode[] = [];
@@ -619,8 +628,9 @@ export const SidePanel: React.FC = () => {
       alert(`サマリー生成に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
     } finally {
       setIsLoading(false);
+      setAiResponding(false);
     }
-  }, [board, nodes, selectedNode, getNodeById, addSummary]);
+  }, [board, nodes, selectedNode, getNodeById, addSummary, setAiResponding]);
 
   /**
    * 選択ノードを編集開始
@@ -967,7 +977,13 @@ export const SidePanel: React.FC = () => {
                 {selectedNode.type === 'message' && selectedNode.role === 'user' ? (
                   <button
                     onClick={handleDuplicateQuestion}
-                    style={{ ...actionButtonStyle, padding: '6px 10px' }}
+                    style={{ 
+                      ...actionButtonStyle, 
+                      padding: '6px 10px',
+                      opacity: isAiResponding ? 0.5 : 1,
+                      cursor: isAiResponding ? 'not-allowed' : 'pointer'
+                    }}
+                    disabled={isAiResponding}
                   >
                     📋 複製
                   </button>
@@ -977,16 +993,27 @@ export const SidePanel: React.FC = () => {
                 ) : (
                   <button
                     onClick={handleStartEdit}
-                    style={{ ...actionButtonStyle, padding: '6px 10px' }}
-                    disabled={isEditing}
+                    style={{ 
+                      ...actionButtonStyle, 
+                      padding: '6px 10px',
+                      opacity: (isEditing || isAiResponding) ? 0.5 : 1,
+                      cursor: (isEditing || isAiResponding) ? 'not-allowed' : 'pointer'
+                    }}
+                    disabled={isEditing || isAiResponding}
                   >
                     ✏️ 編集
                   </button>
                 )}
                 <button
                   onClick={handleDeleteNode}
-                  style={{ ...actionButtonStyle, padding: '6px 10px', background: '#7f1d1d' }}
-                  disabled={selectedNode.type === 'root'}
+                  style={{ 
+                    ...actionButtonStyle, 
+                    padding: '6px 10px', 
+                    background: '#7f1d1d',
+                    opacity: (selectedNode.type === 'root' || isAiResponding) ? 0.5 : 1,
+                    cursor: (selectedNode.type === 'root' || isAiResponding) ? 'not-allowed' : 'pointer'
+                  }}
+                  disabled={selectedNode.type === 'root' || isAiResponding}
                 >
                   🗑️ 削除
                 </button>

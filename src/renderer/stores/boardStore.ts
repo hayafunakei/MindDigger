@@ -20,6 +20,8 @@ interface BoardState {
   isDirty: boolean;
   /** ローディング状態 */
   isLoading: boolean;
+  /** AI応答中フラグ（編集・削除操作を制限） */
+  isAiResponding: boolean;
   /** 親ノード接続モード */
   isConnectingParent: boolean;
   /** 接続元ノードID */
@@ -53,6 +55,8 @@ interface BoardActions {
   markClean: () => void;
   /** ローディング状態をセット */
   setLoading: (loading: boolean) => void;
+  /** AI応答中状態をセット */
+  setAiResponding: (responding: boolean) => void;
   /** サマリーを追加 */
   addSummary: (summary: Omit<Summary, 'id' | 'createdAt' | 'updatedAt'>) => void;
   /** ボードデータを取得（保存用） */
@@ -84,6 +88,7 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
   filePath: null,
   isDirty: false,
   isLoading: false,
+  isAiResponding: false,
   isConnectingParent: false,
   connectingFromNodeId: null,
   pendingFocusNodeId: null,
@@ -300,6 +305,10 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
 
   setLoading: (loading) => {
     set({ isLoading: loading });
+  },
+
+  setAiResponding: (responding) => {
+    set({ isAiResponding: responding });
   },
 
   addSummary: (summaryData) => {

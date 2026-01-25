@@ -11,7 +11,7 @@ import { BoardSelectorDialog } from './BoardSelectorDialog';
  * ツールバー
  */
 export const Toolbar: React.FC = () => {
-  const { board, isDirty, isLoading, setBoard, createBoard, clearBoard, getBoardData, setFilePath, markClean, setLoading } = useBoardStore();
+  const { board, isDirty, isLoading, isAiResponding, setBoard, createBoard, clearBoard, getBoardData, setFilePath, markClean, setLoading } = useBoardStore();
   const [showNewBoardDialog, setShowNewBoardDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [showBoardSelector, setShowBoardSelector] = useState(false);
@@ -104,15 +104,24 @@ export const Toolbar: React.FC = () => {
         {/* アクションボタン */}
         <button
           onClick={() => setShowNewBoardDialog(true)}
-          style={buttonStyle}
+          disabled={isAiResponding}
+          style={{
+            ...buttonStyle,
+            opacity: isAiResponding ? 0.5 : 1,
+            cursor: isAiResponding ? 'not-allowed' : 'pointer'
+          }}
         >
           ➕ 新規ボード
         </button>
 
         <button
           onClick={handleOpenBoard}
-          disabled={isLoading}
-          style={buttonStyle}
+          disabled={isLoading || isAiResponding}
+          style={{
+            ...buttonStyle,
+            opacity: (isLoading || isAiResponding) ? 0.5 : 1,
+            cursor: (isLoading || isAiResponding) ? 'not-allowed' : 'pointer'
+          }}
         >
           📂 開く
         </button>
