@@ -120,6 +120,9 @@ export interface MindNode {
 
   /** 質問・回答ペアの識別子（任意） */
   qaPairId?: string;
+
+  /** ローディング中かどうか（AI回答待ち状態） */
+  isLoading?: boolean;
 }
 
 /** サマリーのスコープ */

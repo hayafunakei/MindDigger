@@ -19,11 +19,34 @@ function isQuestionNode(node: MindNode): boolean {
 }
 
 /**
+ * ローディングインジケーターコンポーネント
+ */
+const LoadingIndicator: React.FC = () => (
+  <div className="loading-indicator" style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '8px 0'
+  }}>
+    <div className="loading-dots" style={{
+      display: 'flex',
+      gap: '4px'
+    }}>
+      <span className="loading-dot" style={{ animationDelay: '0ms' }} />
+      <span className="loading-dot" style={{ animationDelay: '150ms' }} />
+      <span className="loading-dot" style={{ animationDelay: '300ms' }} />
+    </div>
+    <span style={{ fontSize: '12px', opacity: 0.8 }}>考え中...</span>
+  </div>
+);
+
+/**
  * メッセージノード - 質問と回答を表示
  */
 export const MessageNode: React.FC<NodeProps> = memo(({ data, selected }) => {
   const nodeData = data as unknown as MessageNodeData;
   const isUser = nodeData.role === 'user';
+  const isLoading = nodeData.isLoading === true;
   const [isHovered, setIsHovered] = useState(false);
   
   const { board, nodes, addNode, selectNode, setPendingFocusNodeId } = useBoardStore();
@@ -114,15 +137,20 @@ export const MessageNode: React.FC<NodeProps> = memo(({ data, selected }) => {
         </div>
       )}
       
-      <div style={{ 
-        fontSize: '13px',
-        lineHeight: '1.4',
-        wordBreak: 'break-word'
-      }}>
-        {nodeData.content.length > 150 
-          ? nodeData.content.slice(0, 150) + '...' 
-          : nodeData.content}
-      </div>
+      {/* ローディング時はアニメーション表示、それ以外は通常のコンテンツ表示 */}
+      {isLoading ? (
+        <LoadingIndicator />
+      ) : (
+        <div style={{ 
+          fontSize: '13px',
+          lineHeight: '1.4',
+          wordBreak: 'break-word'
+        }}>
+          {nodeData.content.length > 150 
+            ? nodeData.content.slice(0, 150) + '...' 
+            : nodeData.content}
+        </div>
+      )}
 
       {/* アクションボタン - ホバー時に表示 */}
       {isHovered && !isUser && (

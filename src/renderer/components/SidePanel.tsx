@@ -215,6 +215,29 @@ export const SidePanel: React.FC = () => {
         content: questionInput.trim()
       });
 
+      // ローディング中の仮ノードを作成
+      const qaPairId = `qa-${Date.now()}`;
+      const loadingNode = addNode({
+        boardId: board.id,
+        type: 'message',
+        role: 'assistant',
+        title: '',
+        content: '回答を生成中...',
+        parentIds: [selectedNode.id],
+        provider: board.settings.defaultProvider,
+        model: board.settings.defaultModel,
+        createdBy: 'ai',
+        position: {
+          x: selectedNode.position.x,
+          y: selectedNode.position.y + 150
+        },
+        qaPairId,
+        isLoading: true
+      });
+
+      // 質問ノードにもqaPairIdを設定
+      updateNode(selectedNode.id, { qaPairId });
+
       // コンテキストを収集（メイン親チェーン + サブ親チェーン）
       // selectedNodeから収集開始し、selectedNode自身は後で追加するので除外
       const contextResult = collectContextWithSubParents(nodes, selectedNode);
@@ -252,32 +275,28 @@ export const SidePanel: React.FC = () => {
         temperature: board.settings.temperature
       });
 
-      // 回答ノードを作成
-      const qaPairId = `qa-${Date.now()}`;
-      addNode({
-        boardId: board.id,
-        type: 'message',
-        role: 'assistant',
-        title: '',
+      // ローディングノードを実際の回答で更新
+      updateNode(loadingNode.id, {
         content: response.content,
-        parentIds: [selectedNode.id],
-        provider: board.settings.defaultProvider,
-        model: board.settings.defaultModel,
         usage: response.usage,
-        createdBy: 'ai',
-        position: {
-          x: selectedNode.position.x,
-          y: selectedNode.position.y + 150
-        },
-        qaPairId
+        isLoading: false
       });
-
-      // 質問ノードにもqaPairIdを設定
-      updateNode(selectedNode.id, { qaPairId });
 
       setQuestionInput('');
     } catch (error) {
       console.error('Failed to send question:', error);
+      
+      // エラー時はローディングノードを削除
+      // ローディングノードのIDを取得するために、selectedNodeの子ノードからisLoading=trueのものを探す
+      const state = useBoardStore.getState();
+      const loadingNodes = state.nodes.filter(n => 
+        n.parentIds.includes(selectedNode.id) && 
+        n.isLoading === true
+      );
+      for (const loadingNode of loadingNodes) {
+        deleteNode(loadingNode.id);
+      }
+      
       alert(`エラーが発生しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
     } finally {
       setIsLoading(false);
