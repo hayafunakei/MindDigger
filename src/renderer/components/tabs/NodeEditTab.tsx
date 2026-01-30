@@ -127,8 +127,8 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
   const [selectedModel, setSelectedModel] = useState<string>('');
   const questionInputRef = useRef<HTMLTextAreaElement>(null);
 
-  // 設定ストアからモデル一覧を取得
-  const { availableModels, loadAvailableModels, getModelsForProvider } = useSettingsStore();
+  // 設定ストアからモデル一覧と設定を取得
+  const { availableModels, loadAvailableModels, getModelsForProvider, settings: appSettings } = useSettingsStore();
 
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
 
@@ -321,7 +321,7 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
           content: response.content,
           context: topicContext,
           maxTopics: 5,
-          model: modelToUse
+          model: appSettings.topicGenerationModel || board.settings.defaultModel
         });
 
         // ローディングノードを削除
@@ -489,7 +489,7 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
         content: selectedNode.content,
         context,
         maxTopics: 5,
-        model: selectedModel || board.settings.defaultModel
+        model: appSettings.topicGenerationModel || board.settings.defaultModel
       });
 
       // 生成されたトピックをノードとして追加

@@ -29,6 +29,8 @@ export interface AppSettings {
   defaultProvider?: 'openai' | 'anthropic' | 'google' | 'local';
   /** デフォルトのモデル */
   defaultModel?: string;
+  /** トピック生成用モデル */
+  topicGenerationModel?: string;
 }
 
 /**

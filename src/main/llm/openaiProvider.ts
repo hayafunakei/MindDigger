@@ -75,7 +75,6 @@ export class OpenAIProvider {
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
       ],
-      temperature: 0.8,
       response_format: { type: 'json_object' }
     });
 

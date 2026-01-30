@@ -12926,7 +12926,8 @@ const useSettingsStore = create$2((set2, get2) => ({
   settings: {
     theme: "system",
     defaultProvider: "openai",
-    defaultModel: "gpt-5-mini"
+    defaultModel: "gpt-5-mini",
+    topicGenerationModel: "gpt-5-mini"
   },
   isLoaded: false,
   availableModels: null,
@@ -12968,17 +12969,19 @@ const SettingsDialog = ({ isOpen, onClose }) => {
   const [openaiKey, setOpenaiKey] = reactExports.useState("");
   const [parentFolder, setParentFolder] = reactExports.useState("");
   const [defaultModel, setDefaultModel] = reactExports.useState("");
+  const [topicModel, setTopicModel] = reactExports.useState("");
   const [isSaving, setIsSaving] = reactExports.useState(false);
   reactExports.useEffect(() => {
     if (isOpen) {
       setOpenaiKey(settings.openaiApiKey || "");
       setParentFolder(settings.parentFolderPath || "");
       setDefaultModel(settings.defaultModel || "gpt-5-mini");
+      setTopicModel(settings.topicGenerationModel || "gpt-5-mini");
       if (!availableModels) {
         loadAvailableModels();
       }
     }
-  }, [isOpen, settings.openaiApiKey, settings.parentFolderPath, settings.defaultModel, availableModels, loadAvailableModels]);
+  }, [isOpen, settings.openaiApiKey, settings.parentFolderPath, settings.defaultModel, settings.topicGenerationModel, availableModels, loadAvailableModels]);
   const handleSelectParentFolder = async () => {
     try {
       const folder = await window.electronAPI.selectParentFolder();
@@ -12997,7 +13000,8 @@ const SettingsDialog = ({ isOpen, onClose }) => {
         openaiApiKey: openaiKey || void 0,
         parentFolderPath: parentFolder || void 0,
         defaultProvider: "openai",
-        defaultModel: defaultModel || "gpt-5-mini"
+        defaultModel: defaultModel || "gpt-5-mini",
+        topicGenerationModel: topicModel || "gpt-5-mini"
       });
       onClose();
     } catch (error) {
@@ -13123,6 +13127,33 @@ const SettingsDialog = ({ isOpen, onClose }) => {
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { fontSize: "12px", color: "#64748b", marginTop: "6px" }, children: "新規ボード作成時のデフォルトモデルを選択します" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "20px" }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: { display: "block", marginBottom: "6px", fontSize: "14px" }, children: "💡 トピック生成用モデル" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "select",
+        {
+          value: topicModel,
+          onChange: (e) => setTopicModel(e.target.value),
+          style: {
+            width: "100%",
+            padding: "10px 12px",
+            borderRadius: "6px",
+            border: "1px solid #475569",
+            background: "#0f172a",
+            color: "white",
+            fontSize: "14px",
+            boxSizing: "border-box",
+            cursor: "pointer"
+          },
+          children: getModelsForProvider("openai").map((model) => /* @__PURE__ */ jsxRuntimeExports.jsxs("option", { value: model.id, children: [
+            model.name,
+            " - ",
+            model.description || ""
+          ] }, model.id))
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { fontSize: "12px", color: "#64748b", marginTop: "6px" }, children: "回答からトピックを自動抽出する際に使用するモデル" })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "12px", justifyContent: "flex-end" }, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -36052,7 +36083,7 @@ const NodeEditTab = ({
   const [showCreateTopicModal, setShowCreateTopicModal] = reactExports.useState(false);
   const [selectedModel, setSelectedModel] = reactExports.useState("");
   const questionInputRef = reactExports.useRef(null);
-  const { availableModels, loadAvailableModels, getModelsForProvider } = useSettingsStore();
+  const { availableModels, loadAvailableModels, getModelsForProvider, settings: appSettings } = useSettingsStore();
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
   const questionEditState = selectedNode ? getQuestionEditState(selectedNode, nodes) : "editable";
   reactExports.useEffect(() => {
@@ -36193,7 +36224,7 @@ const NodeEditTab = ({
           content: response.content,
           context: topicContext,
           maxTopics: 5,
-          model: modelToUse
+          model: appSettings.topicGenerationModel || board.settings.defaultModel
         });
         deleteNode(topicLoadingNode.id);
         topics.forEach((topic, index2) => {
@@ -36324,7 +36355,7 @@ const NodeEditTab = ({
         content: selectedNode.content,
         context,
         maxTopics: 5,
-        model: selectedModel || board.settings.defaultModel
+        model: appSettings.topicGenerationModel || board.settings.defaultModel
       });
       topics.forEach((topic, index2) => {
         addNode2({

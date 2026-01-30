@@ -29,7 +29,8 @@ export const useSettingsStore = create<SettingsState & SettingsActions>((set, ge
   settings: {
     theme: 'system',
     defaultProvider: 'openai',
-    defaultModel: 'gpt-5-mini'
+    defaultModel: 'gpt-5-mini',
+    topicGenerationModel: 'gpt-5-mini'
   },
   isLoaded: false,
   availableModels: null,

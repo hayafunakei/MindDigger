@@ -86,7 +86,6 @@ ${request.content}`;
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.8,
       response_format: { type: "json_object" }
     });
     const content = response.choices[0]?.message?.content || '{"topics": []}';
@@ -252,7 +251,8 @@ const getModelsConfigPath = () => {
 const defaultSettings = {
   theme: "system",
   defaultProvider: "openai",
-  defaultModel: "gpt-5-mini"
+  defaultModel: "gpt-5-mini",
+  topicGenerationModel: "gpt-5-mini"
 };
 let cachedModelsConfig = null;
 let cachedSettings = null;

@@ -27,7 +27,8 @@ const getModelsConfigPath = () => {
 const defaultSettings: AppSettings = {
   theme: 'system',
   defaultProvider: 'openai',
-  defaultModel: 'gpt-5-mini'
+  defaultModel: 'gpt-5-mini',
+  topicGenerationModel: 'gpt-5-mini'
 };
 
 /** モデル設定のキャッシュ */
