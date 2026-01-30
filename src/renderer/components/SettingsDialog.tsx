@@ -13,17 +13,23 @@ interface SettingsDialogProps {
  * 設定ダイアログ
  */
 export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
-  const { settings, updateSettings } = useSettingsStore();
+  const { settings, updateSettings, availableModels, loadAvailableModels, getModelsForProvider } = useSettingsStore();
   const [openaiKey, setOpenaiKey] = useState('');
   const [parentFolder, setParentFolder] = useState('');
+  const [defaultModel, setDefaultModel] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setOpenaiKey(settings.openaiApiKey || '');
       setParentFolder(settings.parentFolderPath || '');
+      setDefaultModel(settings.defaultModel || 'gpt-5-mini');
+      // モデル一覧を読み込み
+      if (!availableModels) {
+        loadAvailableModels();
+      }
     }
-  }, [isOpen, settings.openaiApiKey, settings.parentFolderPath]);
+  }, [isOpen, settings.openaiApiKey, settings.parentFolderPath, settings.defaultModel, availableModels, loadAvailableModels]);
 
   const handleSelectParentFolder = async () => {
     try {
@@ -42,7 +48,9 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
     try {
       await updateSettings({
         openaiApiKey: openaiKey || undefined,
-        parentFolderPath: parentFolder || undefined
+        parentFolderPath: parentFolder || undefined,
+        defaultProvider: 'openai',
+        defaultModel: defaultModel || 'gpt-5-mini'
       });
       onClose();
     } catch (error) {
@@ -150,6 +158,37 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
           </div>
           <p style={{ fontSize: '12px', color: '#64748b', marginTop: '6px' }}>
             新規ボードはこのフォルダ内に保存されます
+          </p>
+        </div>
+
+        {/* デフォルトモデル設定 */}
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px' }}>
+            🤖 デフォルトモデル
+          </label>
+          <select
+            value={defaultModel}
+            onChange={(e) => setDefaultModel(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '10px 12px',
+              borderRadius: '6px',
+              border: '1px solid #475569',
+              background: '#0f172a',
+              color: 'white',
+              fontSize: '14px',
+              boxSizing: 'border-box',
+              cursor: 'pointer'
+            }}
+          >
+            {getModelsForProvider('openai').map(model => (
+              <option key={model.id} value={model.id}>
+                {model.name} - {model.description || ''}
+              </option>
+            ))}
+          </select>
+          <p style={{ fontSize: '12px', color: '#64748b', marginTop: '6px' }}>
+            新規ボード作成時のデフォルトモデルを選択します
           </p>
         </div>
 

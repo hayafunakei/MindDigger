@@ -6,6 +6,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useBoardStore } from '../../stores/boardStore';
+import { useSettingsStore } from '../../stores/settingsStore';
 import { TimelineModal } from '../TimelineModal';
 import { CreateTopicModal } from '../CreateTopicModal';
 import type { MindNode, NodeType, NodeId } from '@shared/types';
@@ -122,12 +123,31 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
   const [editContent, setEditContent] = useState('');
   const [showTimelineModal, setShowTimelineModal] = useState(false);
   const [showCreateTopicModal, setShowCreateTopicModal] = useState(false);
+  /** 質問時に使用するモデル */
+  const [selectedModel, setSelectedModel] = useState<string>('');
   const questionInputRef = useRef<HTMLTextAreaElement>(null);
+
+  // 設定ストアからモデル一覧を取得
+  const { availableModels, loadAvailableModels, getModelsForProvider } = useSettingsStore();
 
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
 
   // 質問ノードの編集状態を判定
   const questionEditState = selectedNode ? getQuestionEditState(selectedNode, nodes) : 'editable';
+
+  // モデル一覧を読み込み
+  useEffect(() => {
+    if (!availableModels) {
+      loadAvailableModels();
+    }
+  }, [availableModels, loadAvailableModels]);
+
+  // ボードのデフォルトモデルを初期選択モデルとして設定
+  useEffect(() => {
+    if (board && !selectedModel) {
+      setSelectedModel(board.settings.defaultModel);
+    }
+  }, [board, selectedModel]);
 
   useEffect(() => {
     if (selectedNode) {
@@ -162,6 +182,18 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
    * 質問を送信（新規送信または再送信）
    * canResend状態の場合は既存の回答ノードを削除してから新しい回答を生成
    */
+  const handleModelChange = useCallback((newModel: string) => {
+    setSelectedModel(newModel);
+    // ボードのデフォルトモデルを更新
+    if (board) {
+      useBoardStore.getState().updateBoardSettings({ defaultModel: newModel });
+    }
+  }, [board]);
+
+  /**
+   * 質問を送信（新規送信または再送信）
+   * canResend状態の場合は既存の回答ノードを削除してから新しい回答を生成
+   */
   const handleSendQuestion = useCallback(async () => {
     if (!questionInput.trim() || !selectedNode || !board) return;
     if (selectedNode.type !== 'message' || selectedNode.role !== 'user') return;
@@ -190,6 +222,9 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
         content: questionInput.trim()
       });
 
+      // 使用するモデル（選択中またはボードデフォルト）
+      const modelToUse = selectedModel || board.settings.defaultModel;
+
       // ローディング中の仮ノードを作成
       const qaPairId = `qa-${Date.now()}`;
       const loadingNode = addNode({
@@ -200,7 +235,7 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
         content: '回答を生成中...',
         parentIds: [selectedNode.id],
         provider: board.settings.defaultProvider,
-        model: board.settings.defaultModel,
+        model: modelToUse,
         createdBy: 'ai',
         position: {
           x: selectedNode.position.x,
@@ -238,14 +273,14 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
       
       console.log('[LLM Request] handleSendQuestion:', {
         provider: board.settings.defaultProvider,
-        model: board.settings.defaultModel,
+        model: modelToUse,
         messages: llmMessages,
         temperature: board.settings.temperature
       });
       
       const response = await window.electronAPI.sendLLMRequest({
         provider: board.settings.defaultProvider,
-        model: board.settings.defaultModel,
+        model: modelToUse,
         messages: llmMessages,
         temperature: board.settings.temperature
       });
@@ -285,7 +320,8 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
         const topics = await window.electronAPI.generateTopics({
           content: response.content,
           context: topicContext,
-          maxTopics: 5
+          maxTopics: 5,
+          model: modelToUse
         });
 
         // ローディングノードを削除
@@ -379,7 +415,8 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
 
       const noteContent = await window.electronAPI.generateNote({
         content: selectedNode.content,
-        context
+        context,
+        model: selectedModel || board.settings.defaultModel
       });
 
       addNode({
@@ -451,7 +488,8 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
       const topics = await window.electronAPI.generateTopics({
         content: selectedNode.content,
         context,
-        maxTopics: 5
+        maxTopics: 5,
+        model: selectedModel || board.settings.defaultModel
       });
 
       // 生成されたトピックをノードとして追加
@@ -1296,6 +1334,38 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
                   </span>
                 )}
               </h3>
+              {/* モデル選択ドロップダウン */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginBottom: '8px'
+              }}>
+                <label style={{ fontSize: '12px', color: '#94a3b8' }}>
+                  🤖 モデル:
+                </label>
+                <select
+                  value={selectedModel || board?.settings.defaultModel || ''}
+                  onChange={(e) => handleModelChange(e.target.value)}
+                  disabled={isLoading || isAiResponding}
+                  style={{
+                    flex: 1,
+                    padding: '6px 10px',
+                    borderRadius: '6px',
+                    border: '1px solid #475569',
+                    background: '#0f172a',
+                    color: 'white',
+                    fontSize: '13px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {getModelsForProvider(board?.settings.defaultProvider || 'openai').map(model => (
+                    <option key={model.id} value={model.id}>
+                      {model.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <textarea
                 ref={questionInputRef}
                 value={questionInput}

@@ -1,0 +1,40 @@
+appId: com.minddigger.app
+productName: Mind Digger
+directories:
+  buildResources: build
+  output: dist
+files:
+  - "!**/.vscode/*"
+  - "!src/*"
+  - "!electron.vite.config.*"
+  - "!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}"
+  - "!{tsconfig*.json}"
+  - "!{.env,.env.*,.npmrc,pnpm-lock.yaml}"
+extraResources:
+  - from: resources/config
+    to: config
+    filter:
+      - "**/*"
+mac:
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    - NSCameraUsageDescription: Application requests access to the device's camera.
+    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+  notarize: false
+dmg:
+  artifactName: ${name}-${version}-mac.${ext}
+linux:
+  target:
+    - AppImage
+    - deb
+  maintainer: electronjs.org
+  category: Utility
+appImage:
+  artifactName: ${name}-${version}-linux.${ext}
+win:
+  target:
+    - nsis
+nsis:
+  artifactName: ${name}-${version}-win.${ext}
+  deleteAppDataOnUninstall: true

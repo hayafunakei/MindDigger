@@ -2,8 +2,9 @@
  * ツールバーコンポーネント
  * ファイル操作やボード作成などのアクションを提供
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useBoardStore } from '../stores/boardStore';
+import { useSettingsStore } from '../stores/settingsStore';
 import { SettingsDialog } from './SettingsDialog';
 import { BoardSelectorDialog } from './BoardSelectorDialog';
 
@@ -17,6 +18,25 @@ export const Toolbar: React.FC = () => {
   const [showBoardSelector, setShowBoardSelector] = useState(false);
   const [newBoardTitle, setNewBoardTitle] = useState('');
   const [newBoardDescription, setNewBoardDescription] = useState('');
+  const [newBoardModel, setNewBoardModel] = useState('');
+
+  // 設定ストアからモデル一覧を取得
+  const { availableModels, loadAvailableModels, getModelsForProvider, getDefaultModelForProvider, settings } = useSettingsStore();
+
+  // モデル一覧を読み込み
+  useEffect(() => {
+    if (!availableModels) {
+      loadAvailableModels();
+    }
+  }, [availableModels, loadAvailableModels]);
+
+  // デフォルトモデルを初期化
+  useEffect(() => {
+    if (!newBoardModel && availableModels) {
+      const defaultModel = settings.defaultModel || getDefaultModelForProvider('openai');
+      setNewBoardModel(defaultModel);
+    }
+  }, [availableModels, newBoardModel, settings.defaultModel, getDefaultModelForProvider]);
 
   /**
    * 新規ボードを作成
@@ -32,11 +52,12 @@ export const Toolbar: React.FC = () => {
         return;
       }
 
-      // ボードを作成
-      createBoard(newBoardTitle.trim(), newBoardDescription.trim() || undefined);
+      // ボードを作成（選択されたモデルを使用）
+      createBoard(newBoardTitle.trim(), newBoardDescription.trim() || undefined, newBoardModel || undefined);
       setShowNewBoardDialog(false);
       setNewBoardTitle('');
       setNewBoardDescription('');
+      setNewBoardModel('');
 
       // 作成後すぐに保存
       setTimeout(async () => {
@@ -228,6 +249,26 @@ export const Toolbar: React.FC = () => {
                   resize: 'vertical'
                 }}
               />
+            </div>
+
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px' }}>
+                🤖 デフォルトモデル
+              </label>
+              <select
+                value={newBoardModel || settings.defaultModel || ''}
+                onChange={(e) => setNewBoardModel(e.target.value)}
+                style={{
+                  ...inputStyle,
+                  cursor: 'pointer'
+                }}
+              >
+                {getModelsForProvider('openai').map(model => (
+                  <option key={model.id} value={model.id}>
+                    {model.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>

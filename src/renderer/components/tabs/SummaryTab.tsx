@@ -2,10 +2,11 @@
  * サマリータブコンポーネント
  * サマリーの生成・表示を担当
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useBoardStore } from '../../stores/boardStore';
+import { useSettingsStore } from '../../stores/settingsStore';
 import type { MindNode, NodeId } from '@shared/types';
 
 interface SummaryTabProps {
@@ -34,8 +35,27 @@ export const SummaryTab: React.FC<SummaryTabProps> = ({
   const [summary, setSummary] = useState<string>('');
   const [showSummary, setShowSummary] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  /** サマリー生成時に使用するモデル */
+  const [selectedModel, setSelectedModel] = useState<string>('');
+
+  // 設定ストアからモデル一覧を取得
+  const { availableModels, loadAvailableModels, getModelsForProvider } = useSettingsStore();
 
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
+
+  // モデル一覧を読み込み
+  useEffect(() => {
+    if (!availableModels) {
+      loadAvailableModels();
+    }
+  }, [availableModels, loadAvailableModels]);
+
+  // ボードのデフォルトモデルを初期選択モデルとして設定
+  useEffect(() => {
+    if (board && !selectedModel) {
+      setSelectedModel(board.settings.defaultModel);
+    }
+  }, [board, selectedModel]);
 
   /**
    * サマリーを生成
@@ -84,7 +104,8 @@ export const SummaryTab: React.FC<SummaryTabProps> = ({
           importance: n.metadata?.importance,
           pin: n.metadata?.pin,
           tags: n.metadata?.tags
-        }))
+        })),
+        model: selectedModel || board.settings.defaultModel
       };
 
       // デバッグ用: LLMに渡すサマリーリクエストをログ出力
@@ -200,6 +221,38 @@ export const SummaryTab: React.FC<SummaryTabProps> = ({
         <h3 style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#94a3b8' }}>
           📊 サマリー生成
         </h3>
+        {/* モデル選択ドロップダウン */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          marginBottom: '12px'
+        }}>
+          <label style={{ fontSize: '12px', color: '#94a3b8' }}>
+            🤖 モデル:
+          </label>
+          <select
+            value={selectedModel || board?.settings.defaultModel || ''}
+            onChange={(e) => setSelectedModel(e.target.value)}
+            disabled={isLoading || isAiResponding}
+            style={{
+              flex: 1,
+              padding: '6px 10px',
+              borderRadius: '6px',
+              border: '1px solid #475569',
+              background: '#0f172a',
+              color: 'white',
+              fontSize: '13px',
+              cursor: 'pointer'
+            }}
+          >
+            {getModelsForProvider(board?.settings.defaultProvider || 'openai').map(model => (
+              <option key={model.id} value={model.id}>
+                {model.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <button
             onClick={() => handleGenerateSummary('board')}

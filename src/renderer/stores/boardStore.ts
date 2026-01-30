@@ -32,7 +32,7 @@ interface BoardState {
 
 interface BoardActions {
   /** 新規ボードを作成 */
-  createBoard: (title: string, description?: string) => void;
+  createBoard: (title: string, description?: string, defaultModel?: string) => void;
   /** ボードデータをセット */
   setBoard: (data: BoardData, filePath?: string) => void;
   /** ボードをクリア */
@@ -77,6 +77,8 @@ interface BoardActions {
   setPendingFocusNodeId: (nodeId: NodeId) => void;
   /** フォーカス予約をクリア */
   clearPendingFocusNodeId: () => void;
+  /** ボード設定を更新 */
+  updateBoardSettings: (updates: Partial<Board['settings']>) => void;
 }
 
 export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
@@ -94,7 +96,7 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
   pendingFocusNodeId: null,
 
   // アクション
-  createBoard: (title, description) => {
+  createBoard: (title, description, defaultModel) => {
     const now = new Date().toISOString();
     const boardId = uuidv4();
     const rootNodeId = uuidv4();
@@ -148,7 +150,7 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
       updatedAt: now,
       settings: {
         defaultProvider: 'openai',
-        defaultModel: 'gpt-4o-mini',
+        defaultModel: defaultModel || 'gpt-5-mini',
         temperature: 0.7
       }
     };
@@ -474,5 +476,25 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
    */
   clearPendingFocusNodeId: () => {
     set({ pendingFocusNodeId: null });
+  },
+
+  /**
+   * ボード設定を更新
+   */
+  updateBoardSettings: (updates) => {
+    set((state) => {
+      if (!state.board) return state;
+      return {
+        board: {
+          ...state.board,
+          settings: {
+            ...state.board.settings,
+            ...updates
+          },
+          updatedAt: new Date().toISOString()
+        },
+        isDirty: true
+      };
+    });
   }
 }));

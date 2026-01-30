@@ -3,7 +3,25 @@ const electron = require("electron");
 const path = require("path");
 const utils = require("@electron-toolkit/utils");
 const promises = require("fs/promises");
+const yaml = require("js-yaml");
 const OpenAI = require("openai");
+function _interopNamespaceDefault(e) {
+  const n = Object.create(null, { [Symbol.toStringTag]: { value: "Module" } });
+  if (e) {
+    for (const k in e) {
+      if (k !== "default") {
+        const d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: () => e[k]
+        });
+      }
+    }
+  }
+  n.default = e;
+  return Object.freeze(n);
+}
+const yaml__namespace = /* @__PURE__ */ _interopNamespaceDefault(yaml);
 class OpenAIProvider {
   client;
   /**
@@ -20,7 +38,7 @@ class OpenAIProvider {
    */
   async chat(request) {
     const response = await this.client.chat.completions.create({
-      model: request.model || "gpt-4o-mini",
+      model: request.model || "gpt-5-mini",
       messages: request.messages.map((msg) => ({
         role: msg.role,
         content: msg.content
@@ -63,7 +81,7 @@ ${request.context}
 ${request.content}` : `次の内容から論点を抽出：
 ${request.content}`;
     const response = await this.client.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: request.model || "gpt-5-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
@@ -94,7 +112,7 @@ ${request.context}
 ${request.content}` : `次の内容をまとめてください：
 ${request.content}`;
     const response = await this.client.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: request.model || "gpt-5-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
@@ -153,7 +171,7 @@ ${nodesInfo}`;
     console.log(userPrompt);
     console.groupEnd();
     const response = await this.client.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: request.model || "gpt-5-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
@@ -225,16 +243,58 @@ function resetProviders() {
   openaiProvider = null;
 }
 const getSettingsPath = () => path.join(electron.app.getPath("userData"), "settings.json");
-const defaultSettings = {
-  theme: "system"
+const getModelsConfigPath = () => {
+  if (electron.app.isPackaged) {
+    return path.join(process.resourcesPath, "config", "models.yaml");
+  }
+  return path.join(electron.app.getAppPath(), "resources", "config", "models.yaml");
 };
+const defaultSettings = {
+  theme: "system",
+  defaultProvider: "openai",
+  defaultModel: "gpt-5-mini"
+};
+let cachedModelsConfig = null;
 let cachedSettings = null;
+async function loadModelsConfig() {
+  if (cachedModelsConfig) {
+    return cachedModelsConfig;
+  }
+  try {
+    const configPath = getModelsConfigPath();
+    const content = await promises.readFile(configPath, "utf-8");
+    cachedModelsConfig = yaml__namespace.load(content);
+    return cachedModelsConfig;
+  } catch (error) {
+    console.error("Failed to load models config:", error);
+    return {
+      providers: {
+        openai: {
+          name: "OpenAI",
+          enabled: true,
+          models: [
+            { id: "gpt-5-mini", name: "GPT-5 Mini", description: "高速でコスト効率の良いモデル", isDefault: true }
+          ]
+        },
+        anthropic: { name: "Anthropic", enabled: false, models: [] },
+        google: { name: "Google", enabled: false, models: [] },
+        local: { name: "Local", enabled: false, models: [] }
+      }
+    };
+  }
+}
 function registerSettingsHandlers() {
   electron.ipcMain.handle("get-settings", async () => {
     return getSettings();
   });
   electron.ipcMain.handle("save-settings", async (_, settings) => {
     await saveSettings(settings);
+  });
+  electron.ipcMain.handle("get-available-models", async () => {
+    const config = await loadModelsConfig();
+    return {
+      providers: config.providers
+    };
   });
 }
 async function getSettings() {

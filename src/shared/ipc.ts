@@ -1,7 +1,19 @@
 /**
  * IPC通信用の型定義
  */
-import type { Board, BoardData, MindNode } from './types';
+import type { Board, BoardData, MindNode, ModelConfig, Provider } from './types';
+
+/**
+ * 利用可能なモデル一覧のレスポンス
+ */
+export interface AvailableModelsResponse {
+  /** プロバイダーごとのモデル一覧 */
+  providers: Record<Provider, {
+    name: string;
+    enabled: boolean;
+    models: ModelConfig[];
+  }>;
+}
 
 /**
  * アプリ設定
@@ -13,6 +25,10 @@ export interface AppSettings {
   localEndpoint?: string;
   theme?: 'light' | 'dark' | 'system';
   parentFolderPath?: string; // ボードを管理する親フォルダ
+  /** デフォルトのLLMプロバイダー */
+  defaultProvider?: 'openai' | 'anthropic' | 'google' | 'local';
+  /** デフォルトのモデル */
+  defaultModel?: string;
 }
 
 /**
@@ -60,6 +76,8 @@ export interface GenerateTopicsRequest {
   content: string;
   context?: string;
   maxTopics?: number;
+  /** 使用するモデル */
+  model?: string;
 }
 
 /**
@@ -78,6 +96,8 @@ export interface GeneratedTopic {
 export interface GenerateNoteRequest {
   content: string;
   context?: string;
+  /** 使用するモデル */
+  model?: string;
 }
 
 /**
@@ -97,6 +117,8 @@ export interface GenerateSummaryRequest {
     pin?: boolean;
     tags?: string[];
   }>;
+  /** 使用するモデル */
+  model?: string;
 }
 
 /**
@@ -115,6 +137,7 @@ export interface ElectronAPI {
   // 設定
   getSettings: () => Promise<AppSettings>;
   saveSettings: (settings: AppSettings) => Promise<void>;
+  getAvailableModels: () => Promise<AvailableModelsResponse>;
   
   // LLM
   sendLLMRequest: (request: LLMRequest) => Promise<LLMResponse>;

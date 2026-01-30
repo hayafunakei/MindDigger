@@ -18,6 +18,7 @@ const electronAPI: ElectronAPI = {
   // 設定
   getSettings: () => ipcRenderer.invoke('get-settings'),
   saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
+  getAvailableModels: () => ipcRenderer.invoke('get-available-models'),
 
   // LLM
   sendLLMRequest: (request) => ipcRenderer.invoke('send-llm-request', request),

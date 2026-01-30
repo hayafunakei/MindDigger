@@ -25,7 +25,7 @@ export class OpenAIProvider {
    */
   async chat(request: LLMRequest): Promise<LLMResponse> {
     const response = await this.client.chat.completions.create({
-      model: request.model || 'gpt-4o-mini',
+      model: request.model || 'gpt-5-mini',
       messages: request.messages.map((msg) => ({
         role: msg.role,
         content: msg.content
@@ -70,7 +70,7 @@ export class OpenAIProvider {
       : `次の内容から論点を抽出：\n${request.content}`;
 
     const response = await this.client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: request.model || 'gpt-5-mini',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
@@ -103,7 +103,7 @@ export class OpenAIProvider {
       : `次の内容をまとめてください：\n${request.content}`;
 
     const response = await this.client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: request.model || 'gpt-5-mini',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
@@ -176,7 +176,7 @@ ${nodesInfo}`;
     console.groupEnd();
 
     const response = await this.client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: request.model || 'gpt-5-mini',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }

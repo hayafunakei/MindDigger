@@ -1,0 +1,41 @@
+# LLMモデル設定ファイル
+# プロバイダーごとに利用可能なモデルを定義
+
+# 各モデル設定:
+#   id: モデル識別子（API呼び出し時に使用）
+#   name: 表示名
+#   description: モデルの説明
+#   isDefault: デフォルトモデルかどうか（プロバイダーごとに1つ）
+
+providers:
+  openai:
+    name: OpenAI
+    enabled: true
+    models:
+      - id: gpt-4.1
+        name: GPT-4.1
+        description: 高性能なフラッグシップモデル
+        isDefault: false
+      - id: gpt-5-mini
+        name: GPT-5 Mini
+        description: 高速でコスト効率の良いモデル
+        isDefault: true
+      - id: gpt-5.2
+        name: GPT-5.2
+        description: 最新の高性能モデル
+        isDefault: false
+
+  anthropic:
+    name: Anthropic
+    enabled: false
+    models: []
+
+  google:
+    name: Google
+    enabled: false
+    models: []
+
+  local:
+    name: Local
+    enabled: false
+    models: []

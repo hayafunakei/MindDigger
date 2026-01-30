@@ -6,6 +6,39 @@
 /** LLMプロバイダー種別 */
 export type Provider = 'openai' | 'anthropic' | 'google' | 'local';
 
+/**
+ * LLMモデル設定
+ */
+export interface ModelConfig {
+  /** モデル識別子（API呼び出し時に使用） */
+  id: string;
+  /** 表示名 */
+  name: string;
+  /** モデルの説明 */
+  description?: string;
+  /** デフォルトモデルかどうか */
+  isDefault?: boolean;
+}
+
+/**
+ * プロバイダー設定
+ */
+export interface ProviderConfig {
+  /** プロバイダー名 */
+  name: string;
+  /** 有効かどうか */
+  enabled: boolean;
+  /** 利用可能なモデル一覧 */
+  models: ModelConfig[];
+}
+
+/**
+ * モデル設定ファイルの構造
+ */
+export interface ModelsConfigFile {
+  providers: Record<Provider, ProviderConfig>;
+}
+
 /** メッセージのロール */
 export type Role = 'user' | 'assistant' | 'system';
 

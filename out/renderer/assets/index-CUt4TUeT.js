@@ -12585,7 +12585,7 @@ const useBoardStore = create$2((set2, get2) => ({
   connectingFromNodeId: null,
   pendingFocusNodeId: null,
   // アクション
-  createBoard: (title, description) => {
+  createBoard: (title, description, defaultModel) => {
     const now2 = (/* @__PURE__ */ new Date()).toISOString();
     const boardId = v4();
     const rootNodeId = v4();
@@ -12635,7 +12635,7 @@ const useBoardStore = create$2((set2, get2) => ({
       updatedAt: now2,
       settings: {
         defaultProvider: "openai",
-        defaultModel: "gpt-4o-mini",
+        defaultModel: defaultModel || "gpt-5-mini",
         temperature: 0.7
       }
     };
@@ -12716,7 +12716,11 @@ const useBoardStore = create$2((set2, get2) => ({
       const getDescendants = (id2) => {
         const node2 = state.nodes.find((n) => n.id === id2);
         if (!node2) return [];
-        return [id2, ...node2.childrenIds.flatMap(getDescendants)];
+        const mainChildren = node2.childrenIds.filter((childId) => {
+          const child = state.nodes.find((n) => n.id === childId);
+          return child && child.parentIds[0] === id2;
+        });
+        return [id2, ...mainChildren.flatMap(getDescendants)];
       };
       const nodesToDelete = new Set(getDescendants(nodeId));
       const updatedNodes = state.nodes.filter((n) => !nodesToDelete.has(n.id)).map((n) => ({
@@ -12897,13 +12901,35 @@ const useBoardStore = create$2((set2, get2) => ({
    */
   clearPendingFocusNodeId: () => {
     set2({ pendingFocusNodeId: null });
+  },
+  /**
+   * ボード設定を更新
+   */
+  updateBoardSettings: (updates) => {
+    set2((state) => {
+      if (!state.board) return state;
+      return {
+        board: {
+          ...state.board,
+          settings: {
+            ...state.board.settings,
+            ...updates
+          },
+          updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+        },
+        isDirty: true
+      };
+    });
   }
 }));
 const useSettingsStore = create$2((set2, get2) => ({
   settings: {
-    theme: "system"
+    theme: "system",
+    defaultProvider: "openai",
+    defaultModel: "gpt-5-mini"
   },
   isLoaded: false,
+  availableModels: null,
   loadSettings: async () => {
     try {
       const settings = await window.electronAPI.getSettings();
@@ -12917,19 +12943,42 @@ const useSettingsStore = create$2((set2, get2) => ({
     const newSettings = { ...get2().settings, ...updates };
     await window.electronAPI.saveSettings(newSettings);
     set2({ settings: newSettings });
+  },
+  loadAvailableModels: async () => {
+    try {
+      const models = await window.electronAPI.getAvailableModels();
+      set2({ availableModels: models });
+    } catch (error) {
+      console.error("Failed to load available models:", error);
+    }
+  },
+  getModelsForProvider: (provider) => {
+    const { availableModels } = get2();
+    if (!availableModels) return [];
+    return availableModels.providers[provider]?.models || [];
+  },
+  getDefaultModelForProvider: (provider) => {
+    const models = get2().getModelsForProvider(provider);
+    const defaultModel = models.find((m) => m.isDefault);
+    return defaultModel?.id || models[0]?.id || "gpt-5-mini";
   }
 }));
 const SettingsDialog = ({ isOpen, onClose }) => {
-  const { settings, updateSettings } = useSettingsStore();
+  const { settings, updateSettings, availableModels, loadAvailableModels, getModelsForProvider } = useSettingsStore();
   const [openaiKey, setOpenaiKey] = reactExports.useState("");
   const [parentFolder, setParentFolder] = reactExports.useState("");
+  const [defaultModel, setDefaultModel] = reactExports.useState("");
   const [isSaving, setIsSaving] = reactExports.useState(false);
   reactExports.useEffect(() => {
     if (isOpen) {
       setOpenaiKey(settings.openaiApiKey || "");
       setParentFolder(settings.parentFolderPath || "");
+      setDefaultModel(settings.defaultModel || "gpt-5-mini");
+      if (!availableModels) {
+        loadAvailableModels();
+      }
     }
-  }, [isOpen, settings.openaiApiKey, settings.parentFolderPath]);
+  }, [isOpen, settings.openaiApiKey, settings.parentFolderPath, settings.defaultModel, availableModels, loadAvailableModels]);
   const handleSelectParentFolder = async () => {
     try {
       const folder = await window.electronAPI.selectParentFolder();
@@ -12946,7 +12995,9 @@ const SettingsDialog = ({ isOpen, onClose }) => {
     try {
       await updateSettings({
         openaiApiKey: openaiKey || void 0,
-        parentFolderPath: parentFolder || void 0
+        parentFolderPath: parentFolder || void 0,
+        defaultProvider: "openai",
+        defaultModel: defaultModel || "gpt-5-mini"
       });
       onClose();
     } catch (error) {
@@ -13045,6 +13096,33 @@ const SettingsDialog = ({ isOpen, onClose }) => {
         )
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { fontSize: "12px", color: "#64748b", marginTop: "6px" }, children: "新規ボードはこのフォルダ内に保存されます" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "20px" }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: { display: "block", marginBottom: "6px", fontSize: "14px" }, children: "🤖 デフォルトモデル" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "select",
+        {
+          value: defaultModel,
+          onChange: (e) => setDefaultModel(e.target.value),
+          style: {
+            width: "100%",
+            padding: "10px 12px",
+            borderRadius: "6px",
+            border: "1px solid #475569",
+            background: "#0f172a",
+            color: "white",
+            fontSize: "14px",
+            boxSizing: "border-box",
+            cursor: "pointer"
+          },
+          children: getModelsForProvider("openai").map((model) => /* @__PURE__ */ jsxRuntimeExports.jsxs("option", { value: model.id, children: [
+            model.name,
+            " - ",
+            model.description || ""
+          ] }, model.id))
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { fontSize: "12px", color: "#64748b", marginTop: "6px" }, children: "新規ボード作成時のデフォルトモデルを選択します" })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "12px", justifyContent: "flex-end" }, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -13289,18 +13367,32 @@ const Toolbar = () => {
   const [showBoardSelector, setShowBoardSelector] = reactExports.useState(false);
   const [newBoardTitle, setNewBoardTitle] = reactExports.useState("");
   const [newBoardDescription, setNewBoardDescription] = reactExports.useState("");
+  const [newBoardModel, setNewBoardModel] = reactExports.useState("");
+  const { availableModels, loadAvailableModels, getModelsForProvider, getDefaultModelForProvider, settings } = useSettingsStore();
+  reactExports.useEffect(() => {
+    if (!availableModels) {
+      loadAvailableModels();
+    }
+  }, [availableModels, loadAvailableModels]);
+  reactExports.useEffect(() => {
+    if (!newBoardModel && availableModels) {
+      const defaultModel = settings.defaultModel || getDefaultModelForProvider("openai");
+      setNewBoardModel(defaultModel);
+    }
+  }, [availableModels, newBoardModel, settings.defaultModel, getDefaultModelForProvider]);
   const handleCreateBoard = async () => {
     if (!newBoardTitle.trim()) return;
     try {
-      const settings = await window.electronAPI.getSettings();
-      if (!settings.parentFolderPath) {
+      const settings2 = await window.electronAPI.getSettings();
+      if (!settings2.parentFolderPath) {
         alert("先に親フォルダを選択してください（設定から変更可能）");
         return;
       }
-      createBoard(newBoardTitle.trim(), newBoardDescription.trim() || void 0);
+      createBoard(newBoardTitle.trim(), newBoardDescription.trim() || void 0, newBoardModel || void 0);
       setShowNewBoardDialog(false);
       setNewBoardTitle("");
       setNewBoardDescription("");
+      setNewBoardModel("");
       setTimeout(async () => {
         await handleSaveBoard();
       }, 100);
@@ -13471,6 +13563,21 @@ const Toolbar = () => {
               ...inputStyle,
               resize: "vertical"
             }
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginBottom: "24px" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: { display: "block", marginBottom: "6px", fontSize: "14px" }, children: "🤖 デフォルトモデル" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "select",
+          {
+            value: newBoardModel || settings.defaultModel || "",
+            onChange: (e) => setNewBoardModel(e.target.value),
+            style: {
+              ...inputStyle,
+              cursor: "pointer"
+            },
+            children: getModelsForProvider("openai").map((model) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: model.id, children: model.name }, model.id))
           }
         )
       ] }),
@@ -35263,6 +35370,7 @@ const TimelineModal = ({
   selectNode
 }) => {
   const [highlightedNodeId, setHighlightedNodeId] = reactExports.useState(null);
+  const contentRef = reactExports.useRef(null);
   reactExports.useEffect(() => {
     if (isOpen) {
       setHighlightedNodeId(null);
@@ -35285,6 +35393,11 @@ const TimelineModal = ({
     }
     return timeline;
   }, [selectedNode, getNodeById]);
+  reactExports.useEffect(() => {
+    if (isOpen && contentRef.current) {
+      contentRef.current.scrollTop = contentRef.current.scrollHeight;
+    }
+  }, [isOpen, timelineNodes]);
   const handleNodeClick2 = reactExports.useCallback((nodeId) => {
     setHighlightedNodeId(nodeId);
   }, []);
@@ -35314,7 +35427,7 @@ const TimelineModal = ({
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: { margin: 0, fontSize: "18px", display: "flex", alignItems: "center", gap: "8px" }, children: "🕒 タイムライン" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onClose, style: closeButtonStyle, children: "✕" })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: contentStyle, children: timelineNodes.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "40px" }, children: "ノードを選択してください" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: timelineContainerStyle, children: timelineNodes.map((node2, index2) => {
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { ref: contentRef, style: contentStyle, children: timelineNodes.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "40px" }, children: "ノードを選択してください" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: timelineContainerStyle, children: timelineNodes.map((node2, index2) => {
       const isCurrentNode = node2.id === selectedNodeId;
       const isHighlighted = node2.id === highlightedNodeId;
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -35937,9 +36050,21 @@ const NodeEditTab = ({
   const [editContent, setEditContent] = reactExports.useState("");
   const [showTimelineModal, setShowTimelineModal] = reactExports.useState(false);
   const [showCreateTopicModal, setShowCreateTopicModal] = reactExports.useState(false);
+  const [selectedModel, setSelectedModel] = reactExports.useState("");
   const questionInputRef = reactExports.useRef(null);
+  const { availableModels, loadAvailableModels, getModelsForProvider } = useSettingsStore();
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
   const questionEditState = selectedNode ? getQuestionEditState(selectedNode, nodes) : "editable";
+  reactExports.useEffect(() => {
+    if (!availableModels) {
+      loadAvailableModels();
+    }
+  }, [availableModels, loadAvailableModels]);
+  reactExports.useEffect(() => {
+    if (board && !selectedModel) {
+      setSelectedModel(board.settings.defaultModel);
+    }
+  }, [board, selectedModel]);
   reactExports.useEffect(() => {
     if (selectedNode) {
       setEditTitle(selectedNode.title || "");
@@ -35965,6 +36090,12 @@ const NodeEditTab = ({
       return () => clearTimeout(timer2);
     }
   }, [pendingFocusNodeId, selectedNodeId, clearPendingFocusNodeId]);
+  const handleModelChange = reactExports.useCallback((newModel) => {
+    setSelectedModel(newModel);
+    if (board) {
+      useBoardStore.getState().updateBoardSettings({ defaultModel: newModel });
+    }
+  }, [board]);
   const handleSendQuestion = reactExports.useCallback(async () => {
     if (!questionInput.trim() || !selectedNode || !board) return;
     if (selectedNode.type !== "message" || selectedNode.role !== "user") return;
@@ -35984,6 +36115,7 @@ const NodeEditTab = ({
       updateNode(selectedNode.id, {
         content: questionInput.trim()
       });
+      const modelToUse = selectedModel || board.settings.defaultModel;
       const qaPairId = `qa-${Date.now()}`;
       const loadingNode = addNode2({
         boardId: board.id,
@@ -35993,7 +36125,7 @@ const NodeEditTab = ({
         content: "回答を生成中...",
         parentIds: [selectedNode.id],
         provider: board.settings.defaultProvider,
-        model: board.settings.defaultModel,
+        model: modelToUse,
         createdBy: "ai",
         position: {
           x: selectedNode.position.x,
@@ -36022,13 +36154,13 @@ const NodeEditTab = ({
       ];
       console.log("[LLM Request] handleSendQuestion:", {
         provider: board.settings.defaultProvider,
-        model: board.settings.defaultModel,
+        model: modelToUse,
         messages: llmMessages,
         temperature: board.settings.temperature
       });
       const response = await window.electronAPI.sendLLMRequest({
         provider: board.settings.defaultProvider,
-        model: board.settings.defaultModel,
+        model: modelToUse,
         messages: llmMessages,
         temperature: board.settings.temperature
       });
@@ -36060,7 +36192,8 @@ const NodeEditTab = ({
         const topics = await window.electronAPI.generateTopics({
           content: response.content,
           context: topicContext,
-          maxTopics: 5
+          maxTopics: 5,
+          model: modelToUse
         });
         deleteNode(topicLoadingNode.id);
         topics.forEach((topic, index2) => {
@@ -36131,7 +36264,8 @@ const NodeEditTab = ({
       const context = contextMessages.map((m) => `${m.role}: ${m.content}`).join("\n\n");
       const noteContent = await window.electronAPI.generateNote({
         content: selectedNode.content,
-        context
+        context,
+        model: selectedModel || board.settings.defaultModel
       });
       addNode2({
         boardId: board.id,
@@ -36189,7 +36323,8 @@ const NodeEditTab = ({
       const topics = await window.electronAPI.generateTopics({
         content: selectedNode.content,
         context,
-        maxTopics: 5
+        maxTopics: 5,
+        model: selectedModel || board.settings.defaultModel
       });
       topics.forEach((topic, index2) => {
         addNode2({
@@ -36591,6 +36726,130 @@ const NodeEditTab = ({
               ]
             }
           )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { marginTop: "12px" }, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: { color: "#e2e8f0", display: "block", marginBottom: "8px" }, children: "🏷️ タグ" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "6px",
+            marginBottom: "8px"
+          }, children: [
+            (selectedNode.metadata?.tags || []).map((tag, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "span",
+              {
+                style: {
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "4px 8px",
+                  background: "#3b82f6",
+                  borderRadius: "12px",
+                  fontSize: "12px",
+                  color: "white"
+                },
+                children: [
+                  tag,
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "button",
+                    {
+                      onClick: () => {
+                        const currentTags = selectedNode.metadata?.tags || [];
+                        const newTags = currentTags.filter((_, i) => i !== index2);
+                        updateNode(selectedNode.id, {
+                          metadata: {
+                            ...selectedNode.metadata,
+                            tags: newTags.length > 0 ? newTags : void 0
+                          }
+                        });
+                      },
+                      style: {
+                        background: "transparent",
+                        border: "none",
+                        color: "white",
+                        cursor: "pointer",
+                        padding: "0",
+                        fontSize: "14px",
+                        lineHeight: "1",
+                        opacity: 0.7
+                      },
+                      title: "タグを削除",
+                      children: "×"
+                    }
+                  )
+                ]
+              },
+              index2
+            )),
+            (!selectedNode.metadata?.tags || selectedNode.metadata.tags.length === 0) && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#64748b", fontSize: "12px" }, children: "タグなし" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "6px" }, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                type: "text",
+                placeholder: "新しいタグを入力...",
+                onKeyDown: (e) => {
+                  if (e.key === "Enter") {
+                    const input = e.currentTarget;
+                    const newTag = input.value.trim();
+                    if (newTag) {
+                      const currentTags = selectedNode.metadata?.tags || [];
+                      if (!currentTags.includes(newTag)) {
+                        updateNode(selectedNode.id, {
+                          metadata: {
+                            ...selectedNode.metadata,
+                            tags: [...currentTags, newTag]
+                          }
+                        });
+                      }
+                      input.value = "";
+                    }
+                  }
+                },
+                style: {
+                  flex: 1,
+                  padding: "6px 10px",
+                  borderRadius: "6px",
+                  border: "1px solid #475569",
+                  background: "#0f172a",
+                  color: "white",
+                  fontSize: "12px"
+                }
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                onClick: (e) => {
+                  const input = e.currentTarget.previousElementSibling;
+                  const newTag = input.value.trim();
+                  if (newTag) {
+                    const currentTags = selectedNode.metadata?.tags || [];
+                    if (!currentTags.includes(newTag)) {
+                      updateNode(selectedNode.id, {
+                        metadata: {
+                          ...selectedNode.metadata,
+                          tags: [...currentTags, newTag]
+                        }
+                      });
+                    }
+                    input.value = "";
+                  }
+                },
+                style: {
+                  padding: "6px 12px",
+                  borderRadius: "6px",
+                  border: "none",
+                  background: "#3b82f6",
+                  color: "white",
+                  fontSize: "12px",
+                  cursor: "pointer"
+                },
+                children: "追加"
+              }
+            )
+          ] })
         ] })
       ] })
     ] }),
@@ -36785,6 +37044,33 @@ const NodeEditTab = ({
             marginLeft: "8px",
             fontWeight: "normal"
           }, children: "(再送信時は既存の回答が削除されます)" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          marginBottom: "8px"
+        }, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: { fontSize: "12px", color: "#94a3b8" }, children: "🤖 モデル:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "select",
+            {
+              value: selectedModel || board?.settings.defaultModel || "",
+              onChange: (e) => handleModelChange(e.target.value),
+              disabled: isLoading || isAiResponding,
+              style: {
+                flex: 1,
+                padding: "6px 10px",
+                borderRadius: "6px",
+                border: "1px solid #475569",
+                background: "#0f172a",
+                color: "white",
+                fontSize: "13px",
+                cursor: "pointer"
+              },
+              children: getModelsForProvider(board?.settings.defaultProvider || "openai").map((model) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: model.id, children: model.name }, model.id))
+            }
+          )
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "textarea",
@@ -36986,7 +37272,19 @@ const SummaryTab = ({
   const [summary, setSummary] = reactExports.useState("");
   const [showSummary, setShowSummary] = reactExports.useState(false);
   const [isLoading, setIsLoading] = reactExports.useState(false);
+  const [selectedModel, setSelectedModel] = reactExports.useState("");
+  const { availableModels, loadAvailableModels, getModelsForProvider } = useSettingsStore();
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
+  reactExports.useEffect(() => {
+    if (!availableModels) {
+      loadAvailableModels();
+    }
+  }, [availableModels, loadAvailableModels]);
+  reactExports.useEffect(() => {
+    if (board && !selectedModel) {
+      setSelectedModel(board.settings.defaultModel);
+    }
+  }, [board, selectedModel]);
   const handleGenerateSummary = reactExports.useCallback(async (scope) => {
     if (!board) return;
     setIsLoading(true);
@@ -37022,7 +37320,8 @@ const SummaryTab = ({
           importance: n.metadata?.importance,
           pin: n.metadata?.pin,
           tags: n.metadata?.tags
-        }))
+        })),
+        model: selectedModel || board.settings.defaultModel
       };
       console.group("📋 Summary Generation Request");
       console.log("Scope:", scope);
@@ -37116,6 +37415,33 @@ const SummaryTab = ({
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: { margin: "0 0 12px 0", fontSize: "14px", color: "#94a3b8" }, children: "📊 サマリー生成" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        marginBottom: "12px"
+      }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: { fontSize: "12px", color: "#94a3b8" }, children: "🤖 モデル:" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "select",
+          {
+            value: selectedModel || board?.settings.defaultModel || "",
+            onChange: (e) => setSelectedModel(e.target.value),
+            disabled: isLoading || isAiResponding,
+            style: {
+              flex: 1,
+              padding: "6px 10px",
+              borderRadius: "6px",
+              border: "1px solid #475569",
+              background: "#0f172a",
+              color: "white",
+              fontSize: "13px",
+              cursor: "pointer"
+            },
+            children: getModelsForProvider(board?.settings.defaultProvider || "openai").map((model) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: model.id, children: model.name }, model.id))
+          }
+        )
+      ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", flexDirection: "column", gap: "8px" }, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
