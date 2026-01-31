@@ -64,7 +64,7 @@ class OpenAIProvider {
    */
   async generateTopics(request) {
     const maxTopics = request.maxTopics || 5;
-    const systemPrompt = `あなたは思考整理の専門家です。与えられた内容から、さらに深掘りすべき論点や検討事項を抽出してください。
+    const systemPrompt = `あなたは思考整理の専門家です。与えられた内容から、論点を抽出してください。
 各トピックは以下のJSON形式で出力してください：
 {
   "title": "論点のタイトル（簡潔に）",

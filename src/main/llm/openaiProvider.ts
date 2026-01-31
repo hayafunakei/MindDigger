@@ -54,11 +54,11 @@ export class OpenAIProvider {
    */
   async generateTopics(request: GenerateTopicsRequest): Promise<GeneratedTopic[]> {
     const maxTopics = request.maxTopics || 5;
-    const systemPrompt = `あなたは思考整理の専門家です。与えられた内容から、さらに深掘りすべき論点や検討事項を抽出してください。
+    const systemPrompt = `あなたは思考整理の専門家です。与えられた内容からトピックを抽出してください。
 各トピックは以下のJSON形式で出力してください：
 {
-  "title": "論点のタイトル（簡潔に）",
-  "description": "論点の説明（省略可）",
+  "title": "トピックのタイトル（簡潔に）",
+  "description": "トピックの説明（省略可）",
   "importance": 1-5の重要度,
   "tags": ["タグ1", "タグ2"]
 }
@@ -66,8 +66,8 @@ export class OpenAIProvider {
 最大${maxTopics}個のトピックを配列形式で返してください。`;
 
     const userPrompt = request.context
-      ? `以下の文脈を踏まえて：\n${request.context}\n\n次の内容から論点を抽出：\n${request.content}`
-      : `次の内容から論点を抽出：\n${request.content}`;
+      ? `以下の文脈を踏まえて：\n${request.context}\n\n次の内容からトピックを抽出：\n${request.content}`
+      : `次の内容からトピックを抽出：\n${request.content}`;
 
     const response = await this.client.chat.completions.create({
       model: request.model || 'gpt-5-mini',
@@ -133,7 +133,7 @@ export class OpenAIProvider {
 
     const systemPrompt = `あなたは思考整理の専門家です。与えられたノード情報から、以下の観点で要約を作成してください：
 
-1. **重要な論点**: 検討されている主要なテーマ
+1. **重要なトピック**: 検討されている主要なテーマ
 2. **決定事項**: 📌ピン留めされたノードから抽出（ピン留め = 確定・決定を意味する）
 3. **メモ・検討内容**: noteノードの内容を要約
 4. **未解決の課題**: topicノードから抽出

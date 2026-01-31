@@ -36171,7 +36171,7 @@ const NodeEditTab = ({
       const contextMessages = formatContextForLLM({
         mainContext: mainContextWithoutSelf,
         subContexts: contextResult.subContexts
-      });
+      }, nodes);
       const llmMessages = [
         {
           role: "system",
@@ -37145,6 +37145,11 @@ const NodeEditTab = ({
     ) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", color: "#64748b", padding: "12px", background: "#0f172a", borderRadius: "8px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontSize: "13px" }, children: "トピックを選択して「質問ノードを作成」した後、その質問ノードを選択して入力してください。" }) })
   ] });
 };
+function collectPinnedNodes(allNodes, excludeIds) {
+  return allNodes.filter(
+    (node2) => node2.metadata?.pin === true && !excludeIds.has(node2.id)
+  );
+}
 function nodeToContextMessage(node2) {
   if (node2.type === "message") {
     return {
@@ -37223,8 +37228,25 @@ function collectContextWithSubParents(nodes, startNode) {
   }
   return { mainContext, subContexts };
 }
-function formatContextForLLM(contextResult) {
+function formatContextForLLM(contextResult, allNodes) {
   const messages = [];
+  const includedNodeIds = /* @__PURE__ */ new Set();
+  if (allNodes && allNodes.length > 0) {
+    const pinnedNodes = collectPinnedNodes(allNodes, includedNodeIds);
+    if (pinnedNodes.length > 0) {
+      const pinnedTexts = pinnedNodes.map((node2) => {
+        const typeLabel = node2.type === "note" ? "メモ" : node2.type === "topic" ? "トピック" : node2.type === "root" ? "テーマ" : "メッセージ";
+        const title = node2.title ? `${node2.title}: ` : "";
+        return `📌 [${typeLabel}] ${title}${node2.content}`;
+      });
+      messages.push({
+        role: "system",
+        content: `--- 決定事項・重要な前提 ---
+${pinnedTexts.join("\n\n")}
+--- 決定事項ここまで ---`
+      });
+    }
+  }
   for (const msg of contextResult.mainContext) {
     messages.push({ role: msg.role, content: msg.content });
   }
@@ -37247,7 +37269,7 @@ function formatContextForLLM(contextResult) {
 }
 function collectContext(nodes, startNode) {
   const result = collectContextWithSubParents(nodes, startNode);
-  return formatContextForLLM(result);
+  return formatContextForLLM(result, nodes);
 }
 function getNodeTypeIcon(type) {
   switch (type) {

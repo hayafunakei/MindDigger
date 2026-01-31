@@ -253,10 +253,11 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
       const contextResult = collectContextWithSubParents(nodes, selectedNode);
       // selectedNode自身をメインコンテキストから除外（最後の要素）
       const mainContextWithoutSelf = contextResult.mainContext.slice(0, -1);
+      // pin留めノードを含めてコンテキストを生成
       const contextMessages = formatContextForLLM({
         mainContext: mainContextWithoutSelf,
         subContexts: contextResult.subContexts
-      });
+      }, nodes);
       
       // LLMにリクエスト
       const llmMessages = [
@@ -1435,6 +1436,18 @@ interface ContextResult {
 }
 
 /**
+ * ボード全体からpin留めノードを収集する
+ * @param allNodes - ボード内の全ノード
+ * @param excludeIds - 除外するノードID（既にコンテキストに含まれているもの）
+ * @returns pin留めノードの配列
+ */
+function collectPinnedNodes(allNodes: MindNode[], excludeIds: Set<string>): MindNode[] {
+  return allNodes.filter(node => 
+    node.metadata?.pin === true && !excludeIds.has(node.id)
+  );
+}
+
+/**
  * ノードからコンテキストメッセージを生成
  */
 function nodeToContextMessage(node: MindNode): { role: 'user' | 'assistant' | 'system'; content: string; nodeType: string } | null {
@@ -1555,11 +1568,42 @@ function collectContextWithSubParents(nodes: MindNode[], startNode: MindNode): C
 
 /**
  * コンテキストをLLM用のメッセージ配列に変換
+ * @param contextResult - メイン・サブコンテキスト
+ * @param allNodes - ボード全体のノード（pin留めノード収集用、省略可）
  */
 function formatContextForLLM(
-  contextResult: ContextResult
+  contextResult: ContextResult,
+  allNodes?: MindNode[]
 ): Array<{ role: 'user' | 'assistant' | 'system'; content: string }> {
   const messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }> = [];
+  
+  // メインコンテキストに含まれるノードIDを収集（重複除外用）
+  const includedNodeIds = new Set<string>();
+  // ※ contextResultにはnodeIdが含まれていないため、contentベースでは判別できない
+  // ここではnodeTypeを頼りに判別し、別途allNodesからpin留めを検索する
+  
+  // pin留めノードを収集してコンテキストに追加（決定事項・重要な前提）
+  if (allNodes && allNodes.length > 0) {
+    // メイン・サブコンテキストで既に含まれているノードを特定するため、
+    // collectContextWithSubParentsでvisitedIdsを返すよう拡張が必要だが、
+    // 現状はシンプルにpin留めノードすべてを追加（重複は許容）
+    const pinnedNodes = collectPinnedNodes(allNodes, includedNodeIds);
+    
+    if (pinnedNodes.length > 0) {
+      const pinnedTexts = pinnedNodes.map(node => {
+        const typeLabel = node.type === 'note' ? 'メモ' : 
+                         node.type === 'topic' ? 'トピック' : 
+                         node.type === 'root' ? 'テーマ' : 'メッセージ';
+        const title = node.title ? `${node.title}: ` : '';
+        return `📌 [${typeLabel}] ${title}${node.content}`;
+      });
+      
+      messages.push({
+        role: 'system',
+        content: `--- 決定事項・重要な前提 ---\n${pinnedTexts.join('\n\n')}\n--- 決定事項ここまで ---`
+      });
+    }
+  }
   
   // メイン親チェーンを追加
   for (const msg of contextResult.mainContext) {
@@ -1587,11 +1631,14 @@ function formatContextForLLM(
 
 /**
  * 旧API互換: コンテキストメッセージを収集する
- * @deprecated collectContextWithSubParents を使用してください
+ * @param nodes - ノード一覧
+ * @param startNode - 開始ノード
+ * @deprecated collectContextWithSubParents + formatContextForLLM を使用してください
  */
 function collectContext(nodes: MindNode[], startNode: MindNode): Array<{ role: 'user' | 'assistant' | 'system'; content: string }> {
   const result = collectContextWithSubParents(nodes, startNode);
-  return formatContextForLLM(result);
+  // pin留めノードも含めてコンテキストを生成
+  return formatContextForLLM(result, nodes);
 }
 
 function getNodeTypeIcon(type: NodeType): string {
