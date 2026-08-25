@@ -5,11 +5,12 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { v4 as uuidv4 } from 'uuid';
 import { useBoardStore } from '../../stores/boardStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { TimelineModal } from '../TimelineModal';
 import { CreateTopicModal } from '../CreateTopicModal';
-import type { MindNode, NodeType, NodeId } from '@shared/types';
+import type { MindNode, NodeType, NodeId, TopicCollectionItem } from '@shared/types';
 
 interface NodeEditTabProps {
   /** AI応答中フラグ（外部からの制御用） */
@@ -123,6 +124,12 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
   const [editContent, setEditContent] = useState('');
   const [showTimelineModal, setShowTimelineModal] = useState(false);
   const [showCreateTopicModal, setShowCreateTopicModal] = useState(false);
+  const [selectedTopicItemIds, setSelectedTopicItemIds] = useState<Set<string>>(new Set());
+  const [editingTopicItemId, setEditingTopicItemId] = useState<string | null>(null);
+  const [topicItemTitle, setTopicItemTitle] = useState('');
+  const [topicItemDescription, setTopicItemDescription] = useState('');
+  const [newTopicItemTitle, setNewTopicItemTitle] = useState('');
+  const [newTopicItemDescription, setNewTopicItemDescription] = useState('');
   /** 質問時に使用するモデル */
   const [selectedModel, setSelectedModel] = useState<string>('');
   const questionInputRef = useRef<HTMLTextAreaElement>(null);
@@ -131,6 +138,62 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
   const { availableModels, loadAvailableModels, getModelsForProvider, settings: appSettings } = useSettingsStore();
 
   const selectedNode = selectedNodeId ? getNodeById(selectedNodeId) : null;
+  const hasTopicCollectionChild = selectedNode?.childrenIds.some((childId) => {
+    return getNodeById(childId)?.type === 'topicCollection';
+  }) ?? false;
+
+  /**
+   * 回答ノードの子としてトピック集を生成する
+   * @param answerNode - トピック集の親となる回答ノード
+   * @param context - 抽出時に参照する会話文脈
+   */
+  const generateTopicCollectionForAnswer = useCallback(async (
+    answerNode: MindNode,
+    context: string
+  ): Promise<void> => {
+    if (!board) return;
+
+    const hasTopicCollection = answerNode.childrenIds.some((childId) => {
+      return getNodeById(childId)?.type === 'topicCollection';
+    });
+    if (hasTopicCollection) return;
+
+    const loadingNode = addNode({
+      boardId: board.id,
+      type: 'topicCollection',
+      role: 'system',
+      title: 'トピック集',
+      content: 'トピック項目を抽出中...',
+      parentIds: [answerNode.id],
+      createdBy: 'ai',
+      position: {
+        x: answerNode.position.x,
+        y: answerNode.position.y + 150
+      },
+      topicItems: [],
+      isLoading: true
+    });
+
+    try {
+      const items = await window.electronAPI.generateTopicCollection({
+        content: answerNode.content,
+        context,
+        model: appSettings.topicGenerationModel || board.settings.defaultModel
+      });
+
+      updateNode(loadingNode.id, {
+        content: `${items.length}件のトピック項目`,
+        topicItems: items.map((item) => ({
+          ...item,
+          id: uuidv4()
+        })),
+        isLoading: false
+      });
+    } catch (error) {
+      deleteNode(loadingNode.id);
+      throw error;
+    }
+  }, [addNode, appSettings.topicGenerationModel, board, deleteNode, getNodeById, updateNode]);
 
   // 質問ノードの編集状態を判定
   const questionEditState = selectedNode ? getQuestionEditState(selectedNode, nodes) : 'editable';
@@ -164,6 +227,12 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
       setQuestionInput('');
     }
     setIsEditing(false);
+    setSelectedTopicItemIds(new Set());
+    setEditingTopicItemId(null);
+    setTopicItemTitle('');
+    setTopicItemDescription('');
+    setNewTopicItemTitle('');
+    setNewTopicItemDescription('');
   }, [selectedNode]);
 
   // 質問ノード作成・複製後のフォーカス制御
@@ -293,23 +362,7 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
         isLoading: false
       });
 
-      // 回答からトピックを自動生成
-      // まずローディング用の仮トピックノードを作成
-      const topicLoadingNode = addNode({
-        boardId: board.id,
-        type: 'topic',
-        role: 'system',
-        title: '',
-        content: 'トピック抽出中...',
-        parentIds: [loadingNode.id],
-        createdBy: 'ai',
-        position: {
-          x: loadingNode.position.x,
-          y: loadingNode.position.y + 150
-        },
-        isLoading: true
-      });
-
+      // 回答からトピック集を自動生成
       try {
         // コンテキストを収集（回答を含む）
         const topicContext = [
@@ -318,40 +371,13 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
           `assistant: ${response.content}`
         ].join('\n\n');
 
-        const topics = await window.electronAPI.generateTopics({
+        await generateTopicCollectionForAnswer({
+          ...loadingNode,
           content: response.content,
-          context: topicContext,
-          maxTopics: 5,
-          model: appSettings.topicGenerationModel || board.settings.defaultModel
-        });
-
-        // ローディングノードを削除
-        deleteNode(topicLoadingNode.id);
-
-        // 生成されたトピックをノードとして追加（回答ノードの子として）
-        topics.forEach((topic, index) => {
-          addNode({
-            boardId: board.id,
-            type: 'topic',
-            role: 'system',
-            title: topic.title,
-            content: topic.description || topic.title,
-            parentIds: [loadingNode.id],
-            createdBy: 'ai',
-            position: {
-              x: loadingNode.position.x + (index - Math.floor(topics.length / 2)) * 150,
-              y: loadingNode.position.y + 150
-            },
-            metadata: {
-              importance: topic.importance,
-              tags: topic.tags
-            }
-          });
-        });
+          isLoading: false
+        }, topicContext);
       } catch (topicError) {
-        // トピック生成に失敗した場合はローディングノードを削除
-        deleteNode(topicLoadingNode.id);
-        console.warn('Failed to auto-generate topics:', topicError);
+        console.warn('Failed to auto-generate topic collection:', topicError);
       }
 
       setQuestionInput('');
@@ -374,7 +400,7 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
       setIsLoading(false);
       setIsAiResponding(false);
     }
-  }, [questionInput, selectedNode, board, nodes, getNodeById, addNode, updateNode, deleteNode, setIsAiResponding]);
+  }, [questionInput, selectedNode, board, nodes, getNodeById, addNode, updateNode, deleteNode, setIsAiResponding, generateTopicCollectionForAnswer]);
 
   /**
    * ノートを作成
@@ -474,10 +500,15 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
   }, [selectedNode, board, addNode, selectNode, setPendingFocusNodeId]);
 
   /**
-   * トピックを生成
+   * 回答からトピック集を生成する
    */
-  const handleGenerateTopics = useCallback(async () => {
-    if (!selectedNode || !board) return;
+  const handleGenerateTopicCollection = useCallback(async () => {
+    if (!selectedNode || selectedNode.type !== 'message' || selectedNode.role !== 'assistant' || !board) return;
+
+    const hasTopicCollection = selectedNode.childrenIds.some((childId) => {
+      return getNodeById(childId)?.type === 'topicCollection';
+    });
+    if (hasTopicCollection) return;
 
     setIsLoading(true);
     setIsAiResponding(true);
@@ -486,41 +517,15 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
       const contextMessages = collectContext(nodes, selectedNode);
       const context = contextMessages.map(m => `${m.role}: ${m.content}`).join('\n\n');
 
-      const topics = await window.electronAPI.generateTopics({
-        content: selectedNode.content,
-        context,
-        maxTopics: 5,
-        model: appSettings.topicGenerationModel || board.settings.defaultModel
-      });
-
-      // 生成されたトピックをノードとして追加
-      topics.forEach((topic, index) => {
-        addNode({
-          boardId: board.id,
-          type: 'topic',
-          role: 'system',
-          title: topic.title,
-          content: topic.description || topic.title,
-          parentIds: [selectedNode.id],
-          createdBy: 'ai',
-          position: {
-            x: selectedNode.position.x + (index - Math.floor(topics.length / 2)) * 150,
-            y: selectedNode.position.y + 200
-          },
-          metadata: {
-            importance: topic.importance,
-            tags: topic.tags
-          }
-        });
-      });
+      await generateTopicCollectionForAnswer(selectedNode, context);
     } catch (error) {
-      console.error('Failed to generate topics:', error);
-      alert(`トピック生成に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
+      console.error('Failed to generate topic collection:', error);
+      alert(`トピック集の生成に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
     } finally {
       setIsLoading(false);
       setIsAiResponding(false);
     }
-  }, [selectedNode, board, nodes, addNode, setIsAiResponding]);
+  }, [selectedNode, board, nodes, getNodeById, generateTopicCollectionForAnswer, setIsAiResponding]);
 
   /**
    * 手動でトピックを作成
@@ -551,6 +556,127 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
       }
     });
   }, [selectedNode, board, addNode]);
+
+  /**
+   * トピック集の選択状態を切り替える
+   * @param itemId - 選択を切り替える項目ID
+   */
+  const handleToggleTopicItem = useCallback((itemId: string) => {
+    setSelectedTopicItemIds((currentIds) => {
+      const nextIds = new Set(currentIds);
+      if (nextIds.has(itemId)) {
+        nextIds.delete(itemId);
+      } else {
+        nextIds.add(itemId);
+      }
+      return nextIds;
+    });
+  }, []);
+
+  /**
+   * トピック集に手動項目を追加する
+   */
+  const handleAddTopicItem = useCallback(() => {
+    if (!selectedNode || selectedNode.type !== 'topicCollection') return;
+    const title = newTopicItemTitle.trim();
+    if (!title) return;
+
+    const item: TopicCollectionItem = {
+      id: uuidv4(),
+      title,
+      description: newTopicItemDescription.trim()
+    };
+    updateNode(selectedNode.id, {
+      topicItems: [...(selectedNode.topicItems || []), item],
+      content: `${(selectedNode.topicItems?.length || 0) + 1}件のトピック項目`
+    });
+    setNewTopicItemTitle('');
+    setNewTopicItemDescription('');
+  }, [newTopicItemDescription, newTopicItemTitle, selectedNode, updateNode]);
+
+  /**
+   * トピック集項目の編集を開始する
+   * @param item - 編集対象の項目
+   */
+  const handleStartEditTopicItem = useCallback((item: TopicCollectionItem) => {
+    setEditingTopicItemId(item.id);
+    setTopicItemTitle(item.title);
+    setTopicItemDescription(item.description);
+  }, []);
+
+  /**
+   * 編集中のトピック集項目を保存する
+   */
+  const handleSaveTopicItem = useCallback(() => {
+    if (!selectedNode || selectedNode.type !== 'topicCollection' || !editingTopicItemId) return;
+    const title = topicItemTitle.trim();
+    if (!title) return;
+
+    updateNode(selectedNode.id, {
+      topicItems: (selectedNode.topicItems || []).map((item) => {
+        return item.id === editingTopicItemId
+          ? { ...item, title, description: topicItemDescription.trim() }
+          : item;
+      })
+    });
+    setEditingTopicItemId(null);
+    setTopicItemTitle('');
+    setTopicItemDescription('');
+  }, [editingTopicItemId, selectedNode, topicItemDescription, topicItemTitle, updateNode]);
+
+  /**
+   * トピック集から項目を削除する
+   * @param itemId - 削除対象の項目ID
+   */
+  const handleDeleteTopicItem = useCallback((itemId: string) => {
+    if (!selectedNode || selectedNode.type !== 'topicCollection') return;
+
+    const topicItems = (selectedNode.topicItems || []).filter((item) => item.id !== itemId);
+    updateNode(selectedNode.id, {
+      topicItems,
+      content: `${topicItems.length}件のトピック項目`
+    });
+    setSelectedTopicItemIds((currentIds) => {
+      const nextIds = new Set(currentIds);
+      nextIds.delete(itemId);
+      return nextIds;
+    });
+    if (editingTopicItemId === itemId) {
+      setEditingTopicItemId(null);
+    }
+  }, [editingTopicItemId, selectedNode, updateNode]);
+
+  /**
+   * 選択したトピック集項目から通常のトピックを作成する
+   */
+  const handleCreateTopicFromSelectedItems = useCallback(() => {
+    if (!selectedNode || selectedNode.type !== 'topicCollection' || !board) return;
+
+    const selectedItems = (selectedNode.topicItems || []).filter((item) => {
+      return selectedTopicItemIds.has(item.id);
+    });
+    if (selectedItems.length === 0) return;
+
+    addNode({
+      boardId: board.id,
+      type: 'topic',
+      role: 'system',
+      title: selectedItems.map((item) => item.title).join(' / '),
+      content: selectedItems.map((item) => {
+        return item.description ? `${item.title}: ${item.description}` : item.title;
+      }).join('\n'),
+      parentIds: [selectedNode.id],
+      createdBy: 'user',
+      position: {
+        x: selectedNode.position.x + 180,
+        y: selectedNode.position.y + 100
+      },
+      metadata: {
+        importance: 3
+      }
+    });
+    setSelectedTopicItemIds(new Set());
+  }, [addNode, board, selectedNode, selectedTopicItemIds]);
 
   /**
    * 選択ノードを編集開始
@@ -1123,6 +1249,122 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
         )}
       </div>
 
+      {/* トピック集の項目管理 */}
+      {selectedNode.type === 'topicCollection' && !isEditing && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div>
+            <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#94a3b8' }}>
+              トピック項目 ({selectedNode.topicItems?.length || 0})
+            </h3>
+            {selectedNode.isLoading ? (
+              <div style={{ padding: '12px', background: '#1e293b', borderRadius: '8px', color: '#94a3b8', fontSize: '13px' }}>
+                項目を抽出しています...
+              </div>
+            ) : (selectedNode.topicItems?.length || 0) === 0 ? (
+              <div style={{ padding: '12px', background: '#1e293b', borderRadius: '8px', color: '#94a3b8', fontSize: '13px' }}>
+                項目がありません。下のフォームから追加できます。
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {selectedNode.topicItems?.map((item) => {
+                  const isEditingItem = editingTopicItemId === item.id;
+                  return (
+                    <div key={item.id} style={{ padding: '10px', background: '#1e293b', borderRadius: '8px', fontSize: '13px' }}>
+                      {isEditingItem ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <input
+                            value={topicItemTitle}
+                            onChange={(event) => setTopicItemTitle(event.target.value)}
+                            placeholder="項目名"
+                            style={topicItemInputStyle}
+                          />
+                          <textarea
+                            value={topicItemDescription}
+                            onChange={(event) => setTopicItemDescription(event.target.value)}
+                            placeholder="短い概要"
+                            rows={2}
+                            style={{ ...topicItemInputStyle, resize: 'vertical' }}
+                          />
+                          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
+                            <button onClick={() => setEditingTopicItemId(null)} style={{ ...actionButtonStyle, padding: '5px 9px' }}>
+                              キャンセル
+                            </button>
+                            <button onClick={handleSaveTopicItem} style={{ ...actionButtonStyle, padding: '5px 9px', background: '#0f766e' }}>
+                              保存
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                          <input
+                            type="checkbox"
+                            checked={selectedTopicItemIds.has(item.id)}
+                            onChange={() => handleToggleTopicItem(item.id)}
+                            aria-label={`${item.title}を選択`}
+                            style={{ marginTop: '3px', accentColor: '#14b8a6' }}
+                          />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ color: '#f1f5f9', fontWeight: 700 }}>{item.title}</div>
+                            {item.description && (
+                              <div style={{ marginTop: '3px', color: '#94a3b8', whiteSpace: 'pre-wrap' }}>{item.description}</div>
+                            )}
+                          </div>
+                          <div style={{ display: 'flex', gap: '4px' }}>
+                            <button onClick={() => handleStartEditTopicItem(item)} title="項目を編集" style={{ ...actionButtonStyle, padding: '4px 7px' }}>
+                              編集
+                            </button>
+                            <button onClick={() => handleDeleteTopicItem(item.id)} title="項目を削除" style={{ ...actionButtonStyle, padding: '4px 7px', background: '#7f1d1d' }}>
+                              削除
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div style={{ padding: '10px', background: '#1e293b', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <h4 style={{ margin: 0, color: '#94a3b8', fontSize: '13px' }}>項目を追加</h4>
+            <input
+              value={newTopicItemTitle}
+              onChange={(event) => setNewTopicItemTitle(event.target.value)}
+              placeholder="項目名"
+              style={topicItemInputStyle}
+            />
+            <textarea
+              value={newTopicItemDescription}
+              onChange={(event) => setNewTopicItemDescription(event.target.value)}
+              placeholder="短い概要（任意）"
+              rows={2}
+              style={{ ...topicItemInputStyle, resize: 'vertical' }}
+            />
+            <button
+              onClick={handleAddTopicItem}
+              disabled={!newTopicItemTitle.trim()}
+              style={{ ...actionButtonStyle, justifyContent: 'center', background: '#0f766e', opacity: newTopicItemTitle.trim() ? 1 : 0.5 }}
+            >
+              項目を追加
+            </button>
+          </div>
+
+          <button
+            onClick={handleCreateTopicFromSelectedItems}
+            disabled={selectedTopicItemIds.size === 0 || selectedNode.isLoading}
+            style={{
+              ...actionButtonStyle,
+              justifyContent: 'center',
+              background: '#7c3aed',
+              opacity: selectedTopicItemIds.size > 0 && !selectedNode.isLoading ? 1 : 0.5
+            }}
+          >
+            選択した項目からトピックを生成
+          </button>
+        </div>
+      )}
+
       {/* 親ノード一覧（質問ノードのみ表示） */}
       {selectedNode.type === 'message' && selectedNode.role === 'user' && selectedNode.parentIds.length > 0 && (
         <div>
@@ -1242,14 +1484,14 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
           {selectedNode.type === 'message' && selectedNode.role === 'assistant' && (
             <>
               <button 
-                onClick={handleGenerateTopics} 
-                disabled={isLoading || isAiResponding}
+                onClick={handleGenerateTopicCollection}
+                disabled={isLoading || isAiResponding || hasTopicCollectionChild}
                 style={{
                   ...actionButtonStyle,
-                  opacity: (isLoading || isAiResponding) ? 0.5 : 1
+                  opacity: (isLoading || isAiResponding || hasTopicCollectionChild) ? 0.5 : 1
                 }}
               >
-                💡 トピック生成
+                💡 トピック集を作成
               </button>
               <button 
                 onClick={() => setShowCreateTopicModal(true)}
@@ -1443,7 +1685,7 @@ interface ContextResult {
  */
 function collectPinnedNodes(allNodes: MindNode[], excludeIds: Set<string>): MindNode[] {
   return allNodes.filter(node => 
-    node.metadata?.pin === true && !excludeIds.has(node.id)
+    node.type !== 'topicCollection' && node.metadata?.pin === true && !excludeIds.has(node.id)
   );
 }
 
@@ -1469,6 +1711,8 @@ function nodeToContextMessage(node: MindNode): { role: 'user' | 'assistant' | 's
       content: `[メモ] ${node.title ? node.title + ': ' : ''}${node.content}`,
       nodeType: 'note'
     };
+  } else if (node.type === 'topicCollection') {
+    return null;
   }
   return null;
 }
@@ -1647,6 +1891,7 @@ function getNodeTypeIcon(type: NodeType): string {
     case 'message': return '💬';
     case 'note': return '📝';
     case 'topic': return '💡';
+    case 'topicCollection': return '🗂️';
     default: return '📄';
   }
 }
@@ -1657,6 +1902,7 @@ function getNodeTypeLabel(type: NodeType): string {
     case 'message': return 'メッセージ';
     case 'note': return 'メモ';
     case 'topic': return 'トピック';
+    case 'topicCollection': return 'トピック集';
     default: return 'ノード';
   }
 }
@@ -1672,4 +1918,15 @@ const actionButtonStyle: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   gap: '4px'
+};
+
+const topicItemInputStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '7px 9px',
+  borderRadius: '6px',
+  border: '1px solid #475569',
+  background: '#0f172a',
+  color: 'white',
+  fontSize: '13px',
+  boxSizing: 'border-box'
 };

@@ -26,6 +26,7 @@ import { RootNode } from './nodes/RootNode';
 import { MessageNode } from './nodes/MessageNode';
 import { NoteNode } from './nodes/NoteNode';
 import { TopicNode } from './nodes/TopicNode';
+import { TopicCollectionNode } from './nodes/TopicCollectionNode';
 import type { MindNode } from '@shared/types';
 
 /** カスタムノードタイプの定義 */
@@ -33,7 +34,8 @@ const nodeTypes: NodeTypes = {
   root: RootNode,
   message: MessageNode,
   note: NoteNode,
-  topic: TopicNode
+  topic: TopicNode,
+  topicCollection: TopicCollectionNode
 };
 
 /**
@@ -187,6 +189,7 @@ export const MindMapCanvas: React.FC = () => {
               case 'message': return '#10b981';
               case 'note': return '#f59e0b';
               case 'topic': return '#8b5cf6';
+              case 'topicCollection': return '#14b8a6';
               default: return '#64748b';
             }
           }}

@@ -1,7 +1,7 @@
 /**
  * IPC通信用の型定義
  */
-import type { Board, BoardData, MindNode, ModelConfig, Provider } from './types';
+import type { Board, BoardData, MindNode, ModelConfig, Provider, TopicCollectionItem } from './types';
 
 /**
  * 利用可能なモデル一覧のレスポンス
@@ -72,25 +72,19 @@ export interface LLMResponse {
 }
 
 /**
- * トピック生成リクエスト
+ * トピック集生成リクエスト
  */
-export interface GenerateTopicsRequest {
+export interface GenerateTopicCollectionRequest {
   content: string;
   context?: string;
-  maxTopics?: number;
   /** 使用するモデル */
   model?: string;
 }
 
 /**
- * トピック生成レスポンス
+ * トピック集の生成項目
  */
-export interface GeneratedTopic {
-  title: string;
-  description?: string;
-  importance?: 1 | 2 | 3 | 4 | 5;
-  tags?: string[];
-}
+export type GeneratedTopicCollectionItem = Omit<TopicCollectionItem, 'id'>;
 
 /**
  * ノート生成リクエスト
@@ -143,7 +137,7 @@ export interface ElectronAPI {
   
   // LLM
   sendLLMRequest: (request: LLMRequest) => Promise<LLMResponse>;
-  generateTopics: (request: GenerateTopicsRequest) => Promise<GeneratedTopic[]>;
+  generateTopicCollection: (request: GenerateTopicCollectionRequest) => Promise<GeneratedTopicCollectionItem[]>;
   generateNote: (request: GenerateNoteRequest) => Promise<string>;
   generateSummary: (request: GenerateSummaryRequest) => Promise<string>;
   

@@ -22,7 +22,7 @@ const electronAPI: ElectronAPI = {
 
   // LLM
   sendLLMRequest: (request) => ipcRenderer.invoke('send-llm-request', request),
-  generateTopics: (request) => ipcRenderer.invoke('generate-topics', request),
+  generateTopicCollection: (request) => ipcRenderer.invoke('generate-topic-collection', request),
   generateNote: (request) => ipcRenderer.invoke('generate-note', request),
   generateSummary: (request) => ipcRenderer.invoke('generate-summary', request),
 

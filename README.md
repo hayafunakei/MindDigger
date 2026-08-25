@@ -8,7 +8,7 @@
   を組み合わせて整理・深掘りできるデスクトップアプリケーション。
 - 特徴
   - 中央にテーマを置き、AIとの質疑応答をツリー状に展開。
-  - 回答から自動生成される **topic ノード** をたどりながら論点を深掘り。
+  - 回答ごとに自動生成される **トピック集ノード** から論点を選び、必要な **topic ノード** だけを作って深掘り。
   - **note ノード** に決定事項をまとめ、サイドパネルでサマリー表示。
   - 複数の親ノード（複数文脈）を許容し、1つの回答を別の論点からも再利用可能。
 
@@ -32,7 +32,7 @@
 // 型定義では4種類定義済み、現在はOpenAIのみ対応
 type Provider = 'openai' | 'anthropic' | 'google' | 'local';
 type Role = 'user' | 'assistant' | 'system';
-type NodeType = 'root' | 'message' | 'note' | 'topic';
+type NodeType = 'root' | 'message' | 'note' | 'topic' | 'topicCollection';
 
 type NodeId = string;
 type BoardId = string;
@@ -72,6 +72,12 @@ interface NodeMetadata {
   tags?: string[];                // "risk", "idea", "UI" など
   pin?: boolean;                  // 決定事項や特に重要なノード（サマリや表示で必ず扱う）
 }
+
+interface TopicCollectionItem {
+  id: string;
+  title: string;
+  description: string;
+}
 ```
 
 運用方針:
@@ -109,7 +115,7 @@ interface MindNode {
   id: NodeId;
   boardId: BoardId;
 
-  type: NodeType;           // 'root' | 'message' | 'note' | 'topic'
+  type: NodeType;           // 'root' | 'message' | 'note' | 'topic' | 'topicCollection'
   role: Role;               // user / assistant / system
   title: string;            // ノードの短い見出し（任意）
   content: string;          // 実際の内容（質問文・回答文・メモ・トピック名など）
@@ -133,6 +139,9 @@ interface MindNode {
 
   // 質問・回答ペアとして扱うための識別子（任意）
   qaPairId?: string;        // 同じ値を持つ user/assistant ノードを1セットとしてUI表示
+
+  // トピック集の項目一覧（topicCollection の場合のみ使用）
+  topicItems?: TopicCollectionItem[];
 }
 ```
 
@@ -149,7 +158,12 @@ interface MindNode {
   - 回答からAIで下書き → ユーザーが修正 → `pin` で確定。
 - `topic`  
   - 「まだ質問にしていない論点」や「検討すべき観点」。  
-  - 主に回答ノードの周囲に AI から自動生成。
+  - トピック集で選択した項目、または回答からの手動作成で生成。
+  - このノードから質問ノードを作成する。
+- `topicCollection`
+  - 回答内容を網羅する質問・検討候補の一覧。
+  - 回答ノードの子として自動生成し、右ペインで項目を追加・編集・削除・複数選択できる。
+  - 項目を選択して通常の `topic` ノードを1件生成するための中間ノードであり、ここから直接質問は作成しない。
 
 ***
 
@@ -262,20 +276,33 @@ interface Summary {
   - 質問ノードの `childrenIds` に回答ノード ID を追加。
   - 質問・回答両方に同一 `qaPairId` を付与してUI上ペア表示。
 
-### 5.3 回答から topic ノード生成
+### 5.3 回答からトピック集ノード生成
 
-- 操作（回答ノードのコントロール）
-  - 「関連トピックを生成」ボタンを押す、もしくは自動実行。
+- 操作
+  - 回答生成後、回答ノードの子としてトピック集ノードを自動作成する。
+  - 自動生成に失敗した場合のみ、回答ノードの「トピック集を作成」で再試行できる。
+  - 回答ノードの子にトピック集が既にある場合は、追加作成できない。
 - データ
-  - 回答ノードの `content` を LLM に渡し、関連論点（topic 名）を生成。
-  - `type: 'topic'` のノードを複数作成。  
+  - 回答ノードの `content` を LLM に渡し、回答を網羅する任意件数の `TopicCollectionItem` を生成する。
+  - `type: 'topicCollection'` のノードを1件作成。  
     - `parentIds: [answerNode.id]`  
-    - answerNode の `childrenIds` に topic ノード ID を追加。
-  - `metadata.importance` や `tags` は LLM による初期推定を許可してもよい。
+    - `topicItems` に生成項目を保存する。
+  - 既存ボードの自動生成済み `topic` ノードは移行・削除せず、そのまま残す。
 
-### 5.4 topic → 質問 → 回答 → note
+### 5.4 トピック集 → topic → 質問 → 回答 → note
 
-#### 5.4.1 topic ノードから質問ノード作成
+#### 5.4.1 トピック集から topic ノードを作成
+
+- 操作
+  - トピック集ノードを選択すると、右ペインに項目のタイトルと短い概要を一覧表示する。
+  - 項目は手動で追加・編集・削除でき、複数選択できる。
+  - 「選択した項目からトピックを生成」で、選択したタイトル・概要を統合した通常の `topic` ノードを1件作成する。
+- データ
+  - 選択状態は保存しない。項目の追加・編集・削除のみ `topicItems` に保存する。
+  - 生成する `topic` は `parentIds: [topicCollectionNode.id]` を持つ。
+  - 選択項目の統合では LLM を呼び出さない。
+
+#### 5.4.2 topic ノードから質問ノード作成
 
 - 操作（topic のコントロール）
   - 「質問を作成」ボタン → 質問文入力 → 送信。
@@ -284,7 +311,7 @@ interface Summary {
     - `parentIds: [topicNode.id]`  
     - topicNode の `childrenIds` に質問ノード ID を追加。
 
-#### 5.4.2 質問ノードに別 topic を接続
+#### 5.4.3 質問ノードに別 topic を接続
 
 - 操作
   - 質問ノードで「topic接続モード」を開始 → 他の topic ノードをクリック。
@@ -293,7 +320,7 @@ interface Summary {
   - 該当 topic の `childrenIds` に質問ノード ID を追加。  
   - `parentIds[0]` がメイン親としてタイムライン・太線表示に用いられ、それ以外はサブ親となる。
 
-#### 5.4.3 note ノード作成（決定事項）
+#### 5.4.4 note ノード作成（決定事項）
 
 - 操作（任意ノードのコントロール）
   - 「note を作成」ボタン。  
@@ -360,6 +387,7 @@ interface Summary {
 
 - `type !== 'root'` を基本対象。
 - message / note / topic を主に要約へ利用。
+- topicCollection は未確定の候補一覧のため要約対象から除外。
 
 ### 8.4 importance / pin / type によるスコアリング
 
@@ -424,6 +452,7 @@ interface Summary {
 - **message (assistant)**: 回答テキスト、使用モデル表示、複製ボタン
 - **note**: ピン表示、importance星表示、decisionタグ表示
 - **topic**: タグ表示、importance表示、ピン対応
+- **topicCollection**: 項目数を表示。項目内容は右ペインで操作
 
 ### 9.3 エッジ表示
 
@@ -448,6 +477,7 @@ interface Summary {
 
 - メイン親チェーン（`parentIds[0]`を辿ってrootまで）を収集
 - サブ親チェーン（`parentIds[1+]`）も含めて文脈を構築
+- topicCollection は質問のための中間ノードなので、LLMへ送る文脈から除外
 - 収集したノードをLLMプロンプトに含めて回答を生成
 
 ***
@@ -471,11 +501,11 @@ type Provider = 'openai' | 'anthropic' | 'google' | 'local';
 
 ### 10.2 トピック/ノート生成のモデル選択
 
-現在、トピック生成とノート生成は `gpt-4o-mini` 固定で実行されます。
+現在、トピック集生成とノート生成にはボードのデフォルトモデル、またはトピック生成用モデル設定を使用します。
 
 将来的には以下のように選択可能にする予定：
 
-- **トピック生成**: `gpt-4o-mini` など低コストモデル固定（大量生成のため）
+- **トピック集生成**: `gpt-4o-mini` など低コストモデルを選択可能（大量抽出のため）
 - **ノート生成**: `Board.settings.defaultModel` を使用（ユーザーが選択可能）
 
 ### 10.3 トークン使用量・コスト表示

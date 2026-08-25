@@ -58,27 +58,29 @@ class OpenAIProvider {
     };
   }
   /**
-   * トピックを生成する
-   * @param request - トピック生成リクエスト
-   * @returns 生成されたトピック配列
+   * 回答内容を網羅するトピック集の項目を生成する
+   * @param request - トピック集生成リクエスト
+   * @returns 生成されたトピック集項目の配列
    */
-  async generateTopics(request) {
-    const maxTopics = request.maxTopics || 5;
-    const systemPrompt = `あなたは思考整理の専門家です。与えられた内容から、論点を抽出してください。
-各トピックは以下のJSON形式で出力してください：
-{
-  "title": "論点のタイトル（簡潔に）",
-  "description": "論点の説明（省略可）",
-  "importance": 1-5の重要度,
-  "tags": ["タグ1", "タグ2"]
-}
+  async generateTopicCollection(request) {
+    const systemPrompt = `あなたは思考整理の専門家です。与えられた回答に含まれる、追加で質問・検討できる論点を漏れなく分解してください。
+回答の内容を網羅することを優先し、任意の件数上限を設けないでください。重複する項目は統合し、単なる言い換えは避けてください。
+各項目は短く具体的なタイトルと、質問・検討の焦点が分かる短い概要にします。
 
-最大${maxTopics}個のトピックを配列形式で返してください。`;
+必ず次のJSON形式で返してください：
+{
+  "items": [
+    {
+      "title": "項目のタイトル",
+      "description": "項目の短い概要"
+    }
+  ]
+}`;
     const userPrompt = request.context ? `以下の文脈を踏まえて：
 ${request.context}
 
-次の内容から論点を抽出：
-${request.content}` : `次の内容から論点を抽出：
+次の回答からトピック集の項目を抽出：
+${request.content}` : `次の回答からトピック集の項目を抽出：
 ${request.content}`;
     const response = await this.client.chat.completions.create({
       model: request.model || "gpt-5-mini",
@@ -88,10 +90,19 @@ ${request.content}`;
       ],
       response_format: { type: "json_object" }
     });
-    const content = response.choices[0]?.message?.content || '{"topics": []}';
+    const content = response.choices[0]?.message?.content || '{"items": []}';
     try {
       const parsed = JSON.parse(content);
-      return parsed.topics || [];
+      if (!Array.isArray(parsed.items)) return [];
+      return parsed.items.flatMap((item) => {
+        if (!item || typeof item !== "object") return [];
+        const candidate = item;
+        if (typeof candidate.title !== "string" || !candidate.title.trim()) return [];
+        return [{
+          title: candidate.title.trim(),
+          description: typeof candidate.description === "string" ? candidate.description.trim() : ""
+        }];
+      });
     } catch {
       return [];
     }
@@ -126,7 +137,7 @@ ${request.content}`;
    * @returns 生成されたサマリー
    */
   async generateSummary(request) {
-    const scoredNodes = request.nodes.map((node) => {
+    const scoredNodes = request.nodes.filter((node) => node.type !== "topicCollection").map((node) => {
       let score = (node.importance || 3) * 10;
       if (node.pin) score += 100;
       if (node.type === "note") score += 10;
@@ -136,7 +147,7 @@ ${request.content}`;
     const topNodes = scoredNodes.slice(0, 20).map((s) => s.node);
     const systemPrompt = `あなたは思考整理の専門家です。与えられたノード情報から、以下の観点で要約を作成してください：
 
-1. **重要な論点**: 検討されている主要なテーマ
+1. **重要なトピック**: 検討されている主要なテーマ
 2. **決定事項**: 📌ピン留めされたノードから抽出（ピン留め = 確定・決定を意味する）
 3. **メモ・検討内容**: noteノードの内容を要約
 4. **未解決の課題**: topicノードから抽出
@@ -207,7 +218,7 @@ function registerLLMHandlers() {
         throw new Error(`未知のプロバイダー: ${request.provider}`);
     }
   });
-  electron.ipcMain.handle("generate-topics", async (_, request) => {
+  electron.ipcMain.handle("generate-topic-collection", async (_, request) => {
     const settings = await getSettings();
     if (!settings.openaiApiKey) {
       throw new Error("OpenAI APIキーが設定されていません");
@@ -215,7 +226,7 @@ function registerLLMHandlers() {
     if (!openaiProvider) {
       openaiProvider = new OpenAIProvider(settings.openaiApiKey);
     }
-    return openaiProvider.generateTopics(request);
+    return openaiProvider.generateTopicCollection(request);
   });
   electron.ipcMain.handle("generate-note", async (_, request) => {
     const settings = await getSettings();

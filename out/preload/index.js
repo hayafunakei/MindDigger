@@ -14,7 +14,7 @@ const electronAPI = {
   getAvailableModels: () => electron.ipcRenderer.invoke("get-available-models"),
   // LLM
   sendLLMRequest: (request) => electron.ipcRenderer.invoke("send-llm-request", request),
-  generateTopics: (request) => electron.ipcRenderer.invoke("generate-topics", request),
+  generateTopicCollection: (request) => electron.ipcRenderer.invoke("generate-topic-collection", request),
   generateNote: (request) => electron.ipcRenderer.invoke("generate-note", request),
   generateSummary: (request) => electron.ipcRenderer.invoke("generate-summary", request),
   // ダイアログ

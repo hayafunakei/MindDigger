@@ -4,7 +4,7 @@
 import { ipcMain } from 'electron';
 import { OpenAIProvider } from '../llm/openaiProvider';
 import { getSettings } from './settingsHandlers';
-import type { LLMRequest, LLMResponse, GenerateTopicsRequest, GeneratedTopic, GenerateNoteRequest, GenerateSummaryRequest } from '@shared/ipc';
+import type { LLMRequest, LLMResponse, GenerateTopicCollectionRequest, GeneratedTopicCollectionItem, GenerateNoteRequest, GenerateSummaryRequest } from '@shared/ipc';
 
 /** LLMプロバイダーのインスタンスキャッシュ */
 let openaiProvider: OpenAIProvider | null = null;
@@ -37,8 +37,8 @@ export function registerLLMHandlers(): void {
     }
   });
 
-  // トピック生成
-  ipcMain.handle('generate-topics', async (_, request: GenerateTopicsRequest): Promise<GeneratedTopic[]> => {
+  // トピック集生成
+  ipcMain.handle('generate-topic-collection', async (_, request: GenerateTopicCollectionRequest): Promise<GeneratedTopicCollectionItem[]> => {
     const settings = await getSettings();
     if (!settings.openaiApiKey) {
       throw new Error('OpenAI APIキーが設定されていません');
@@ -46,7 +46,7 @@ export function registerLLMHandlers(): void {
     if (!openaiProvider) {
       openaiProvider = new OpenAIProvider(settings.openaiApiKey);
     }
-    return openaiProvider.generateTopics(request);
+    return openaiProvider.generateTopicCollection(request);
   });
 
   // ノート生成

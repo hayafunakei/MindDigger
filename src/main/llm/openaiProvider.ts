@@ -2,7 +2,7 @@
  * OpenAI LLMプロバイダー
  */
 import OpenAI from 'openai';
-import type { LLMRequest, LLMResponse, GenerateTopicsRequest, GeneratedTopic, GenerateNoteRequest, GenerateSummaryRequest } from '@shared/ipc';
+import type { LLMRequest, LLMResponse, GenerateTopicCollectionRequest, GeneratedTopicCollectionItem, GenerateNoteRequest, GenerateSummaryRequest } from '@shared/ipc';
 
 /**
  * OpenAI APIを使用したLLMプロバイダー
@@ -48,26 +48,30 @@ export class OpenAIProvider {
   }
 
   /**
-   * トピックを生成する
-   * @param request - トピック生成リクエスト
-   * @returns 生成されたトピック配列
+   * 回答内容を網羅するトピック集の項目を生成する
+   * @param request - トピック集生成リクエスト
+   * @returns 生成されたトピック集項目の配列
    */
-  async generateTopics(request: GenerateTopicsRequest): Promise<GeneratedTopic[]> {
-    const maxTopics = request.maxTopics || 5;
-    const systemPrompt = `あなたは思考整理の専門家です。与えられた内容からトピックを抽出してください。
-各トピックは以下のJSON形式で出力してください：
-{
-  "title": "トピックのタイトル（簡潔に）",
-  "description": "トピックの説明（省略可）",
-  "importance": 1-5の重要度,
-  "tags": ["タグ1", "タグ2"]
-}
+  async generateTopicCollection(
+    request: GenerateTopicCollectionRequest
+  ): Promise<GeneratedTopicCollectionItem[]> {
+    const systemPrompt = `あなたは思考整理の専門家です。与えられた回答に含まれる、追加で質問・検討できる論点を漏れなく分解してください。
+回答の内容を網羅することを優先し、任意の件数上限を設けないでください。重複する項目は統合し、単なる言い換えは避けてください。
+各項目は短く具体的なタイトルと、質問・検討の焦点が分かる短い概要にします。
 
-最大${maxTopics}個のトピックを配列形式で返してください。`;
+必ず次のJSON形式で返してください：
+{
+  "items": [
+    {
+      "title": "項目のタイトル",
+      "description": "項目の短い概要"
+    }
+  ]
+}`;
 
     const userPrompt = request.context
-      ? `以下の文脈を踏まえて：\n${request.context}\n\n次の内容からトピックを抽出：\n${request.content}`
-      : `次の内容からトピックを抽出：\n${request.content}`;
+      ? `以下の文脈を踏まえて：\n${request.context}\n\n次の回答からトピック集の項目を抽出：\n${request.content}`
+      : `次の回答からトピック集の項目を抽出：\n${request.content}`;
 
     const response = await this.client.chat.completions.create({
       model: request.model || 'gpt-5-mini',
@@ -78,11 +82,24 @@ export class OpenAIProvider {
       response_format: { type: 'json_object' }
     });
 
-    const content = response.choices[0]?.message?.content || '{"topics": []}';
+    const content = response.choices[0]?.message?.content || '{"items": []}';
     
     try {
-      const parsed = JSON.parse(content);
-      return parsed.topics || [];
+      const parsed = JSON.parse(content) as { items?: unknown };
+      if (!Array.isArray(parsed.items)) return [];
+
+      return parsed.items.flatMap((item): GeneratedTopicCollectionItem[] => {
+        if (!item || typeof item !== 'object') return [];
+        const candidate = item as { title?: unknown; description?: unknown };
+        if (typeof candidate.title !== 'string' || !candidate.title.trim()) return [];
+
+        return [{
+          title: candidate.title.trim(),
+          description: typeof candidate.description === 'string'
+            ? candidate.description.trim()
+            : ''
+        }];
+      });
     } catch {
       return [];
     }
@@ -120,13 +137,16 @@ export class OpenAIProvider {
    */
   async generateSummary(request: GenerateSummaryRequest): Promise<string> {
     // ノードをスコアリングしてソート
-    const scoredNodes = request.nodes.map(node => {
+    const scoredNodes = request.nodes
+      .filter((node) => node.type !== 'topicCollection')
+      .map(node => {
       let score = (node.importance || 3) * 10;
       if (node.pin) score += 100;
       if (node.type === 'note') score += 10;
       if (node.type === 'topic') score += 5;
       return { node, score };
-    }).sort((a, b) => b.score - a.score);
+    })
+      .sort((a, b) => b.score - a.score);
 
     // 上位ノードを選択（最大20件）
     const topNodes = scoredNodes.slice(0, 20).map(s => s.node);

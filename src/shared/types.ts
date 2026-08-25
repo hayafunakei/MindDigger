@@ -43,7 +43,7 @@ export interface ModelsConfigFile {
 export type Role = 'user' | 'assistant' | 'system';
 
 /** ノードの種別 */
-export type NodeType = 'root' | 'message' | 'note' | 'topic';
+export type NodeType = 'root' | 'message' | 'note' | 'topic' | 'topicCollection';
 
 /** 各種ID型（型安全のためのブランド型） */
 export type NodeId = string;
@@ -92,6 +92,18 @@ export interface NodeMetadata {
 }
 
 /**
+ * トピック集に含まれる、質問候補の項目
+ */
+export interface TopicCollectionItem {
+  /** 項目識別子 */
+  id: string;
+  /** 簡潔な項目名 */
+  title: string;
+  /** 項目の短い概要 */
+  description: string;
+}
+
+/**
  * LLM使用量情報
  */
 export interface TokenUsage {
@@ -117,7 +129,7 @@ export interface MindNode {
   id: NodeId;
   boardId: BoardId;
 
-  /** ノード種別: 'root' | 'message' | 'note' | 'topic' */
+  /** ノード種別: 'root' | 'message' | 'note' | 'topic' | 'topicCollection' */
   type: NodeType;
   /** user / assistant / system */
   role: Role;
@@ -153,6 +165,9 @@ export interface MindNode {
 
   /** 質問・回答ペアの識別子（任意） */
   qaPairId?: string;
+
+  /** トピック集の項目一覧（type === 'topicCollection' の場合のみ使用） */
+  topicItems?: TopicCollectionItem[];
 
   /** ローディング中かどうか（AI回答待ち状態） */
   isLoading?: boolean;
