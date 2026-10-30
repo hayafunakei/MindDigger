@@ -22,6 +22,10 @@ function _interopNamespaceDefault(e) {
   return Object.freeze(n);
 }
 const yaml__namespace = /* @__PURE__ */ _interopNamespaceDefault(yaml);
+function isGpt6Model(model) {
+  return /^gpt-6(?:\.|-)/i.test(model);
+}
+const DEFAULT_OPENAI_MODEL = "gpt-6-luna";
 class OpenAIProvider {
   client;
   /**
@@ -37,14 +41,15 @@ class OpenAIProvider {
    * @returns LLMレスポンス
    */
   async chat(request) {
+    const model = request.model || DEFAULT_OPENAI_MODEL;
     const response = await this.client.chat.completions.create({
-      model: request.model || "gpt-5-mini",
+      model,
       messages: request.messages.map((msg) => ({
         role: msg.role,
         content: msg.content
       })),
-      temperature: request.temperature ?? 0.7,
-      max_tokens: request.maxTokens
+      ...isGpt6Model(model) ? {} : { temperature: request.temperature ?? 0.7 },
+      max_completion_tokens: request.maxTokens
     });
     const choice = response.choices[0];
     const content = choice?.message?.content || "";
@@ -82,8 +87,9 @@ ${request.context}
 次の回答からトピック集の項目を抽出：
 ${request.content}` : `次の回答からトピック集の項目を抽出：
 ${request.content}`;
+    const model = request.model || DEFAULT_OPENAI_MODEL;
     const response = await this.client.chat.completions.create({
-      model: request.model || "gpt-5-mini",
+      model,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
@@ -121,13 +127,14 @@ ${request.context}
 次の内容をまとめてください：
 ${request.content}` : `次の内容をまとめてください：
 ${request.content}`;
+    const model = request.model || DEFAULT_OPENAI_MODEL;
     const response = await this.client.chat.completions.create({
-      model: request.model || "gpt-5-mini",
+      model,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.7
+      ...isGpt6Model(model) ? {} : { temperature: 0.7 }
     });
     return response.choices[0]?.message?.content || "";
   }
@@ -180,14 +187,15 @@ ${nodesInfo}`;
     console.log("--- User Prompt ---");
     console.log(userPrompt);
     console.groupEnd();
+    const model = request.model || DEFAULT_OPENAI_MODEL;
     const response = await this.client.chat.completions.create({
-      model: request.model || "gpt-5-mini",
+      model,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.7,
-      max_tokens: 2e3
+      ...isGpt6Model(model) ? {} : { temperature: 0.7 },
+      max_completion_tokens: 2e3
     });
     let content = response.choices[0]?.message?.content || "";
     content = content.replace(/^```(?:markdown)?\n?/i, "").replace(/\n?```$/i, "");
@@ -262,8 +270,8 @@ const getModelsConfigPath = () => {
 const defaultSettings = {
   theme: "system",
   defaultProvider: "openai",
-  defaultModel: "gpt-5-mini",
-  topicGenerationModel: "gpt-5-mini"
+  defaultModel: "gpt-6-luna",
+  topicGenerationModel: "gpt-6-luna"
 };
 let cachedModelsConfig = null;
 let cachedSettings = null;
@@ -284,7 +292,9 @@ async function loadModelsConfig() {
           name: "OpenAI",
           enabled: true,
           models: [
-            { id: "gpt-5-mini", name: "GPT-5 Mini", description: "高速でコスト効率の良いモデル", isDefault: true }
+            { id: "gpt-6-luna", name: "GPT-6 Luna", description: "高速・低コストで日常的な対話や要約に適したモデル", isDefault: true },
+            { id: "gpt-6.1-terra", name: "GPT-6.1 Terra", description: "文章作成や整理に適した高速モデル", isDefault: false },
+            { id: "gpt-6.1-sol", name: "GPT-6.1 Sol", description: "複雑な検討や分析に適した高性能モデル", isDefault: false }
           ]
         },
         anthropic: { name: "Anthropic", enabled: false, models: [] },

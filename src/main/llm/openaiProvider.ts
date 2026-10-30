@@ -4,6 +4,14 @@
 import OpenAI from 'openai';
 import type { LLMRequest, LLMResponse, GenerateTopicCollectionRequest, GeneratedTopicCollectionItem, GenerateNoteRequest, GenerateSummaryRequest } from '@shared/ipc';
 
+/** GPT-6 系モデルのChat Completionsでは推論時にsampling parameterを指定しない */
+function isGpt6Model(model: string): boolean {
+  return /^gpt-6(?:\.|-)/i.test(model);
+}
+
+/** 新規設定と互換性のための既定モデル */
+const DEFAULT_OPENAI_MODEL = 'gpt-6-luna';
+
 /**
  * OpenAI APIを使用したLLMプロバイダー
  */
@@ -24,14 +32,15 @@ export class OpenAIProvider {
    * @returns LLMレスポンス
    */
   async chat(request: LLMRequest): Promise<LLMResponse> {
+    const model = request.model || DEFAULT_OPENAI_MODEL;
     const response = await this.client.chat.completions.create({
-      model: request.model || 'gpt-5-mini',
+      model,
       messages: request.messages.map((msg) => ({
         role: msg.role,
         content: msg.content
       })),
-      temperature: request.temperature ?? 0.7,
-      max_tokens: request.maxTokens
+      ...(isGpt6Model(model) ? {} : { temperature: request.temperature ?? 0.7 }),
+      max_completion_tokens: request.maxTokens
     });
 
     const choice = response.choices[0];
@@ -73,8 +82,9 @@ export class OpenAIProvider {
       ? `以下の文脈を踏まえて：\n${request.context}\n\n次の回答からトピック集の項目を抽出：\n${request.content}`
       : `次の回答からトピック集の項目を抽出：\n${request.content}`;
 
+    const model = request.model || DEFAULT_OPENAI_MODEL;
     const response = await this.client.chat.completions.create({
-      model: request.model || 'gpt-5-mini',
+      model,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
@@ -118,13 +128,14 @@ export class OpenAIProvider {
       ? `以下の文脈を踏まえて：\n${request.context}\n\n次の内容をまとめてください：\n${request.content}`
       : `次の内容をまとめてください：\n${request.content}`;
 
+    const model = request.model || DEFAULT_OPENAI_MODEL;
     const response = await this.client.chat.completions.create({
-      model: request.model || 'gpt-5-mini',
+      model,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
       ],
-      temperature: 0.7
+      ...(isGpt6Model(model) ? {} : { temperature: 0.7 })
     });
 
     return response.choices[0]?.message?.content || '';
@@ -194,14 +205,15 @@ ${nodesInfo}`;
     console.log(userPrompt);
     console.groupEnd();
 
+    const model = request.model || DEFAULT_OPENAI_MODEL;
     const response = await this.client.chat.completions.create({
-      model: request.model || 'gpt-5-mini',
+      model,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
       ],
-      temperature: 0.7,
-      max_tokens: 2000
+      ...(isGpt6Model(model) ? {} : { temperature: 0.7 }),
+      max_completion_tokens: 2000
     });
 
     let content = response.choices[0]?.message?.content || '';

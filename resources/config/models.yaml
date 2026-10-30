@@ -12,6 +12,18 @@ providers:
     name: OpenAI
     enabled: true
     models:
+      - id: gpt-6-luna
+        name: GPT-6 Luna
+        description: 高速・低コストで日常的な対話や要約に適したモデル
+        isDefault: true
+      - id: gpt-6.1-terra
+        name: GPT-6.1 Terra
+        description: 文章作成や整理に適した高速モデル
+        isDefault: false
+      - id: gpt-6.1-sol
+        name: GPT-6.1 Sol
+        description: 複雑な検討や分析に適した高性能モデル
+        isDefault: false
       - id: gpt-4.1
         name: GPT-4.1
         description: 高性能なフラッグシップモデル
@@ -19,7 +31,7 @@ providers:
       - id: gpt-5-mini
         name: GPT-5 Mini
         description: 高速でコスト効率の良いモデル
-        isDefault: true
+        isDefault: false
       - id: gpt-4.1-mini
         name: GPT-4.1 Mini
         description: GPT-4.1の軽量版

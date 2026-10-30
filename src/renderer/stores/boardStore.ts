@@ -150,7 +150,7 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
       updatedAt: now,
       settings: {
         defaultProvider: 'openai',
-        defaultModel: defaultModel || 'gpt-5-mini',
+        defaultModel: defaultModel || 'gpt-6-luna',
         temperature: 0.7
       }
     };

@@ -29,8 +29,8 @@ export const useSettingsStore = create<SettingsState & SettingsActions>((set, ge
   settings: {
     theme: 'system',
     defaultProvider: 'openai',
-    defaultModel: 'gpt-5-mini',
-    topicGenerationModel: 'gpt-5-mini'
+    defaultModel: 'gpt-6-luna',
+    topicGenerationModel: 'gpt-6-luna'
   },
   isLoaded: false,
   availableModels: null,
@@ -69,6 +69,6 @@ export const useSettingsStore = create<SettingsState & SettingsActions>((set, ge
   getDefaultModelForProvider: (provider: Provider) => {
     const models = get().getModelsForProvider(provider);
     const defaultModel = models.find(m => m.isDefault);
-    return defaultModel?.id || models[0]?.id || 'gpt-5-mini';
+    return defaultModel?.id || models[0]?.id || 'gpt-6-luna';
   }
 }));

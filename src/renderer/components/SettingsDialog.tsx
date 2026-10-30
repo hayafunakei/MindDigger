@@ -24,8 +24,8 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
     if (isOpen) {
       setOpenaiKey(settings.openaiApiKey || '');
       setParentFolder(settings.parentFolderPath || '');
-      setDefaultModel(settings.defaultModel || 'gpt-5-mini');
-      setTopicModel(settings.topicGenerationModel || 'gpt-5-mini');
+      setDefaultModel(settings.defaultModel || 'gpt-6-luna');
+      setTopicModel(settings.topicGenerationModel || 'gpt-6-luna');
       // モデル一覧を読み込み
       if (!availableModels) {
         loadAvailableModels();
@@ -52,8 +52,8 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
         openaiApiKey: openaiKey || undefined,
         parentFolderPath: parentFolder || undefined,
         defaultProvider: 'openai',
-        defaultModel: defaultModel || 'gpt-5-mini',
-        topicGenerationModel: topicModel || 'gpt-5-mini'
+        defaultModel: defaultModel || 'gpt-6-luna',
+        topicGenerationModel: topicModel || 'gpt-6-luna'
       });
       onClose();
     } catch (error) {

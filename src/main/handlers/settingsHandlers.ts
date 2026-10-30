@@ -27,8 +27,8 @@ const getModelsConfigPath = () => {
 const defaultSettings: AppSettings = {
   theme: 'system',
   defaultProvider: 'openai',
-  defaultModel: 'gpt-5-mini',
-  topicGenerationModel: 'gpt-5-mini'
+  defaultModel: 'gpt-6-luna',
+  topicGenerationModel: 'gpt-6-luna'
 };
 
 /** モデル設定のキャッシュ */
@@ -59,7 +59,9 @@ async function loadModelsConfig(): Promise<ModelsConfigFile> {
           name: 'OpenAI',
           enabled: true,
           models: [
-            { id: 'gpt-5-mini', name: 'GPT-5 Mini', description: '高速でコスト効率の良いモデル', isDefault: true }
+            { id: 'gpt-6-luna', name: 'GPT-6 Luna', description: '高速・低コストで日常的な対話や要約に適したモデル', isDefault: true },
+            { id: 'gpt-6.1-terra', name: 'GPT-6.1 Terra', description: '文章作成や整理に適した高速モデル', isDefault: false },
+            { id: 'gpt-6.1-sol', name: 'GPT-6.1 Sol', description: '複雑な検討や分析に適した高性能モデル', isDefault: false }
           ]
         },
         anthropic: { name: 'Anthropic', enabled: false, models: [] },

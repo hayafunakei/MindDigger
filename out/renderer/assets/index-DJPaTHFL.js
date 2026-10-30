@@ -12635,7 +12635,7 @@ const useBoardStore = create$2((set2, get2) => ({
       updatedAt: now2,
       settings: {
         defaultProvider: "openai",
-        defaultModel: defaultModel || "gpt-5-mini",
+        defaultModel: defaultModel || "gpt-6-luna",
         temperature: 0.7
       }
     };
@@ -12926,8 +12926,8 @@ const useSettingsStore = create$2((set2, get2) => ({
   settings: {
     theme: "system",
     defaultProvider: "openai",
-    defaultModel: "gpt-5-mini",
-    topicGenerationModel: "gpt-5-mini"
+    defaultModel: "gpt-6-luna",
+    topicGenerationModel: "gpt-6-luna"
   },
   isLoaded: false,
   availableModels: null,
@@ -12961,7 +12961,7 @@ const useSettingsStore = create$2((set2, get2) => ({
   getDefaultModelForProvider: (provider) => {
     const models = get2().getModelsForProvider(provider);
     const defaultModel = models.find((m) => m.isDefault);
-    return defaultModel?.id || models[0]?.id || "gpt-5-mini";
+    return defaultModel?.id || models[0]?.id || "gpt-6-luna";
   }
 }));
 const SettingsDialog = ({ isOpen, onClose }) => {
@@ -12975,8 +12975,8 @@ const SettingsDialog = ({ isOpen, onClose }) => {
     if (isOpen) {
       setOpenaiKey(settings.openaiApiKey || "");
       setParentFolder(settings.parentFolderPath || "");
-      setDefaultModel(settings.defaultModel || "gpt-5-mini");
-      setTopicModel(settings.topicGenerationModel || "gpt-5-mini");
+      setDefaultModel(settings.defaultModel || "gpt-6-luna");
+      setTopicModel(settings.topicGenerationModel || "gpt-6-luna");
       if (!availableModels) {
         loadAvailableModels();
       }
@@ -13000,8 +13000,8 @@ const SettingsDialog = ({ isOpen, onClose }) => {
         openaiApiKey: openaiKey || void 0,
         parentFolderPath: parentFolder || void 0,
         defaultProvider: "openai",
-        defaultModel: defaultModel || "gpt-5-mini",
-        topicGenerationModel: topicModel || "gpt-5-mini"
+        defaultModel: defaultModel || "gpt-6-luna",
+        topicGenerationModel: topicModel || "gpt-6-luna"
       });
       onClose();
     } catch (error) {
