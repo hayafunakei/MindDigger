@@ -18,7 +18,7 @@
 - フロントエンド: React + TypeScript + @xyflow/react（React Flow v11+）
 - 状態管理: Zustand
 - LLM接続: OpenAI（APIキーをユーザーが設定）
-- データ保存: ローカルディレクトリに JSON ファイルとして保存（Git 管理も想定）
+- データ保存: ローカルディレクトリに JSON ファイルとして保存（Git 管理も想定）。新規ボード作成時と、ノード・サマリーなどの変更後に自動保存する。AI処理中の変更は処理完了後に保存し、手動保存も可能。
 
 ***
 
@@ -77,6 +77,7 @@ interface TopicCollectionItem {
   id: string;
   title: string;
   description: string;
+  createdTopicNodeIds?: string[];
 }
 ```
 
@@ -297,8 +298,9 @@ interface Summary {
   - トピック集ノードを選択すると、右ペインに項目のタイトルと短い概要を一覧表示する。
   - 項目は手動で追加・編集・削除でき、複数選択できる。
   - 「選択した項目からトピックを生成」で、選択したタイトル・概要を統合した通常の `topic` ノードを1件作成する。
+  - topic 化済みの項目には右ペインとトピック集ノードにマークを表示する。作成した topic ノードを削除すると、その項目のマークも解除する。
 - データ
-  - 選択状態は保存しない。項目の追加・編集・削除のみ `topicItems` に保存する。
+  - 一時的なチェック選択状態は保存しない。項目の追加・編集・削除と作成済み topic ノードへの参照は `topicItems` に保存する。
   - 生成する `topic` は `parentIds: [topicCollectionNode.id]` を持つ。
   - 選択項目の統合では LLM を呼び出さない。
 

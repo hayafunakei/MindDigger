@@ -101,6 +101,8 @@ export interface TopicCollectionItem {
   title: string;
   /** 項目の短い概要 */
   description: string;
+  /** この項目から作成されたトピックノードID */
+  createdTopicNodeIds?: NodeId[];
 }
 
 /**

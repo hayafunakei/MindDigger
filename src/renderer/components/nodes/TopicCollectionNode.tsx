@@ -16,6 +16,9 @@ interface TopicCollectionNodeData extends MindNode {
 export const TopicCollectionNode: React.FC<NodeProps> = memo(({ data, selected }) => {
   const nodeData = data as unknown as TopicCollectionNodeData;
   const itemCount = nodeData.topicItems?.length ?? 0;
+  const createdTopicItemCount = nodeData.topicItems?.filter((item) => {
+    return (item.createdTopicNodeIds?.length ?? 0) > 0;
+  }).length ?? 0;
 
   return (
     <div
@@ -39,6 +42,11 @@ export const TopicCollectionNode: React.FC<NodeProps> = memo(({ data, selected }
       <div style={{ marginTop: '4px', fontSize: '13px', fontWeight: 700 }}>
         {nodeData.isLoading ? '項目を抽出中...' : `${itemCount}件の項目`}
       </div>
+      {!nodeData.isLoading && createdTopicItemCount > 0 && (
+        <div style={{ marginTop: '4px', fontSize: '11px', color: '#0f766e' }}>
+          ✓ {createdTopicItemCount}件をトピック化済み
+        </div>
+      )}
       {!nodeData.isLoading && itemCount === 0 && (
         <div style={{ marginTop: '4px', fontSize: '11px', color: '#0f766e' }}>
           項目を追加できます

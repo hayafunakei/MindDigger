@@ -2,7 +2,7 @@
  * ツールバーコンポーネント
  * ファイル操作やボード作成などのアクションを提供
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useBoardStore } from '../stores/boardStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { SettingsDialog } from './SettingsDialog';
@@ -12,13 +12,16 @@ import { BoardSelectorDialog } from './BoardSelectorDialog';
  * ツールバー
  */
 export const Toolbar: React.FC = () => {
-  const { board, isDirty, isLoading, isAiResponding, setBoard, createBoard, clearBoard, getBoardData, setFilePath, markClean, setLoading } = useBoardStore();
+  const { board, nodes, summaries, filePath, isDirty, isLoading, isAiResponding, createBoard, getBoardData, setFilePath, markClean, setLoading } = useBoardStore();
   const [showNewBoardDialog, setShowNewBoardDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [showBoardSelector, setShowBoardSelector] = useState(false);
   const [newBoardTitle, setNewBoardTitle] = useState('');
   const [newBoardDescription, setNewBoardDescription] = useState('');
   const [newBoardModel, setNewBoardModel] = useState('');
+  const autoSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isSavingRef = useRef(false);
+  const pendingAutoSaveRef = useRef(false);
 
   // 設定ストアからモデル一覧を取得
   const { availableModels, loadAvailableModels, getModelsForProvider, getDefaultModelForProvider, settings } = useSettingsStore();
@@ -59,10 +62,7 @@ export const Toolbar: React.FC = () => {
       setNewBoardDescription('');
       setNewBoardModel('');
 
-      // 作成後すぐに保存
-      setTimeout(async () => {
-        await handleSaveBoard();
-      }, 100);
+      await handleSaveBoard();
     } catch (error) {
       console.error('Failed to create board:', error);
       alert('ボードの作成に失敗しました');
@@ -79,24 +79,74 @@ export const Toolbar: React.FC = () => {
   /**
    * ボードを保存
    */
-  const handleSaveBoard = async () => {
+  const handleSaveBoard = useCallback(async (isAutomatic = false) => {
+    if (isSavingRef.current) {
+      if (isAutomatic) pendingAutoSaveRef.current = true;
+      return;
+    }
+
     const data = getBoardData();
     if (!data) return;
 
+    const currentFilePath = useBoardStore.getState().filePath;
+    if (isAutomatic && (!currentFilePath || useBoardStore.getState().isAiResponding)) return;
+
+    isSavingRef.current = true;
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+      autoSaveTimeoutRef.current = null;
+    }
     setLoading(true);
     try {
-      const path = await window.electronAPI.saveBoard(data, useBoardStore.getState().filePath || undefined);
+      const path = await window.electronAPI.saveBoard(data, currentFilePath || undefined);
       if (path) {
-        setFilePath(path);
-        markClean();
+        const currentState = useBoardStore.getState();
+        if (currentState.board?.id === data.board.id) {
+          setFilePath(path);
+          if (
+            currentState.board === data.board &&
+            currentState.nodes === data.nodes &&
+            currentState.summaries === data.summaries
+          ) {
+            markClean();
+          }
+        }
       }
     } catch (error) {
       console.error('Failed to save board:', error);
-      alert('ボードを保存できませんでした');
+      alert(isAutomatic ? '自動保存に失敗しました。手動で保存してください。' : 'ボードを保存できませんでした');
     } finally {
+      isSavingRef.current = false;
       setLoading(false);
+      if (pendingAutoSaveRef.current) {
+        pendingAutoSaveRef.current = false;
+        const currentState = useBoardStore.getState();
+        if (currentState.isDirty && currentState.filePath && !currentState.isAiResponding) {
+          autoSaveTimeoutRef.current = setTimeout(() => {
+            void handleSaveBoard(true);
+          }, 500);
+        }
+      }
     }
-  };
+  }, [getBoardData, markClean, setFilePath, setLoading]);
+
+  useEffect(() => {
+    if (!isDirty || !board || !filePath || isAiResponding) return;
+
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+    autoSaveTimeoutRef.current = setTimeout(() => {
+      void handleSaveBoard(true);
+    }, 500);
+
+    return () => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+        autoSaveTimeoutRef.current = null;
+      }
+    };
+  }, [board, nodes, summaries, filePath, isDirty, isAiResponding, handleSaveBoard]);
 
   return (
     <>
@@ -148,7 +198,7 @@ export const Toolbar: React.FC = () => {
         </button>
 
         <button
-          onClick={handleSaveBoard}
+          onClick={() => void handleSaveBoard()}
           disabled={!board || isLoading}
           style={{
             ...buttonStyle,

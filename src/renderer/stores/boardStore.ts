@@ -258,11 +258,26 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
       // 親ノードからchildrenIdsを削除
       const updatedNodes = state.nodes
         .filter((n) => !nodesToDelete.has(n.id))
-        .map((n) => ({
-          ...n,
-          childrenIds: n.childrenIds.filter((id) => !nodesToDelete.has(id)),
-          parentIds: n.parentIds.filter((id) => !nodesToDelete.has(id))
-        }));
+        .map((n) => {
+          const topicItems = n.topicItems?.map((item) => {
+            if (!item.createdTopicNodeIds?.some((id) => nodesToDelete.has(id))) {
+              return item;
+            }
+            const createdTopicNodeIds = item.createdTopicNodeIds.filter((id) => {
+              return !nodesToDelete.has(id);
+            });
+            return {
+              ...item,
+              createdTopicNodeIds: createdTopicNodeIds.length > 0 ? createdTopicNodeIds : undefined
+            };
+          });
+          return {
+            ...n,
+            childrenIds: n.childrenIds.filter((id) => !nodesToDelete.has(id)),
+            parentIds: n.parentIds.filter((id) => !nodesToDelete.has(id)),
+            ...(topicItems ? { topicItems } : {})
+          };
+        });
 
       return {
         nodes: updatedNodes,

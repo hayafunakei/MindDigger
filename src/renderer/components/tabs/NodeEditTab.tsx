@@ -90,6 +90,9 @@ function getQuestionEditState(
   return 'canResend';
 }
 
+/** 未送信の質問入力内容の一時保存（ノードID → 入力テキスト） */
+const questionDrafts = new Map<NodeId, string>();
+
 /**
  * ノード編集タブ
  * 選択ノードの詳細表示・編集・質問送信・アクション機能を提供する
@@ -217,7 +220,7 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
       setEditTitle(selectedNode.title || '');
       setEditContent(selectedNode.content || '');
       if (selectedNode.type === 'message' && selectedNode.role === 'user') {
-        setQuestionInput(selectedNode.content || '');
+        setQuestionInput(questionDrafts.get(selectedNode.id) ?? (selectedNode.content || ''));
       } else {
         setQuestionInput('');
       }
@@ -380,6 +383,7 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
         console.warn('Failed to auto-generate topic collection:', topicError);
       }
 
+      questionDrafts.delete(selectedNode.id);
       setQuestionInput('');
     } catch (error) {
       console.error('Failed to send question:', error);
@@ -657,7 +661,7 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
     });
     if (selectedItems.length === 0) return;
 
-    addNode({
+    const topicNode = addNode({
       boardId: board.id,
       type: 'topic',
       role: 'system',
@@ -675,8 +679,18 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
         importance: 3
       }
     });
+    updateNode(selectedNode.id, {
+      topicItems: (selectedNode.topicItems || []).map((item) => {
+        return selectedTopicItemIds.has(item.id)
+          ? {
+              ...item,
+              createdTopicNodeIds: [...(item.createdTopicNodeIds || []), topicNode.id]
+            }
+          : item;
+      })
+    });
     setSelectedTopicItemIds(new Set());
-  }, [addNode, board, selectedNode, selectedTopicItemIds]);
+  }, [addNode, board, selectedNode, selectedTopicItemIds, updateNode]);
 
   /**
    * 選択ノードを編集開始
@@ -1304,7 +1318,14 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
                             style={{ marginTop: '3px', accentColor: '#14b8a6' }}
                           />
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ color: '#f1f5f9', fontWeight: 700 }}>{item.title}</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#f1f5f9', fontWeight: 700 }}>
+                              <span>{item.title}</span>
+                              {(item.createdTopicNodeIds?.length ?? 0) > 0 && (
+                                <span style={{ color: '#5eead4', fontSize: '11px', whiteSpace: 'nowrap' }}>
+                                  ✓ トピック化済み
+                                </span>
+                              )}
+                            </div>
                             {item.description && (
                               <div style={{ marginTop: '3px', color: '#94a3b8', whiteSpace: 'pre-wrap' }}>{item.description}</div>
                             )}
@@ -1612,7 +1633,10 @@ export const NodeEditTab: React.FC<NodeEditTabProps> = ({
               <textarea
                 ref={questionInputRef}
                 value={questionInput}
-                onChange={(e) => setQuestionInput(e.target.value)}
+                onChange={(e) => {
+                  setQuestionInput(e.target.value);
+                  if (selectedNode) questionDrafts.set(selectedNode.id, e.target.value);
+                }}
                 placeholder="この質問を入力..."
                 rows={4}
                 style={{
