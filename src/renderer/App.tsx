@@ -1,7 +1,7 @@
 /**
  * アプリケーションのメインコンポーネント
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Toolbar } from './components/Toolbar';
 import { MindMapCanvas } from './components/MindMapCanvas';
 import { SidePanel } from './components/SidePanel';
@@ -14,13 +14,38 @@ import { useBoardStore } from './stores/boardStore';
  */
 export const App: React.FC = () => {
   const { loadSettings } = useSettingsStore();
-  const { board } = useBoardStore();
+  const { board, setBoard, setLoading } = useBoardStore();
   const [showBoardInfo, setShowBoardInfo] = useState(false);
+  const hasRestoredBoard = useRef(false);
 
-  // 初回読み込み時に設定を取得
+  // 前回開いていたボードを復元
   useEffect(() => {
-    loadSettings();
-  }, [loadSettings]);
+    if (hasRestoredBoard.current) return;
+    hasRestoredBoard.current = true;
+
+    const restoreLastBoard = async () => {
+      await loadSettings();
+      const lastOpenedBoardPath = useSettingsStore.getState().settings.lastOpenedBoardPath;
+      if (!lastOpenedBoardPath) return;
+
+      setLoading(true);
+      try {
+        const data = await window.electronAPI.loadBoardFromPath(lastOpenedBoardPath);
+        if (data) {
+          setBoard(data, lastOpenedBoardPath);
+        } else {
+          alert('前回のボードを開けませんでした。保存先を確認し、「開く」から再度選択してください。');
+        }
+      } catch (error) {
+        console.error('Failed to restore last opened board:', error);
+        alert('前回のボードを開けませんでした。保存先を確認し、「開く」から再度選択してください。');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void restoreLastBoard();
+  }, [loadSettings, setBoard, setLoading]);
 
   return (
     <div style={{

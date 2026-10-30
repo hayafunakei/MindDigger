@@ -18,7 +18,7 @@
 - フロントエンド: React + TypeScript + @xyflow/react（React Flow v11+）
 - 状態管理: Zustand
 - LLM接続: OpenAI（APIキーをユーザーが設定）
-- データ保存: ローカルディレクトリに JSON ファイルとして保存（Git 管理も想定）。新規ボード作成時と、ノード・サマリーなどの変更後に自動保存する。AI処理中の変更は処理完了後に保存し、手動保存も可能。
+- データ保存: ローカルディレクトリに JSON ファイルとして保存（Git 管理も想定）。新規ボード作成時と、ノード・サマリーなどの変更後に自動保存する。AI処理中の変更は処理完了後に保存し、手動保存も可能。次回起動時は前回開いていたボードを自動で再開する。
 
 ***
 
@@ -204,6 +204,7 @@ interface AppSettings {
   localEndpoint?: string;     // 将来対応予定
   theme?: 'light' | 'dark' | 'system';
   parentFolderPath?: string;  // ボード保存先の親フォルダ
+  lastOpenedBoardPath?: string; // 次回起動時に再開するボード
 }
 ```
 

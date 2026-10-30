@@ -25,6 +25,7 @@ export interface AppSettings {
   localEndpoint?: string;
   theme?: 'light' | 'dark' | 'system';
   parentFolderPath?: string; // ボードを管理する親フォルダ
+  lastOpenedBoardPath?: string;
   /** デフォルトのLLMプロバイダー */
   defaultProvider?: 'openai' | 'anthropic' | 'google' | 'local';
   /** デフォルトのモデル */

@@ -24,7 +24,7 @@ export const Toolbar: React.FC = () => {
   const pendingAutoSaveRef = useRef(false);
 
   // 設定ストアからモデル一覧を取得
-  const { availableModels, loadAvailableModels, getModelsForProvider, getDefaultModelForProvider, settings } = useSettingsStore();
+  const { availableModels, loadAvailableModels, getModelsForProvider, getDefaultModelForProvider, settings, updateSettings } = useSettingsStore();
 
   // モデル一覧を読み込み
   useEffect(() => {
@@ -110,6 +110,14 @@ export const Toolbar: React.FC = () => {
           ) {
             markClean();
           }
+          if (useSettingsStore.getState().settings.lastOpenedBoardPath !== path) {
+            try {
+              await updateSettings({ lastOpenedBoardPath: path });
+            } catch (error) {
+              console.error('Failed to save last opened board:', error);
+              alert('ボードは保存しましたが、次回起動時の再開ボードを保存できませんでした');
+            }
+          }
         }
       }
     } catch (error) {
@@ -128,7 +136,7 @@ export const Toolbar: React.FC = () => {
         }
       }
     }
-  }, [getBoardData, markClean, setFilePath, setLoading]);
+  }, [getBoardData, markClean, setFilePath, setLoading, updateSettings]);
 
   useEffect(() => {
     if (!isDirty || !board || !filePath || isAiResponding) return;

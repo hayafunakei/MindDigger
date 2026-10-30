@@ -4,6 +4,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { useBoardStore } from '../stores/boardStore';
+import { useSettingsStore } from '../stores/settingsStore';
 import type { BoardInfo } from '@shared/ipc';
 
 interface BoardSelectorDialogProps {
@@ -16,6 +17,7 @@ interface BoardSelectorDialogProps {
  */
 export const BoardSelectorDialog: React.FC<BoardSelectorDialogProps> = ({ isOpen, onClose }) => {
   const { setBoard, setFilePath, setLoading } = useBoardStore();
+  const { updateSettings } = useSettingsStore();
   const [boards, setBoards] = useState<BoardInfo[]>([]);
   const [parentFolder, setParentFolder] = useState<string | null>(null);
   const [isLoadingList, setIsLoadingList] = useState(false);
@@ -67,6 +69,12 @@ export const BoardSelectorDialog: React.FC<BoardSelectorDialogProps> = ({ isOpen
       const data = await window.electronAPI.loadBoardFromPath(board.folderPath);
       if (data) {
         setBoard(data, board.folderPath);
+        try {
+          await updateSettings({ lastOpenedBoardPath: board.folderPath });
+        } catch (error) {
+          console.error('Failed to save last opened board:', error);
+          alert('ボードは開きましたが、次回起動時の再開ボードを保存できませんでした');
+        }
         onClose();
       } else {
         alert('ボードを開けませんでした');
