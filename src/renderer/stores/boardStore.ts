@@ -47,6 +47,8 @@ interface BoardActions {
   selectNode: (nodeId: NodeId | null) => void;
   /** ノード位置を更新 */
   updateNodePosition: (nodeId: NodeId, x: number, y: number) => void;
+  /** 複数ノードの位置を一括更新 */
+  updateNodePositions: (positions: Array<{ id: NodeId; x: number; y: number }>) => void;
   /** 親子関係を追加 */
   addParentChild: (parentId: NodeId, childId: NodeId) => void;
   /** 保存パスをセット */
@@ -298,6 +300,22 @@ export const useBoardStore = create<BoardState & BoardActions>((set, get) => ({
           ? { ...n, position: { x, y }, updatedAt: new Date().toISOString() }
           : n
       ),
+      isDirty: true
+    }));
+  },
+
+  updateNodePositions: (positions) => {
+    const positionById = new Map(positions.map(({ id, x, y }) => [id, { x, y }]));
+    if (positionById.size === 0) return;
+
+    const now = new Date().toISOString();
+    set((state) => ({
+      nodes: state.nodes.map((node) => {
+        const position = positionById.get(node.id);
+        return position
+          ? { ...node, position, updatedAt: now }
+          : node;
+      }),
       isDirty: true
     }));
   },
