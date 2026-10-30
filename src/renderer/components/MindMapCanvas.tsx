@@ -110,10 +110,7 @@ export const MindMapCanvas: React.FC = () => {
     (changes: NodeChange[]) => {
       changes.forEach((change) => {
         if (change.type === 'position' && change.position && change.id) {
-          // ドラッグ終了時に位置を保存
-          if (!change.dragging) {
-            updateNodePosition(change.id, change.position.x, change.position.y);
-          }
+          updateNodePosition(change.id, change.position.x, change.position.y);
         }
         if (change.type === 'select' && change.id) {
           // 親ノード接続モード中は選択変更をスキップ（onNodeClickで処理する）
